@@ -1,0 +1,294 @@
+{
+  "aircraft": "Airbus A330-200",
+  "version": "1.1",
+  "sections": [
+    {
+      "id": "preflight",
+      "title": "PREFLIGHT",
+      "color": "#4a90d9",
+      "items": [
+        {
+          "id": "pf-1",
+          "item": "PARKING BRAKE",
+          "action": "SET",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": true },
+          "details": {
+            "description": "The parking brake must be set before starting the preflight check to prevent unintended rolling of the aircraft.",
+            "steps": [
+              "Pull parking brake lever up",
+              "Verify PARK BRK indication on ECAM is illuminated",
+              "Ensure aircraft is not rolling"
+            ],
+            "notes": "The parking brake should only be released when the aircraft is ready for pushback or taxi."
+          }
+        },
+        {
+          "id": "pf-2",
+          "item": "THROTTLES",
+          "action": "IDLE",
+          "autoCheck": { "simVar": "throttlesIdle", "expectedValue": true },
+          "details": {
+            "description": "The thrust levers must be in the IDLE position.",
+            "steps": [
+              "Move both thrust levers to IDLE position",
+              "Ensure no thrust indication is shown on ECAM"
+            ]
+          }
+        },
+        {
+          "id": "pf-3",
+          "item": "ENGINE MASTER SWITCHES",
+          "action": "OFF",
+          "autoCheck": { "simVar": "engineMaster1", "expectedValue": false, "simVar2": "engineMaster2", "expectedValue2": false, "logic": "and" },
+          "details": {
+            "description": "The Engine Master Switches control the fuel supply to the engines.",
+            "steps": [
+              "Set both Engine Master Switches to OFF",
+              "Verify FUEL valve indicators show closed"
+            ],
+            "notes": "These switches are only set to ON during engine start."
+          }
+        },
+        { "id": "pf-4", "item": "ENGINE MODE SELECTOR", "action": "NORM", "details": null },
+        { "id": "pf-5", "item": "WEATHER RADAR", "action": "OFF", "details": null },
+        {
+          "id": "pf-6",
+          "item": "GEAR LEVER",
+          "action": "DOWN",
+          "autoCheck": { "simVar": "gearHandleDown", "expectedValue": true },
+          "details": {
+            "description": "The gear lever must be in the DOWN position and all three green lights must be illuminated.",
+            "steps": [
+              "Verify gear lever is in DOWN position",
+              "Confirm three green lights for Nose, Left and Right Gear"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cockpit-prep",
+      "title": "COCKPIT PREPARATION",
+      "color": "#5c6bc0",
+      "items": [
+        { "id": "cp-1", "item": "BATTERY 1 & 2", "action": "ON", "autoCheck": { "simVar": "battery1", "expectedValue": true, "simVar2": "battery2", "expectedValue2": true, "logic": "and" }, "details": null },
+        { "id": "cp-2", "item": "EXT POWER", "action": "ON (if available)", "autoCheck": { "simVar": "externalPower", "expectedValue": true, "optional": true }, "details": null },
+        { "id": "cp-3", "item": "APU MASTER SW", "action": "ON", "autoCheck": { "simVar": "apuMaster", "expectedValue": true }, "details": null },
+        { "id": "cp-4", "item": "APU START", "action": "ON", "autoCheck": { "simVar": "apuRunning", "expectedValue": true }, "details": null },
+        { "id": "cp-5", "item": "APU BLEED", "action": "ON (when available)", "details": null },
+        { "id": "cp-6", "item": "NAV LIGHTS", "action": "ON", "autoCheck": { "simVar": "lightNav", "expectedValue": true }, "details": null },
+        { "id": "cp-7", "item": "PANEL LIGHTS", "action": "AS REQUIRED", "autoCheck": { "simVar": "lightPanel", "expectedValue": true, "optional": true }, "details": null },
+        { "id": "cp-8", "item": "ADIRS", "action": "NAV", "details": null },
+        { "id": "cp-9", "item": "FUEL PUMPS", "action": "ON", "autoCheck": { "simVar": "fuelPump1", "expectedValue": true, "simVar2": "fuelPump2", "expectedValue2": true, "logic": "and" }, "details": null },
+        { "id": "cp-10", "item": "SEAT BELTS", "action": "ON", "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true }, "details": null }
+      ]
+    },
+    {
+      "id": "fmgc-setup",
+      "title": "FMGC SETUP",
+      "color": "#7e57c2",
+      "items": [
+        { "id": "fm-1", "item": "INIT PAGE", "action": "COMPLETE", "details": null },
+        { "id": "fm-2", "item": "FROM/TO", "action": "INSERT", "details": null },
+        { "id": "fm-3", "item": "FLIGHT NUMBER", "action": "INSERT", "details": null },
+        { "id": "fm-4", "item": "COST INDEX", "action": "INSERT", "details": null },
+        { "id": "fm-5", "item": "CRZ FL", "action": "INSERT", "details": null },
+        { "id": "fm-6", "item": "FUEL & PAYLOAD", "action": "CHECK/INSERT", "details": null },
+        { "id": "fm-7", "item": "F-PLN PAGE", "action": "CHECK", "details": null },
+        { "id": "fm-8", "item": "SEC F-PLN", "action": "COPY ACTIVE", "details": null },
+        { "id": "fm-9", "item": "PERF PAGE", "action": "COMPLETE", "details": null }
+      ]
+    },
+    {
+      "id": "before-pushback",
+      "title": "BEFORE PUSHBACK / START",
+      "color": "#26a69a",
+      "items": [
+        { "id": "bp-1", "item": "DOORS", "action": "CLOSED", "details": null },
+        { "id": "bp-2", "item": "BEACON", "action": "ON", "autoCheck": { "simVar": "lightBeacon", "expectedValue": true }, "details": null },
+        { "id": "bp-3", "item": "FUEL QUANTITY", "action": "CHECK", "details": null },
+        { "id": "bp-4", "item": "THRUST LEVERS", "action": "IDLE", "autoCheck": { "simVar": "throttlesIdle", "expectedValue": true }, "details": null },
+        { "id": "bp-5", "item": "PARKING BRAKE", "action": "RELEASED", "autoCheck": { "simVar": "parkingBrake", "expectedValue": false }, "details": null },
+        { "id": "bp-6", "item": "PUSHBACK", "action": "REQUEST/START", "details": null }
+      ]
+    },
+    {
+      "id": "engine-start",
+      "title": "ENGINE START",
+      "color": "#66bb6a",
+      "items": [
+        { "id": "es-1", "item": "ENGINE MODE SELECTOR", "action": "IGN/START", "details": null },
+        { "id": "es-2", "item": "ENGINE 2 MASTER", "action": "ON", "autoCheck": { "simVar": "engineMaster2", "expectedValue": true }, "details": null },
+        { "id": "es-3", "item": "ENGINE 2 N2", "action": "CHECK INCREASING", "autoCheck": { "simVar": "engine2Running", "expectedValue": true }, "details": null },
+        { "id": "es-4", "item": "ENGINE 1 MASTER", "action": "ON", "autoCheck": { "simVar": "engineMaster1", "expectedValue": true }, "details": null },
+        { "id": "es-5", "item": "ENGINE 1 N2", "action": "CHECK INCREASING", "autoCheck": { "simVar": "engine1Running", "expectedValue": true }, "details": null },
+        { "id": "es-6", "item": "ENGINE MODE SELECTOR", "action": "NORM", "details": null }
+      ]
+    },
+    {
+      "id": "after-start",
+      "title": "AFTER START",
+      "color": "#9ccc65",
+      "items": [
+        { "id": "as-1", "item": "ANTI ICE", "action": "AS REQUIRED", "details": null },
+        { "id": "as-2", "item": "APU BLEED", "action": "OFF", "details": null },
+        { "id": "as-3", "item": "APU MASTER SW", "action": "OFF", "autoCheck": { "simVar": "apuMaster", "expectedValue": false }, "details": null },
+        { "id": "as-4", "item": "GROUND SPOILERS", "action": "ARM", "autoCheck": { "simVar": "spoilersArmed", "expectedValue": true }, "details": null },
+        { "id": "as-5", "item": "FLAPS", "action": "SET FOR T/O", "autoCheck": { "simVar": "flapsIndex", "expectedValue": 1, "comparison": "gte" }, "details": null },
+        { "id": "as-6", "item": "FLIGHT CONTROLS", "action": "CHECK", "details": null },
+        { "id": "as-7", "item": "PITCH TRIM", "action": "SET FOR T/O", "details": null }
+      ]
+    },
+    {
+      "id": "taxi",
+      "title": "TAXI",
+      "color": "#ffca28",
+      "items": [
+        { "id": "tx-1", "item": "PARKING BRAKE", "action": "RELEASE", "autoCheck": { "simVar": "parkingBrake", "expectedValue": false }, "details": null },
+        { "id": "tx-2", "item": "NOSE LIGHT", "action": "TAXI", "autoCheck": { "simVar": "lightTaxi", "expectedValue": true }, "details": null },
+        { "id": "tx-3", "item": "RWY TURN OFF LIGHTS", "action": "ON", "autoCheck": { "simVar": "lightRecognition", "expectedValue": true }, "details": null },
+        { "id": "tx-4", "item": "BRAKES", "action": "CHECK", "details": null },
+        { "id": "tx-5", "item": "FLIGHT INSTRUMENTS", "action": "CHECK", "details": null }
+      ]
+    },
+    {
+      "id": "before-takeoff",
+      "title": "BEFORE TAKEOFF",
+      "color": "#ffa726",
+      "items": [
+        { "id": "bt-1", "item": "TAKEOFF BRIEFING", "action": "CONFIRM", "details": null },
+        { "id": "bt-2", "item": "ECAM MEMO", "action": "T/O NO BLUE", "details": null },
+        { "id": "bt-3", "item": "FLAPS", "action": "T/O CONFIG", "autoCheck": { "simVar": "flapsIndex", "expectedValue": 1, "comparison": "gte" }, "details": null },
+        { "id": "bt-4", "item": "AUTOBRAKE", "action": "MAX", "details": null },
+        { "id": "bt-5", "item": "TCAS", "action": "TA/RA", "details": null },
+        { "id": "bt-6", "item": "PACKS", "action": "AS REQUIRED", "details": null },
+        { "id": "bt-7", "item": "STROBE LIGHTS", "action": "ON", "autoCheck": { "simVar": "lightStrobe", "expectedValue": true }, "details": null },
+        { "id": "bt-8", "item": "LANDING LIGHTS", "action": "ON", "autoCheck": { "simVar": "lightLanding", "expectedValue": true }, "details": null },
+        { "id": "bt-9", "item": "NOSE LIGHT", "action": "T/O", "autoCheck": { "simVar": "lightTaxi", "expectedValue": true }, "details": null },
+        { "id": "bt-10", "item": "TRANSPONDER", "action": "ON", "autoCheck": { "simVar": "transponderOn", "expectedValue": true }, "details": null }
+      ]
+    },
+    {
+      "id": "takeoff",
+      "title": "TAKEOFF",
+      "color": "#ff7043",
+      "items": [
+        { "id": "to-1", "item": "BRAKES", "action": "HOLD", "autoCheck": { "simVar": "parkingBrake", "expectedValue": true }, "details": null },
+        { "id": "to-2", "item": "THRUST LEVERS", "action": "FLX/TOGA", "details": null },
+        { "id": "to-3", "item": "BRAKES", "action": "RELEASE", "autoCheck": { "simVar": "parkingBrake", "expectedValue": false }, "details": null },
+        { "id": "to-4", "item": "100 KTS", "action": "CHECK", "autoCheck": { "simVar": "indicatedAirspeed", "expectedValue": 100, "comparison": "gte" }, "details": null },
+        { "id": "to-5", "item": "V1", "action": "CHECK", "details": null },
+        { "id": "to-6", "item": "ROTATE", "action": "VR", "details": null },
+        { "id": "to-7", "item": "POSITIVE CLIMB", "action": "GEAR UP", "autoCheck": { "simVar": "gearHandleDown", "expectedValue": false }, "details": null }
+      ]
+    },
+    {
+      "id": "after-takeoff",
+      "title": "AFTER TAKEOFF / CLIMB",
+      "color": "#ef5350",
+      "items": [
+        { "id": "at-1", "item": "LANDING GEAR", "action": "UP & OFF", "autoCheck": { "simVar": "gearHandleDown", "expectedValue": false }, "details": null },
+        { "id": "at-2", "item": "FLAPS", "action": "RETRACT ON SCHEDULE", "autoCheck": { "simVar": "flapsIndex", "expectedValue": 0 }, "details": null },
+        { "id": "at-3", "item": "GROUND SPOILERS", "action": "DISARM", "autoCheck": { "simVar": "spoilersArmed", "expectedValue": false }, "details": null },
+        { "id": "at-4", "item": "PACKS", "action": "ON", "details": null },
+        { "id": "at-5", "item": "APU", "action": "OFF (if running)", "autoCheck": { "simVar": "apuMaster", "expectedValue": false }, "details": null },
+        { "id": "at-6", "item": "AUTOPILOT", "action": "ENGAGE", "autoCheck": { "simVar": "autopilotMaster", "expectedValue": true }, "details": null },
+        { "id": "at-7", "item": "NOSE LIGHT", "action": "OFF", "autoCheck": { "simVar": "lightTaxi", "expectedValue": false }, "details": null },
+        { "id": "at-8", "item": "RWY TURN OFF", "action": "OFF", "autoCheck": { "simVar": "lightRecognition", "expectedValue": false }, "details": null }
+      ]
+    },
+    {
+      "id": "cruise",
+      "title": "CRUISE",
+      "color": "#ab47bc",
+      "items": [
+        { "id": "cr-1", "item": "ALTIMETER", "action": "STD (above TRL)", "details": null },
+        { "id": "cr-2", "item": "SEAT BELT SIGN", "action": "AS REQUIRED", "details": null },
+        { "id": "cr-3", "item": "FUEL", "action": "MONITOR", "details": null },
+        { "id": "cr-4", "item": "LANDING LIGHTS", "action": "OFF (above 10,000)", "autoCheck": { "simVar": "lightLanding", "expectedValue": false }, "details": null },
+        { "id": "cr-5", "item": "ECAM", "action": "CHECK", "details": null }
+      ]
+    },
+    {
+      "id": "descent",
+      "title": "DESCENT",
+      "color": "#7e57c2",
+      "items": [
+        { "id": "de-1", "item": "LANDING ELEV", "action": "SET", "details": null },
+        { "id": "de-2", "item": "DEST DATA", "action": "REVIEW", "details": null },
+        { "id": "de-3", "item": "APPROACH BRIEFING", "action": "COMPLETE", "details": null },
+        { "id": "de-4", "item": "ECAM MEMO", "action": "CHECK", "details": null },
+        { "id": "de-5", "item": "ALTIMETER", "action": "QNH (below TRL)", "details": null }
+      ]
+    },
+    {
+      "id": "approach",
+      "title": "APPROACH",
+      "color": "#5c6bc0",
+      "items": [
+        { "id": "ap-1", "item": "SEAT BELT SIGN", "action": "ON", "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true }, "details": null },
+        { "id": "ap-2", "item": "LANDING LIGHTS", "action": "ON", "autoCheck": { "simVar": "lightLanding", "expectedValue": true }, "details": null },
+        { "id": "ap-3", "item": "NOSE LIGHT", "action": "T/O", "autoCheck": { "simVar": "lightTaxi", "expectedValue": true }, "details": null },
+        { "id": "ap-4", "item": "LS BUTTON", "action": "AS REQUIRED", "details": null },
+        { "id": "ap-5", "item": "AUTOBRAKE", "action": "SET", "details": null },
+        { "id": "ap-6", "item": "GROUND SPOILERS", "action": "ARM", "autoCheck": { "simVar": "spoilersArmed", "expectedValue": true }, "details": null }
+      ]
+    },
+    {
+      "id": "landing",
+      "title": "LANDING",
+      "color": "#42a5f5",
+      "items": [
+        { "id": "la-1", "item": "FLAPS", "action": "FULL", "autoCheck": { "simVar": "flapsIndex", "expectedValue": 4, "comparison": "gte" }, "details": null },
+        { "id": "la-2", "item": "GEAR", "action": "DOWN", "autoCheck": { "simVar": "gearHandleDown", "expectedValue": true }, "details": null },
+        { "id": "la-3", "item": "ECAM MEMO", "action": "LDG NO BLUE", "details": null },
+        { "id": "la-4", "item": "CABIN", "action": "READY", "details": null },
+        { "id": "la-5", "item": "GO AROUND ALTITUDE", "action": "SET", "details": null }
+      ]
+    },
+    {
+      "id": "after-landing",
+      "title": "AFTER LANDING",
+      "color": "#26a69a",
+      "items": [
+        { "id": "al-1", "item": "GROUND SPOILERS", "action": "DISARM", "autoCheck": { "simVar": "spoilersArmed", "expectedValue": false }, "details": null },
+        { "id": "al-2", "item": "FLAPS", "action": "RETRACT", "autoCheck": { "simVar": "flapsIndex", "expectedValue": 0 }, "details": null },
+        { "id": "al-3", "item": "STROBE LIGHTS", "action": "OFF", "autoCheck": { "simVar": "lightStrobe", "expectedValue": false }, "details": null },
+        { "id": "al-4", "item": "LANDING LIGHTS", "action": "OFF", "autoCheck": { "simVar": "lightLanding", "expectedValue": false }, "details": null },
+        { "id": "al-5", "item": "NOSE LIGHT", "action": "TAXI", "autoCheck": { "simVar": "lightTaxi", "expectedValue": true }, "details": null },
+        { "id": "al-6", "item": "RWY TURN OFF", "action": "ON", "autoCheck": { "simVar": "lightRecognition", "expectedValue": true }, "details": null },
+        { "id": "al-7", "item": "TCAS", "action": "STBY", "details": null },
+        { "id": "al-8", "item": "PREDICTIVE WINDSHEAR", "action": "OFF", "details": null },
+        { "id": "al-9", "item": "APU", "action": "START", "autoCheck": { "simVar": "apuMaster", "expectedValue": true }, "details": null }
+      ]
+    },
+    {
+      "id": "parking",
+      "title": "PARKING / SHUTDOWN",
+      "color": "#78909c",
+      "items": [
+        { "id": "pk-1", "item": "PARKING BRAKE", "action": "SET", "autoCheck": { "simVar": "parkingBrake", "expectedValue": true }, "details": null },
+        { "id": "pk-2", "item": "ENGINE MASTER 1 & 2", "action": "OFF", "autoCheck": { "simVar": "engineMaster1", "expectedValue": false, "simVar2": "engineMaster2", "expectedValue2": false, "logic": "and" }, "details": null },
+        { "id": "pk-3", "item": "SEAT BELT SIGN", "action": "OFF", "autoCheck": { "simVar": "seatbeltSign", "expectedValue": false }, "details": null },
+        { "id": "pk-4", "item": "EXT POWER", "action": "ON (if available)", "autoCheck": { "simVar": "externalPower", "expectedValue": true, "optional": true }, "details": null },
+        { "id": "pk-5", "item": "APU BLEED", "action": "ON", "details": null },
+        { "id": "pk-6", "item": "FUEL PUMPS", "action": "OFF", "autoCheck": { "simVar": "fuelPump1", "expectedValue": false, "simVar2": "fuelPump2", "expectedValue2": false, "logic": "and" }, "details": null },
+        { "id": "pk-7", "item": "BEACON", "action": "OFF", "autoCheck": { "simVar": "lightBeacon", "expectedValue": false }, "details": null },
+        { "id": "pk-8", "item": "NAV LIGHTS", "action": "OFF", "autoCheck": { "simVar": "lightNav", "expectedValue": false }, "details": null },
+        { "id": "pk-9", "item": "NOSE LIGHT", "action": "OFF", "autoCheck": { "simVar": "lightTaxi", "expectedValue": false }, "details": null }
+      ]
+    },
+    {
+      "id": "securing",
+      "title": "SECURING THE AIRCRAFT",
+      "color": "#607d8b",
+      "items": [
+        { "id": "sc-1", "item": "ADIRS", "action": "OFF", "details": null },
+        { "id": "sc-2", "item": "APU BLEED", "action": "OFF", "details": null },
+        { "id": "sc-3", "item": "APU MASTER SW", "action": "OFF", "autoCheck": { "simVar": "apuMaster", "expectedValue": false }, "details": null },
+        { "id": "sc-4", "item": "BATTERY 1 & 2", "action": "OFF", "autoCheck": { "simVar": "battery1", "expectedValue": false, "simVar2": "battery2", "expectedValue2": false, "logic": "and" }, "details": null },
+        { "id": "sc-5", "item": "EXT POWER", "action": "OFF", "autoCheck": { "simVar": "externalPower", "expectedValue": false }, "details": null }
+      ]
+    }
+  ]
+}

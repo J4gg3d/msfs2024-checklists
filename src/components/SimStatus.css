@@ -1,0 +1,147 @@
+.sim-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(30, 35, 45, 0.95);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sim-status-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sim-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ef5350;
+  box-shadow: 0 0 8px rgba(239, 83, 80, 0.5);
+  transition: all 0.3s ease;
+}
+
+.sim-indicator.connected {
+  background-color: #66bb6a;
+  box-shadow: 0 0 8px rgba(102, 187, 106, 0.5);
+  animation: pulse 2s infinite;
+}
+
+.sim-indicator.demo {
+  background-color: #ffca28;
+  box-shadow: 0 0 8px rgba(255, 202, 40, 0.5);
+  animation: pulse-demo 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(102, 187, 106, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(102, 187, 106, 0.8);
+  }
+}
+
+@keyframes pulse-demo {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(255, 202, 40, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(255, 202, 40, 0.8);
+  }
+}
+
+.sim-status.demo-mode {
+  border-color: rgba(255, 202, 40, 0.3);
+}
+
+.sim-status.demo-mode .sim-data-value {
+  color: #ffca28;
+}
+
+.sim-label {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 1px;
+}
+
+.sim-data {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sim-data-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.sim-data-label {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: #666;
+  letter-spacing: 1px;
+}
+
+.sim-data-value {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: #4fc3f7;
+}
+
+.sim-paused-badge {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffca28;
+  background: rgba(255, 202, 40, 0.2);
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.sim-button {
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sim-button.connect {
+  background: rgba(102, 187, 106, 0.2);
+  border: 1px solid #66bb6a;
+  color: #66bb6a;
+}
+
+.sim-button.connect:hover {
+  background: rgba(102, 187, 106, 0.3);
+}
+
+.sim-button.disconnect {
+  background: rgba(239, 83, 80, 0.2);
+  border: 1px solid #ef5350;
+  color: #ef5350;
+}
+
+.sim-button.disconnect:hover {
+  background: rgba(239, 83, 80, 0.3);
+}
+
+.sim-hint {
+  margin: 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: #555;
+}

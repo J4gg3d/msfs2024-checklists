@@ -1,0 +1,642 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* App Layout */
+.app-layout {
+  display: flex;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.checklist-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.detail-container {
+  width: 380px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1000px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .detail-container {
+    width: 100%;
+    order: -1;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Selection */
+::selection {
+  background: rgba(74, 144, 217, 0.4);
+  color: #ffffff;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1e2330 0%, #252b3b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.modal-title {
+  margin: 0 0 12px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: #4fc3f7;
+  letter-spacing: 3px;
+}
+
+.modal-text {
+  margin: 0 0 24px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  color: #888;
+  line-height: 1.5;
+}
+
+.modal-close {
+  padding: 10px 32px;
+  background: rgba(79, 195, 247, 0.2);
+  border: 1px solid #4fc3f7;
+  border-radius: 6px;
+  color: #4fc3f7;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+
+.modal-close:hover {
+  background: rgba(79, 195, 247, 0.3);
+}
+
+/* Hamburger Menu Button */
+.hamburger-menu {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  background: rgba(30, 35, 45, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger-menu:hover {
+  background: rgba(40, 45, 55, 0.95);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.hamburger-icon {
+  font-size: 24px;
+  color: #4fc3f7;
+}
+
+/* Menu Overlay & Panel */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+.menu-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(180deg, #1e2330 0%, #252b3b 100%);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-header h3 {
+  margin: 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 2px;
+}
+
+.menu-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #888;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-close:hover {
+  background: rgba(239, 83, 80, 0.3);
+  color: #ef5350;
+}
+
+.menu-items {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-item-icon {
+  font-size: 18px;
+}
+
+.menu-item-text {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.menu-item-danger:hover {
+  background: rgba(239, 83, 80, 0.15);
+}
+
+/* Language Toggle */
+.language-toggle-container {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  justify-content: center;
+}
+
+.language-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.language-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.language-btn.active {
+  background: rgba(79, 195, 247, 0.15);
+  border-color: #4fc3f7;
+}
+
+.lang-flag {
+  font-size: 20px;
+}
+
+.lang-code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.language-btn.active .lang-code {
+  color: #4fc3f7;
+}
+
+.menu-item-danger .menu-item-text {
+  color: #ef5350;
+}
+
+.menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 8px 0;
+}
+
+/* Large Modal Variant */
+.modal-large {
+  max-width: 500px;
+  width: 90%;
+  padding: 0;
+  text-align: left;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(40, 45, 55, 0.5);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.modal-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #888;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: rgba(239, 83, 80, 0.3);
+  color: #ef5350;
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Info Sections */
+.info-section {
+  margin-bottom: 24px;
+}
+
+.info-section:last-child {
+  margin-bottom: 0;
+}
+
+.info-section h3 {
+  margin: 0 0 12px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4fc3f7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.info-section p {
+  margin: 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.info-section ul {
+  margin: 0;
+  padding-left: 20px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.8;
+}
+
+.info-storage {
+  background: rgba(79, 195, 247, 0.1);
+  padding: 16px;
+  border-radius: 6px;
+  border-left: 3px solid #4fc3f7;
+}
+
+.bridge-status {
+  background: rgba(255, 167, 38, 0.1);
+  padding: 12px 16px;
+  border-radius: 6px;
+  border-left: 3px solid #ffa726;
+}
+
+/* GitHub Link Styles */
+.github-link-section {
+  text-align: center;
+  padding-top: 8px;
+}
+
+.github-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.github-button:hover {
+  background: linear-gradient(135deg, #2ea043 0%, #3fb950 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 160, 67, 0.4);
+}
+
+/* Changelog Styles */
+.changelog-entry {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.changelog-entry:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.changelog-version {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #4fc3f7;
+  margin-bottom: 4px;
+}
+
+.changelog-date {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.changelog-entry ul {
+  margin: 0;
+  padding-left: 20px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.8;
+}
+
+/* Workflow/Flugvorbereitung Styles */
+.workflow-intro {
+  font-size: 14px !important;
+  color: #ccc !important;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.workflow-step {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border-left: 3px solid #4fc3f7;
+}
+
+.workflow-step:last-of-type {
+  margin-bottom: 24px;
+}
+
+.step-number {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0d1117;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h3 {
+  margin: 0 0 8px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+.step-content p {
+  margin: 0 0 12px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.step-content p:last-child {
+  margin-bottom: 0;
+}
+
+.step-tip {
+  padding: 10px 12px;
+  background: rgba(102, 187, 106, 0.1);
+  border-left: 3px solid #66bb6a;
+  border-radius: 0 4px 4px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #81c784;
+  line-height: 1.5;
+}
+
+.step-warning {
+  padding: 10px 12px;
+  background: rgba(255, 167, 38, 0.1);
+  border-left: 3px solid #ffa726;
+  border-radius: 0 4px 4px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #ffb74d;
+  line-height: 1.5;
+}
+
+.workflow-links {
+  background: rgba(79, 195, 247, 0.05);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.workflow-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.workflow-links li {
+  margin-bottom: 8px;
+}
+
+.workflow-links li:last-child {
+  margin-bottom: 0;
+}
+
+.workflow-links a {
+  color: #4fc3f7;
+  text-decoration: none;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  transition: color 0.15s ease;
+}
+
+.workflow-links a:hover {
+  color: #81d4fa;
+  text-decoration: underline;
+}
+
+/* Tablet Connection Styles */
+.tablet-connection-box {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.code-box {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 8px 0;
+  border-left: 3px solid #4fc3f7;
+}
+
+.code-box code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  color: #4fc3f7;
+  word-break: break-all;
+}
+
+.hint-text {
+  font-size: 12px;
+  color: #888;
+  margin-top: 8px;
+}
+
+.hint-text code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.current-url {
+  display: block;
+  margin-top: 4px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  color: #81c784;
+  word-break: break-all;
+}

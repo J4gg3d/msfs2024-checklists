@@ -1,0 +1,349 @@
+.flight-info {
+  background: linear-gradient(135deg, #1a1f2e 0%, #232938 100%);
+  border: 1px solid rgba(79, 195, 247, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.flight-info-disconnected {
+  border-color: rgba(255, 255, 255, 0.1);
+  opacity: 0.6;
+}
+
+.flight-info-placeholder {
+  display: block;
+  text-align: center;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #666;
+  padding: 8px 0;
+}
+
+/* Header mit Callsign und Progress */
+.flight-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.flight-callsign {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: #4fc3f7;
+  letter-spacing: 1px;
+}
+
+.flight-callsign-offline {
+  color: #666;
+  font-size: 14px;
+}
+
+.flight-progress {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+  color: #888;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Route Section */
+.flight-route-section {
+  margin-bottom: 12px;
+}
+
+/* Route Display Container */
+.route-display-container {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.route-display-container:hover {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(79, 195, 247, 0.3);
+}
+
+.route-airports {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.route-airport {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.route-origin {
+  color: #81c784;
+}
+
+.route-destination {
+  color: #4fc3f7;
+}
+
+/* Progress Line */
+.route-progress-container {
+  padding: 4px 0;
+}
+
+.route-progress-line {
+  position: relative;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  overflow: visible;
+}
+
+.route-progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #81c784 0%, #4fc3f7 100%);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.route-plane-icon {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  filter: drop-shadow(0 0 4px rgba(79, 195, 247, 0.8));
+  transition: left 0.5s ease;
+  z-index: 1;
+}
+
+/* Distance Info */
+.route-distance-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: #666;
+}
+
+.route-flown {
+  color: #81c784;
+}
+
+.route-total {
+  color: #888;
+}
+
+.route-placeholder {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+  display: block;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.route-edit-hint {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 14px;
+  color: #555;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.route-display-container:hover .route-edit-hint {
+  opacity: 1;
+}
+
+/* Route Edit Form */
+.route-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(79, 195, 247, 0.4);
+  border-radius: 6px;
+}
+
+.route-edit-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.route-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.route-input-group label {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 9px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.route-input-group input {
+  width: 60px;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.route-input-group input:focus {
+  outline: none;
+  border-color: #4fc3f7;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.route-input-group input::placeholder {
+  color: #444;
+  text-transform: none;
+}
+
+.route-input-distance input {
+  width: 70px;
+  text-transform: none;
+}
+
+.route-arrow-edit {
+  font-size: 16px;
+  color: #666;
+  margin: 12px 4px 0 4px;
+}
+
+.route-edit-buttons {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.route-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.route-btn-save {
+  background: rgba(102, 187, 106, 0.3);
+  color: #81c784;
+}
+
+.route-btn-save:hover {
+  background: rgba(102, 187, 106, 0.5);
+}
+
+.route-btn-cancel {
+  background: rgba(239, 83, 80, 0.2);
+  color: #ef5350;
+}
+
+.route-btn-cancel:hover {
+  background: rgba(239, 83, 80, 0.4);
+}
+
+/* Next Waypoint */
+.flight-info-next-wp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(129, 199, 132, 0.1);
+  border-left: 3px solid #81c784;
+  border-radius: 0 4px 4px 0;
+}
+
+.next-wp-label {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.next-wp-id {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #81c784;
+  letter-spacing: 1px;
+}
+
+.next-wp-dist {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #888;
+  margin-left: auto;
+}
+
+/* Flugdaten Grid */
+.flight-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.flight-data-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.data-label {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 9px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.data-value {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .flight-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

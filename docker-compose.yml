@@ -1,0 +1,7 @@
+services:
+  msfs-checklist:
+    build: .
+    container_name: msfs-checklist
+    ports:
+      - "8080:80"
+    restart: unless-stopped

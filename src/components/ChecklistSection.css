@@ -1,0 +1,85 @@
+.checklist-section {
+  margin-bottom: 16px;
+  background-color: rgba(30, 35, 45, 0.95);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.checklist-section.completed.collapsed {
+  background-color: rgba(102, 187, 106, 0.1);
+}
+
+.section-header {
+  padding: 10px 16px;
+  background-color: rgba(40, 45, 55, 0.95);
+  border-left: 4px solid #4a90d9;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.section-header:hover {
+  background-color: rgba(50, 55, 65, 0.95);
+}
+
+.checklist-section.completed .section-header {
+  background-color: rgba(102, 187, 106, 0.15);
+}
+
+.checklist-section.completed .section-header:hover {
+  background-color: rgba(102, 187, 106, 0.25);
+}
+
+.section-title {
+  margin: 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.2s ease;
+}
+
+.checklist-section.completed .section-title {
+  color: #66bb6a;
+}
+
+.section-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-count {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #888;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.checklist-section.completed .section-count {
+  color: #66bb6a;
+  background: rgba(102, 187, 106, 0.2);
+}
+
+.section-arrow {
+  font-size: 12px;
+  color: #888;
+  transition: transform 0.2s ease;
+}
+
+.section-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+.section-items {
+  padding: 4px 0;
+}

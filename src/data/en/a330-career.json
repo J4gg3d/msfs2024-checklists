@@ -1,0 +1,1027 @@
+{
+  "aircraft": "Airbus A330-200",
+  "mode": "career",
+  "version": "1.1",
+  "sections": [
+    {
+      "id": "career-before-start",
+      "title": "BEFORE START",
+      "color": "#7b68ee",
+      "items": [
+        {
+          "id": "bs-gnd-ctl",
+          "item": "GND CTL",
+          "action": "ON",
+          "details": {
+            "description": "Activates a signal light on the nose gear. Shows ground crew they have control and can move the aircraft (pushback).",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/gnd-ctl.png"
+          }
+        },
+        {
+          "id": "bs-strobe",
+          "item": "STROBE",
+          "action": "AUTO",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Strobe lights on wingtips for better visibility. AUTO = automatically turn on during runway operations and in flight.",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/strobe1.png"
+          }
+        },
+        {
+          "id": "bs-boarding",
+          "item": "BOARDING",
+          "action": "START",
+          "details": {
+            "description": "Start passenger boarding. In MSFS 2024 via Ground Services or keyboard shortcut.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "bs-cargo",
+          "item": "CARGO / BAGGAGE",
+          "action": "LOAD",
+          "details": {
+            "description": "Have baggage and cargo loaded. In MSFS 2024 via Ground Services.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "bs-catering",
+          "item": "CATERING",
+          "action": "LOAD",
+          "details": {
+            "description": "Catering service for onboard provisions. In MSFS 2024 via Ground Services.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "bs-ifr-clearance",
+          "item": "IFR CLEARANCE",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request IFR clearance from Clearance Delivery. Contains: flight route, squawk code, initial altitude, and departure frequency.",
+            "location": "ATC - Clearance Delivery"
+          }
+        },
+        {
+          "id": "bs-ifr-readback",
+          "item": "IFR CLEARANCE",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Read back clearance to confirm correct reception. ATC confirms with 'Readback correct'.",
+            "location": "ATC - Clearance Delivery"
+          }
+        },
+        {
+          "id": "bs-cstr",
+          "item": "EFIS CPT - CSTR",
+          "action": "ON",
+          "details": {
+            "description": "Shows constraints (altitude/speed restrictions) from the flight plan on the Navigation Display. Helps with SID/STAR compliance.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/cstr1.png"
+          }
+        },
+        {
+          "id": "bs-fcu-alt",
+          "item": "FCU ALT",
+          "action": "SET CRZ FL",
+          "details": {
+            "description": "Set cruise flight level from flight plan on FCU. This altitude will be flown after takeoff.",
+            "location": "Glareshield - FCU"
+          }
+        },
+        {
+          "id": "bs-vor1",
+          "item": "EFIS CPT - VOR1",
+          "action": "VOR",
+          "details": {
+            "description": "Set navigation source 1 to VOR. Shows VOR information on the Navigation Display.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/efis_cpt_vor1u2_1.png"
+          }
+        },
+        {
+          "id": "bs-vor2",
+          "item": "EFIS CPT - VOR2",
+          "action": "VOR",
+          "details": {
+            "description": "Set navigation source 2 to VOR. Shows second VOR information on the Navigation Display.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/efis_cpt_vor1u2_1.png"
+          }
+        },
+        {
+          "id": "bs-baro-qnh",
+          "item": "BARO QNH",
+          "action": "SET LOCAL",
+          "details": {
+            "description": "Set barometric pressure (QNH) to local airport value. Enables correct altitude display. Get QNH from ATIS or ATC.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/baro_qnh1.png"
+          }
+        },
+        {
+          "id": "bs-master-caution",
+          "item": "MASTER CAUTION",
+          "action": "RESET",
+          "details": {
+            "description": "Acknowledge/clear Master Caution warning light. Indicates a system warning exists. Light goes out after acknowledgment.",
+            "location": "Glareshield",
+            "image": "/images/mcred1.png"
+          }
+        },
+        {
+          "id": "bs-ctr-lr",
+          "item": "CTR L / R",
+          "action": "ON",
+          "details": {
+            "description": "Turn on center tank fuel pumps left and right. Supplies engines with fuel from center tank.",
+            "location": "Overhead Panel - FUEL",
+            "image": "/images/CTR_LR_1.png"
+          }
+        },
+        {
+          "id": "bs-tcas",
+          "item": "TCAS MODE",
+          "action": "ON",
+          "details": {
+            "description": "Turn on Traffic Collision Avoidance System. Warns of other aircraft nearby and provides evasion recommendations (RA/TA).",
+            "location": "Pedestal - lower right",
+            "image": "/images/tcas_modus1.png"
+          }
+        },
+        {
+          "id": "bs-tcas-traffic",
+          "item": "TCAS TRAFFIC",
+          "action": "ABV",
+          "details": {
+            "description": "Set traffic filter to 'Above'. Shows only aircraft above your altitude. Reduces clutter on ND - useful during climb.",
+            "location": "Pedestal - lower right",
+            "image": "/images/tcas_verkehr1.png"
+          }
+        },
+        {
+          "id": "bs-fmc-clr",
+          "item": "FMC MESSAGES",
+          "action": "CLR",
+          "details": {
+            "description": "Clear all messages in Flight Management Computer. Press CLR key until no messages are displayed.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_clr1.png"
+          }
+        },
+        {
+          "id": "bs-fm1",
+          "item": "FMC FM1",
+          "action": "SELECT",
+          "details": {
+            "description": "Select Flight Management System 1 as primary source. FM1 controls flight guidance and navigation.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fm1_1.png"
+          }
+        },
+        {
+          "id": "bs-fmc-init-flt",
+          "item": "FMC INIT - FLT NBR",
+          "action": "ENTER",
+          "details": {
+            "description": "Open INIT page and enter flight number (e.g., DLH123). Identifies the flight in the system and for ATC.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_fltnr1.png"
+          }
+        },
+        {
+          "id": "bs-fmc-fuel-block",
+          "item": "FMC INIT B - BLOCK FUEL",
+          "action": "ENTER",
+          "details": {
+            "description": "Open INIT B page (right arrow) and enter block fuel. Block fuel = total fuel at gate before engine start. Enter in tonnes (e.g., 6 = 6t).",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_block1.png"
+          }
+        },
+        {
+          "id": "bs-efis-plan",
+          "item": "EFIS MODE",
+          "action": "PLAN",
+          "details": {
+            "description": "Set EFIS mode to PLAN. Shows flight plan from above on Navigation Display. Allows route verification.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/fmc_plan1.png"
+          }
+        },
+        {
+          "id": "bs-fplan-check",
+          "item": "FMC F-PLAN",
+          "action": "CHECK",
+          "details": {
+            "description": "Compare flight plan in FMC with planned route. Check waypoints, SID and STAR for correctness.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_plan1.png"
+          }
+        },
+        {
+          "id": "bs-efb-payload",
+          "item": "EFB PAYLOAD",
+          "action": "SET PAX + FUEL",
+          "details": {
+            "description": "Open payload page in Electronic Flight Bag. Set passenger count (PAX) and fuel quantity. Affects weight and balance.",
+            "location": "EFB - Payload",
+            "image": "/images/efb_payload.png"
+          }
+        },
+        {
+          "id": "bs-fmc-zfw",
+          "item": "FMC INIT - ZFW",
+          "action": "ENTER",
+          "details": {
+            "description": "Enter Zero Fuel Weight in FMC. ZFW = aircraft weight without fuel (empty weight + payload). Important for performance calculations.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_zfw1.png"
+          }
+        },
+        {
+          "id": "bs-efb-takeoff",
+          "item": "EFB TAKEOFF",
+          "action": "SYNC + CALCULATE",
+          "details": {
+            "description": "Sync in EFB and calculate takeoff data. Determines V-speeds (V1, VR, V2) and flex temperature based on weight and runway.",
+            "location": "EFB - Takeoff",
+            "image": "/images/fmc_takeoff_1.png"
+          }
+        },
+        {
+          "id": "bs-efb-send-fmc",
+          "item": "EFB TAKEOFF DATA",
+          "action": "SEND TO FMC",
+          "details": {
+            "description": "Transfer calculated takeoff data (V-speeds, flex temp) from EFB to FMC. Data is automatically entered in PERF page.",
+            "location": "EFB - Takeoff",
+            "image": "/images/fmc_takeoff_2.png"
+          }
+        },
+        {
+          "id": "bs-fmc-confirm-data",
+          "item": "FMC PERF DATA",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Confirm transferred takeoff data in FMC. Check and accept V-speeds and configuration on PERF page.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_config1.png"
+          }
+        },
+        {
+          "id": "bs-anti-ice-eng1",
+          "item": "ANTI ICE ENG 1",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceEng1", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Turn on engine 1 anti-ice system as required. Required at temperatures below 10C and visible moisture (rain, fog, snow).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "bs-anti-ice-eng2",
+          "item": "ANTI ICE ENG 2",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceEng2", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Turn on engine 2 anti-ice system as required. Required at temperatures below 10C and visible moisture (rain, fog, snow).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "bs-anti-ice-wing",
+          "item": "ANTI ICE WING",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceStructural", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Turn on wing anti-ice system as required. Required at temperatures below 10C and visible moisture (rain, fog, snow).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "bs-parking-brake-off",
+          "item": "PARKING BRAKE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": false },
+          "details": {
+            "description": "Release parking brake before pushback. Allows aircraft to roll.",
+            "location": "Pedestal",
+            "image": "/images/pbreak1.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-pushback",
+      "title": "PUSHBACK",
+      "color": "#9370db",
+      "items": [
+        {
+          "id": "pb-beacon",
+          "item": "BEACON",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightBeacon", "expectedValue": true },
+          "details": {
+            "description": "Turn on red warning light on top and bottom of fuselage. Warns ground crew that engines are running or about to start.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "pb-pushback-request",
+          "item": "PUSHBACK",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request pushback from Ground via radio. Aircraft will be pushed backwards from parking position.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "pb-engine-start",
+          "item": "ENGINES START",
+          "action": "IGN START",
+          "details": {
+            "description": "Start engines after clearance from ground crew. Set Engine Mode Selector to IGN START.",
+            "location": "Overhead Panel - ENG",
+            "image": "/images/eng_start1.png"
+          }
+        },
+        {
+          "id": "pb-eng2-on",
+          "item": "ENG 2 MASTER",
+          "action": "ON",
+          "autoCheck": { "simVar": "engineMaster2", "expectedValue": true },
+          "details": {
+            "description": "Start engine 2 (right). Set Engine Master Switch to ON and wait for start sequence.",
+            "location": "Pedestal - Engine Master"
+          }
+        },
+        {
+          "id": "pb-eng1-on",
+          "item": "ENG 1 MASTER",
+          "action": "ON",
+          "autoCheck": { "simVar": "engineMaster1", "expectedValue": true },
+          "details": {
+            "description": "Start engine 1 (left). Set Engine Master Switch to ON and wait for start sequence.",
+            "location": "Pedestal - Engine Master"
+          }
+        },
+        {
+          "id": "pb-eng-start-norm",
+          "item": "ENGINE START",
+          "action": "NORM",
+          "details": {
+            "description": "Set Engine Mode Selector to NORM after both engines are running stable. Automatic ignition when needed.",
+            "location": "Overhead Panel - ENG"
+          }
+        },
+        {
+          "id": "pb-pushback-complete",
+          "item": "PUSHBACK",
+          "action": "COMPLETED",
+          "details": {
+            "description": "Pushback is complete. Wait for confirmation from ground crew.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "pb-parking-brake-on",
+          "item": "PARKING BRAKE",
+          "action": "ON",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": true },
+          "details": {
+            "description": "Set parking brake after pushback completion. Prevents unintended rolling.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "pb-apu-bleed-off",
+          "item": "APU BLEED",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off APU bleed air. Engines now provide bleed air for air conditioning and pneumatics.",
+            "location": "Overhead Panel - APU",
+            "image": "/images/apu_bleed1.png"
+          }
+        },
+        {
+          "id": "pb-apu-master-off",
+          "item": "APU MASTER",
+          "action": "OFF",
+          "autoCheck": { "simVar": "apuMaster", "expectedValue": false },
+          "details": {
+            "description": "Turn off APU completely. No longer needed as engines are running.",
+            "location": "Overhead Panel - APU",
+            "image": "/images/apu_master1.png"
+          }
+        },
+        {
+          "id": "pb-speed-brake",
+          "item": "SPEED BRAKE",
+          "action": "ARM",
+          "autoCheck": { "simVar": "spoilersArmed", "expectedValue": true },
+          "details": {
+            "description": "Set speed brakes (spoilers) to ARMED. Will deploy automatically on landing to increase braking effect.",
+            "location": "Pedestal",
+            "image": "/images/speedbrk1.png"
+          }
+        },
+        {
+          "id": "pb-flaps",
+          "item": "FLAPS",
+          "action": "CONFIG 1",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 1, "comparison": "gte" },
+          "details": {
+            "description": "Set flaps to configuration 1 for takeoff. Takeoff configuration depends on aircraft weight and runway.",
+            "location": "Pedestal",
+            "image": "/images/flaps1.png"
+          }
+        },
+        {
+          "id": "pb-nav-logo",
+          "item": "NAV / LOGO",
+          "action": "2",
+          "autoCheck": { "simVar": "lightNav", "expectedValue": true },
+          "details": {
+            "description": "Turn on navigation lights and logo illumination. NAV = position lights (red/green/white), LOGO = airline logo on vertical stabilizer.",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/extlt1.png"
+          }
+        },
+        {
+          "id": "pb-nose-taxi",
+          "item": "NOSE",
+          "action": "TAXI",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Set nose light to TAXI. Illuminates taxiway ahead of aircraft.",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/extlt2.png"
+          }
+        },
+        {
+          "id": "pb-rwy-turnoff",
+          "item": "RWY TURNOFF",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightRecognition", "expectedValue": true },
+          "details": {
+            "description": "Turn on runway turnoff lights. Side-facing lights on nose gear for better visibility when turning.",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/extlt3.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-taxi",
+      "title": "TAXI",
+      "color": "#20b2aa",
+      "items": [
+        {
+          "id": "tx-taxi-request",
+          "item": "TAXI CLEARANCE",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request taxi clearance from Ground via radio. Contains assigned runway and taxiway.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "tx-taxi-confirm",
+          "item": "TAXI CLEARANCE",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Read back taxi clearance. Confirm runway and taxiway.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "tx-autobrake",
+          "item": "AUTO BRAKE",
+          "action": "MAX",
+          "details": {
+            "description": "Set automatic braking to MAX. Maximum braking in case of rejected takeoff (RTO).",
+            "location": "Pedestal",
+            "image": "/images/autobrk1.png"
+          }
+        },
+        {
+          "id": "tx-seatbelt-sign",
+          "item": "SEAT BELT SIGN",
+          "action": "ON",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true },
+          "details": {
+            "description": "Turn on seat belt sign. Passengers must remain seated with seat belts fastened.",
+            "location": "Overhead Panel",
+            "image": "/images/seatbelt1.png"
+          }
+        },
+        {
+          "id": "tx-to-config",
+          "item": "T.O. CONFIG",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Check and confirm takeoff configuration. System checks flaps, trim and other takeoff settings.",
+            "location": "Pedestal",
+            "image": "/images/toconfig1.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-before-takeoff",
+      "title": "BEFORE TAKEOFF",
+      "color": "#32cd32",
+      "items": [
+        {
+          "id": "bt-xpdr",
+          "item": "XPDR",
+          "action": "TA/RA",
+          "autoCheck": { "simVar": "transponderState", "expectedValue": 4, "comparison": "gte" },
+          "details": {
+            "description": "Set transponder to TA/RA (Traffic Advisory / Resolution Advisory). Full TCAS mode with evasion instructions.",
+            "location": "Pedestal",
+            "image": "/images/xpdr1.png"
+          }
+        },
+        {
+          "id": "bt-takeoff-clearance",
+          "item": "TAKEOFF CLEARANCE",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request takeoff clearance from Tower. Report 'Ready for departure'.",
+            "location": "ATC / Tower"
+          }
+        },
+        {
+          "id": "bt-takeoff-confirm",
+          "item": "TAKEOFF CLEARANCE",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Read back takeoff clearance. Confirm runway.",
+            "location": "ATC / Tower"
+          }
+        },
+        {
+          "id": "bt-strobe-on",
+          "item": "STROBE",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": true },
+          "details": {
+            "description": "Manually turn on strobe lights when entering the runway. Conscious confirmation before takeoff.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "bt-nose-to",
+          "item": "NOSE",
+          "action": "T.O.",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Switch nose light from TAXI to Takeoff. Brighter illumination for takeoff.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "bt-land-on",
+          "item": "LAND",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
+          "details": {
+            "description": "Turn on landing lights before takeoff. Increases visibility for other aircraft and illuminates runway.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "bt-rwy-turnoff-off",
+          "item": "RWY TURNOFF",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightRecognition", "expectedValue": false },
+          "details": {
+            "description": "Turn off runway turnoff lights. Not needed on runway - landing lights take over.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-takeoff",
+      "title": "TAKE OFF",
+      "color": "#00e676",
+      "items": [
+        {
+          "id": "to-toga",
+          "item": "THRUST",
+          "action": "TOGA",
+          "details": {
+            "description": "Set Take Off / Go Around thrust. Push thrust levers forward to TOGA position for maximum takeoff thrust.",
+            "location": "Pedestal - Thrust Levers"
+          }
+        },
+        {
+          "id": "to-gear-up",
+          "item": "LANDING GEAR",
+          "action": "UP",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": false },
+          "details": {
+            "description": "Retract landing gear after liftoff. Wait for positive climb rate, then gear up.",
+            "location": "Pedestal - Gear Lever"
+          }
+        },
+        {
+          "id": "to-flaps-0",
+          "item": "FLAPS",
+          "action": "0",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 0 },
+          "details": {
+            "description": "Fully retract flaps. At sufficient speed (green dot speed), gradually retract to 0.",
+            "location": "Pedestal - Flaps Lever"
+          }
+        },
+        {
+          "id": "to-ap1",
+          "item": "AUTOPILOT AP1",
+          "action": "ON",
+          "autoCheck": { "simVar": "autopilotMaster", "expectedValue": true },
+          "details": {
+            "description": "Engage autopilot 1. Takes over flight control and follows programmed flight plan.",
+            "location": "Glareshield - FCU"
+          }
+        },
+        {
+          "id": "to-athr",
+          "item": "A/THR",
+          "action": "ON",
+          "details": {
+            "description": "Engage autothrust. Automatically controls thrust for desired speed.",
+            "location": "Glareshield - FCU"
+          }
+        },
+        {
+          "id": "to-land-off",
+          "item": "LAND",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": false },
+          "details": {
+            "description": "Turn off landing lights when passing 10,000ft. Not required above.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "to-nose-off",
+          "item": "NOSE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": false },
+          "details": {
+            "description": "Turn off nose light when passing 10,000ft. Not required above.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "to-baro-std",
+          "item": "BARO",
+          "action": "STD",
+          "details": {
+            "description": "Switch altimeter to standard pressure (1013 hPa / 29.92 inHg) when passing transition altitude. All aircraft then fly with same reference.",
+            "location": "Glareshield - EFIS CPT"
+          }
+        },
+        {
+          "id": "to-seatbelt-off",
+          "item": "SEAT BELT SIGN",
+          "action": "OFF",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": false },
+          "details": {
+            "description": "Turn off seat belt sign after reaching cruise altitude. Passengers may move freely.",
+            "location": "Overhead Panel"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-cruise",
+      "title": "CRUISE",
+      "color": "#4fc3f7",
+      "items": [
+        {
+          "id": "cr-anti-ice-eng1",
+          "item": "ANTI ICE ENG 1",
+          "action": "OFF",
+          "autoCheck": { "simVar": "antiIceEng1", "expectedValue": false },
+          "details": {
+            "description": "Turn off engine 1 anti-ice system. No icing expected at cruise altitude.",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "cr-anti-ice-eng2",
+          "item": "ANTI ICE ENG 2",
+          "action": "OFF",
+          "autoCheck": { "simVar": "antiIceEng2", "expectedValue": false },
+          "details": {
+            "description": "Turn off engine 2 anti-ice system. No icing expected at cruise altitude.",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "cr-anti-ice-wing",
+          "item": "ANTI ICE WING",
+          "action": "OFF",
+          "autoCheck": { "simVar": "antiIceStructural", "expectedValue": false },
+          "details": {
+            "description": "Turn off wing anti-ice system. No icing expected at cruise altitude.",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-approach",
+      "title": "APPROACH",
+      "color": "#ffa726",
+      "items": [
+        {
+          "id": "ap-altitude",
+          "item": "ALTITUDE",
+          "action": "SET",
+          "details": {
+            "description": "Set target altitude for descent on FCU. Wait for first clearance from ATC.",
+            "location": "Glareshield - FCU"
+          }
+        },
+        {
+          "id": "ap-autobrake",
+          "item": "AUTO BRAKE",
+          "action": "SET",
+          "details": {
+            "description": "Set automatic braking strength for landing (LOW/MED). Depends on runway length and conditions.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "ap-fmc-qnh",
+          "item": "FMC PERF APPR - QNH",
+          "action": "SET",
+          "details": {
+            "description": "Enter QNH of destination airport in PERF APPR page. Get from ATIS or ATC.",
+            "location": "Pedestal - MCDU/FMC"
+          }
+        },
+        {
+          "id": "ap-fmc-temp",
+          "item": "FMC PERF APPR - TEMP",
+          "action": "SET",
+          "details": {
+            "description": "Enter temperature at destination airport. Affects approach speed calculations.",
+            "location": "Pedestal - MCDU/FMC"
+          }
+        },
+        {
+          "id": "ap-fmc-wind",
+          "item": "FMC PERF APPR - MAG WIND",
+          "action": "SET",
+          "details": {
+            "description": "Enter wind at destination airport (direction/strength). Affects approach speed and corrections.",
+            "location": "Pedestal - MCDU/FMC"
+          }
+        },
+        {
+          "id": "ap-baro",
+          "item": "BARO",
+          "action": "SET",
+          "details": {
+            "description": "Switch altimeter to destination QNH when passing transition level.",
+            "location": "Glareshield - EFIS CPT"
+          }
+        },
+        {
+          "id": "ap-rad-nav-ils",
+          "item": "RAD NAV - ILS FREQ",
+          "action": "CHECK/SET",
+          "details": {
+            "description": "Check ILS frequency of destination runway and enter manually if needed. Enables precision approach.",
+            "location": "Pedestal - MCDU/FMC - RAD NAV"
+          }
+        },
+        {
+          "id": "ap-seatbelt-on",
+          "item": "SEAT BELT SIGN",
+          "action": "ON",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true },
+          "details": {
+            "description": "Turn on seat belt sign for approach and landing.",
+            "location": "Overhead Panel"
+          }
+        },
+        {
+          "id": "ap-land-on",
+          "item": "LAND",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
+          "details": {
+            "description": "Turn on landing lights below 10,000ft.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "ap-speed-brake-arm",
+          "item": "SPEED BRAKE",
+          "action": "ARM",
+          "autoCheck": { "simVar": "spoilersArmed", "expectedValue": true },
+          "details": {
+            "description": "Arm speed brakes for landing.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "ap-gear-down",
+          "item": "LANDING GEAR",
+          "action": "DOWN",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": true },
+          "details": {
+            "description": "Extend landing gear for landing.",
+            "location": "Pedestal - Gear Lever"
+          }
+        },
+        {
+          "id": "ap-flaps-full",
+          "item": "FLAPS",
+          "action": "FULL",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 4, "comparison": "gte" },
+          "details": {
+            "description": "Extend flaps fully for landing.",
+            "location": "Pedestal - Flaps Lever"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-after-landing",
+      "title": "AFTER LANDING",
+      "color": "#ef5350",
+      "items": [
+        {
+          "id": "al-spoilers-disarm",
+          "item": "SPEED BRAKE",
+          "action": "DISARM",
+          "autoCheck": { "simVar": "spoilersArmed", "expectedValue": false },
+          "details": {
+            "description": "Disarm speed brakes after landing.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "al-flaps-0",
+          "item": "FLAPS",
+          "action": "0",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 0 },
+          "details": {
+            "description": "Retract flaps after vacating the runway.",
+            "location": "Pedestal - Flaps Lever"
+          }
+        },
+        {
+          "id": "al-strobe-off",
+          "item": "STROBE",
+          "action": "OFF/AUTO",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": false },
+          "details": {
+            "description": "Turn off strobe lights or set to AUTO after vacating runway.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "al-land-off",
+          "item": "LAND",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": false },
+          "details": {
+            "description": "Turn off landing lights.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "al-nose-taxi",
+          "item": "NOSE",
+          "action": "TAXI",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Set nose light to TAXI.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "al-rwy-turnoff-on",
+          "item": "RWY TURNOFF",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightRecognition", "expectedValue": true },
+          "details": {
+            "description": "Turn on runway turnoff lights for better visibility during taxi.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "al-apu-master",
+          "item": "APU MASTER",
+          "action": "ON",
+          "autoCheck": { "simVar": "apuMaster", "expectedValue": true },
+          "details": {
+            "description": "Start APU for power supply at gate.",
+            "location": "Overhead Panel - APU"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-shutdown",
+      "title": "SHUTDOWN",
+      "color": "#78909c",
+      "items": [
+        {
+          "id": "sd-parking-brake",
+          "item": "PARKING BRAKE",
+          "action": "ON",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": true },
+          "details": {
+            "description": "Set parking brake at gate.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "sd-eng1-off",
+          "item": "ENG 1 MASTER",
+          "action": "OFF",
+          "autoCheck": { "simVar": "engineMaster1", "expectedValue": false },
+          "details": {
+            "description": "Shut down engine 1.",
+            "location": "Pedestal - Engine Master"
+          }
+        },
+        {
+          "id": "sd-eng2-off",
+          "item": "ENG 2 MASTER",
+          "action": "OFF",
+          "autoCheck": { "simVar": "engineMaster2", "expectedValue": false },
+          "details": {
+            "description": "Shut down engine 2.",
+            "location": "Pedestal - Engine Master"
+          }
+        },
+        {
+          "id": "sd-beacon-off",
+          "item": "BEACON",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightBeacon", "expectedValue": false },
+          "details": {
+            "description": "Turn off beacon - engines are shut down.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "sd-seatbelt-off",
+          "item": "SEAT BELT SIGN",
+          "action": "OFF",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": false },
+          "details": {
+            "description": "Turn off seat belt sign - passengers may deplane.",
+            "location": "Overhead Panel"
+          }
+        },
+        {
+          "id": "sd-nav-off",
+          "item": "NAV / LOGO",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightNav", "expectedValue": false },
+          "details": {
+            "description": "Turn off navigation lights.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "sd-nose-off",
+          "item": "NOSE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": false },
+          "details": {
+            "description": "Turn off nose light.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "sd-rwy-turnoff-off",
+          "item": "RWY TURNOFF",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightRecognition", "expectedValue": false },
+          "details": {
+            "description": "Turn off runway turnoff lights.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        }
+      ]
+    }
+  ]
+}

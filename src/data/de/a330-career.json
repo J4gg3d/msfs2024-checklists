@@ -1,0 +1,1027 @@
+{
+  "aircraft": "Airbus A330-200",
+  "mode": "career",
+  "version": "1.1",
+  "sections": [
+    {
+      "id": "career-before-start",
+      "title": "BEFORE START",
+      "color": "#7b68ee",
+      "items": [
+        {
+          "id": "bs-gnd-ctl",
+          "item": "GND CTL",
+          "action": "ON",
+          "details": {
+            "description": "Aktiviert ein Signallicht am Bugfahrwerk. Zeigt dem Bodenpersonal, dass sie die Kontrolle haben und das Flugzeug bewegen dürfen (Pushback).",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/gnd-ctl.png"
+          }
+        },
+        {
+          "id": "bs-strobe",
+          "item": "STROBE",
+          "action": "AUTO",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Blitzlichter an den Flügelspitzen für bessere Sichtbarkeit. AUTO = schalten sich automatisch auf der Runway und in der Luft ein.",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/strobe1.png"
+          }
+        },
+        {
+          "id": "bs-boarding",
+          "item": "BOARDING",
+          "action": "START",
+          "details": {
+            "description": "Passagier-Boarding starten. In MSFS 2024 über Ground Services oder per Tastenkürzel.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "bs-cargo",
+          "item": "CARGO / GEPÄCK",
+          "action": "LADEN",
+          "details": {
+            "description": "Gepäck und Fracht verladen lassen. In MSFS 2024 über Ground Services.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "bs-catering",
+          "item": "CATERING",
+          "action": "LADEN",
+          "details": {
+            "description": "Catering-Service für Verpflegung an Bord. In MSFS 2024 über Ground Services.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "bs-ifr-clearance",
+          "item": "IFR CLEARANCE",
+          "action": "ABRUFEN",
+          "details": {
+            "description": "IFR-Freigabe von Clearance Delivery anfordern. Enthält: Flugroute, Squawk-Code, initiale Flughöhe und Abflugfrequenz.",
+            "location": "ATC - Clearance Delivery"
+          }
+        },
+        {
+          "id": "bs-ifr-readback",
+          "item": "IFR CLEARANCE",
+          "action": "BESTÄTIGEN",
+          "details": {
+            "description": "Freigabe zurücklesen (Readback) um korrekte Übernahme zu bestätigen. ATC bestätigt mit 'Readback correct'.",
+            "location": "ATC - Clearance Delivery"
+          }
+        },
+        {
+          "id": "bs-cstr",
+          "item": "EFIS CPT - CSTR",
+          "action": "ON",
+          "details": {
+            "description": "Zeigt Constraints (Höhen-/Geschwindigkeitsbeschränkungen) aus dem Flugplan auf dem Navigation Display an. Hilft bei der Einhaltung von SID/STAR-Vorgaben.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/cstr1.png"
+          }
+        },
+        {
+          "id": "bs-fcu-alt",
+          "item": "FCU ALT",
+          "action": "CRZ FL SETZEN",
+          "details": {
+            "description": "Reiseflughöhe (Cruise Flight Level) aus dem Flugplan am FCU einstellen. Diese Höhe wird nach dem Start angeflogen.",
+            "location": "Glareshield - FCU"
+          }
+        },
+        {
+          "id": "bs-vor1",
+          "item": "EFIS CPT - VOR1",
+          "action": "VOR",
+          "details": {
+            "description": "Navigationsquelle 1 auf VOR stellen. Zeigt VOR-Informationen auf dem Navigation Display an.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/efis_cpt_vor1u2_1.png"
+          }
+        },
+        {
+          "id": "bs-vor2",
+          "item": "EFIS CPT - VOR2",
+          "action": "VOR",
+          "details": {
+            "description": "Navigationsquelle 2 auf VOR stellen. Zeigt zweite VOR-Informationen auf dem Navigation Display an.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/efis_cpt_vor1u2_1.png"
+          }
+        },
+        {
+          "id": "bs-baro-qnh",
+          "item": "BARO QNH",
+          "action": "LOKAL SETZEN",
+          "details": {
+            "description": "Barometrischen Druck (QNH) auf den lokalen Flughafenwert einstellen. Ermöglicht korrekte Höhenanzeige. QNH erhältst du vom ATIS oder ATC.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/baro_qnh1.png"
+          }
+        },
+        {
+          "id": "bs-master-caution",
+          "item": "MASTER CAUTION",
+          "action": "RESET",
+          "details": {
+            "description": "Master Caution Warnlicht bestätigen/löschen. Zeigt an, dass eine Warnung im System vorliegt. Nach Bestätigung erlischt das Licht.",
+            "location": "Glareshield",
+            "image": "/images/mcred1.png"
+          }
+        },
+        {
+          "id": "bs-ctr-lr",
+          "item": "CTR L / R",
+          "action": "ON",
+          "details": {
+            "description": "Center Tank Kraftstoffpumpen Links und Rechts einschalten. Versorgt die Triebwerke mit Treibstoff aus dem Mitteltank.",
+            "location": "Overhead Panel - FUEL",
+            "image": "/images/CTR_LR_1.png"
+          }
+        },
+        {
+          "id": "bs-tcas",
+          "item": "TCAS MODE",
+          "action": "ON",
+          "details": {
+            "description": "Traffic Collision Avoidance System einschalten. Warnt vor anderen Flugzeugen in der Nähe und gibt Ausweichempfehlungen (RA/TA).",
+            "location": "Pedestal - rechts unten",
+            "image": "/images/tcas_modus1.png"
+          }
+        },
+        {
+          "id": "bs-tcas-traffic",
+          "item": "TCAS TRAFFIC",
+          "action": "ABV",
+          "details": {
+            "description": "Verkehrsfilter auf 'Above' stellen. Zeigt nur Flugzeuge oberhalb deiner Höhe an. Reduziert Clutter auf dem ND - sinnvoll beim Steigflug.",
+            "location": "Pedestal - rechts unten",
+            "image": "/images/tcas_verkehr1.png"
+          }
+        },
+        {
+          "id": "bs-fmc-clr",
+          "item": "FMC MESSAGES",
+          "action": "CLR",
+          "details": {
+            "description": "Alle Meldungen im Flight Management Computer löschen. CLR-Taste drücken bis keine Meldungen mehr angezeigt werden.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_clr1.png"
+          }
+        },
+        {
+          "id": "bs-fm1",
+          "item": "FMC FM1",
+          "action": "SELECT",
+          "details": {
+            "description": "Flight Management System 1 als primäre Quelle auswählen. FM1 steuert die Flugführung und Navigation.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fm1_1.png"
+          }
+        },
+        {
+          "id": "bs-fmc-init-flt",
+          "item": "FMC INIT - FLT NBR",
+          "action": "EINGEBEN",
+          "details": {
+            "description": "INIT-Seite öffnen und Flugnummer eingeben (z.B. DLH123). Identifiziert den Flug im System und für ATC.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_fltnr1.png"
+          }
+        },
+        {
+          "id": "bs-fmc-fuel-block",
+          "item": "FMC INIT B - BLOCK FUEL",
+          "action": "EINGEBEN",
+          "details": {
+            "description": "INIT B Seite (Pfeil rechts) öffnen und Block Fuel eingeben. Block Fuel = Gesamtkraftstoff am Gate vor Triebwerksstart. Eingabe in Tonnen (z.B. 6 = 6t).",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_block1.png"
+          }
+        },
+        {
+          "id": "bs-efis-plan",
+          "item": "EFIS MODE",
+          "action": "PLAN",
+          "details": {
+            "description": "EFIS Modus auf PLAN stellen. Zeigt den Flugplan von oben auf dem Navigation Display. Ermöglicht Überprüfung der Route.",
+            "location": "Glareshield - EFIS CPT",
+            "image": "/images/fmc_plan1.png"
+          }
+        },
+        {
+          "id": "bs-fplan-check",
+          "item": "FMC F-PLAN",
+          "action": "CHECK",
+          "details": {
+            "description": "Flugplan im FMC mit der geplanten Route vergleichen. Waypoints, SID und STAR auf Korrektheit prüfen.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_plan1.png"
+          }
+        },
+        {
+          "id": "bs-efb-payload",
+          "item": "EFB PAYLOAD",
+          "action": "PAX + FUEL SETZEN",
+          "details": {
+            "description": "Im Electronic Flight Bag die Payload-Seite öffnen. Passagieranzahl (PAX) und Treibstoffmenge einstellen. Beeinflusst Gewicht und Balance.",
+            "location": "EFB - Payload",
+            "image": "/images/efb_payload.png"
+          }
+        },
+        {
+          "id": "bs-fmc-zfw",
+          "item": "FMC INIT - ZFW",
+          "action": "EINGEBEN",
+          "details": {
+            "description": "Zero Fuel Weight im FMC eingeben. ZFW = Gewicht des Flugzeugs ohne Treibstoff (Leergewicht + Payload). Wichtig für Leistungsberechnungen.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_zfw1.png"
+          }
+        },
+        {
+          "id": "bs-efb-takeoff",
+          "item": "EFB TAKEOFF",
+          "action": "SYNC + CALCULATE",
+          "details": {
+            "description": "Im EFB synchronisieren und Takeoff-Daten berechnen. Ermittelt V-Speeds (V1, VR, V2) und Flex-Temperatur basierend auf Gewicht und Runway.",
+            "location": "EFB - Takeoff",
+            "image": "/images/fmc_takeoff_1.png"
+          }
+        },
+        {
+          "id": "bs-efb-send-fmc",
+          "item": "EFB TAKEOFF DATA",
+          "action": "SEND TO FMC",
+          "details": {
+            "description": "Berechnete Takeoff-Daten (V-Speeds, Flex Temp) vom EFB an den FMC übertragen. Daten werden automatisch in die PERF-Seite eingetragen.",
+            "location": "EFB - Takeoff",
+            "image": "/images/fmc_takeoff_2.png"
+          }
+        },
+        {
+          "id": "bs-fmc-confirm-data",
+          "item": "FMC PERF DATA",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Übertragene Takeoff-Daten im FMC bestätigen. V-Speeds und Konfiguration auf der PERF-Seite prüfen und übernehmen.",
+            "location": "Pedestal - MCDU/FMC",
+            "image": "/images/fmc_config1.png"
+          }
+        },
+        {
+          "id": "bs-anti-ice-eng1",
+          "item": "ANTI ICE ENG 1",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceEng1", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Triebwerk 1 Enteisungssystem bei Bedarf einschalten. Erforderlich bei Temperaturen unter 10°C und sichtbarer Feuchtigkeit (Regen, Nebel, Schnee).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "bs-anti-ice-eng2",
+          "item": "ANTI ICE ENG 2",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceEng2", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Triebwerk 2 Enteisungssystem bei Bedarf einschalten. Erforderlich bei Temperaturen unter 10°C und sichtbarer Feuchtigkeit (Regen, Nebel, Schnee).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "bs-anti-ice-wing",
+          "item": "ANTI ICE WING",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceStructural", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Tragflächen-Enteisungssystem bei Bedarf einschalten. Erforderlich bei Temperaturen unter 10°C und sichtbarer Feuchtigkeit (Regen, Nebel, Schnee).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "bs-parking-brake-off",
+          "item": "PARKING BRAKE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": false },
+          "details": {
+            "description": "Parkbremse lösen vor dem Pushback. Ermöglicht das Rollen des Flugzeugs.",
+            "location": "Pedestal",
+            "image": "/images/pbreak1.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-pushback",
+      "title": "PUSHBACK",
+      "color": "#9370db",
+      "items": [
+        {
+          "id": "pb-beacon",
+          "item": "BEACON",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightBeacon", "expectedValue": true },
+          "details": {
+            "description": "Rotes Warnlicht oben und unten am Rumpf einschalten. Warnt Bodenpersonal, dass die Triebwerke laufen oder gleich gestartet werden.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "pb-pushback-request",
+          "item": "PUSHBACK",
+          "action": "ANFORDERN",
+          "details": {
+            "description": "Pushback über Funk bei Ground anfordern. Flugzeug wird rückwärts aus der Parkposition geschoben.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "pb-engine-start",
+          "item": "ENGINES START",
+          "action": "IGN START",
+          "details": {
+            "description": "Nach Freigabe vom Bodenpersonal die Triebwerke starten. Engine Mode Selector auf IGN START stellen.",
+            "location": "Overhead Panel - ENG",
+            "image": "/images/eng_start1.png"
+          }
+        },
+        {
+          "id": "pb-eng2-on",
+          "item": "ENG 2 MASTER",
+          "action": "ON",
+          "autoCheck": { "simVar": "engineMaster2", "expectedValue": true },
+          "details": {
+            "description": "Triebwerk 2 (rechts) starten. Engine Master Switch auf ON stellen und Startsequenz abwarten.",
+            "location": "Pedestal - Engine Master"
+          }
+        },
+        {
+          "id": "pb-eng1-on",
+          "item": "ENG 1 MASTER",
+          "action": "ON",
+          "autoCheck": { "simVar": "engineMaster1", "expectedValue": true },
+          "details": {
+            "description": "Triebwerk 1 (links) starten. Engine Master Switch auf ON stellen und Startsequenz abwarten.",
+            "location": "Pedestal - Engine Master"
+          }
+        },
+        {
+          "id": "pb-eng-start-norm",
+          "item": "ENGINE START",
+          "action": "NORM",
+          "details": {
+            "description": "Engine Mode Selector auf NORM stellen nachdem beide Triebwerke stabil laufen. Automatische Zündung bei Bedarf.",
+            "location": "Overhead Panel - ENG"
+          }
+        },
+        {
+          "id": "pb-pushback-complete",
+          "item": "PUSHBACK",
+          "action": "ABGESCHLOSSEN",
+          "details": {
+            "description": "Pushback ist beendet. Bestätigung vom Bodenpersonal abwarten.",
+            "location": "ATC / Ground Services"
+          }
+        },
+        {
+          "id": "pb-parking-brake-on",
+          "item": "PARKING BRAKE",
+          "action": "ON",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": true },
+          "details": {
+            "description": "Parkbremse wieder setzen nach Abschluss des Pushbacks. Verhindert ungewolltes Rollen.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "pb-apu-bleed-off",
+          "item": "APU BLEED",
+          "action": "OFF",
+          "details": {
+            "description": "APU Bleed Air ausschalten. Triebwerke liefern jetzt die Zapfluft für Klimaanlage und Pneumatik.",
+            "location": "Overhead Panel - APU",
+            "image": "/images/apu_bleed1.png"
+          }
+        },
+        {
+          "id": "pb-apu-master-off",
+          "item": "APU MASTER",
+          "action": "OFF",
+          "autoCheck": { "simVar": "apuMaster", "expectedValue": false },
+          "details": {
+            "description": "APU komplett ausschalten. Wird nicht mehr benötigt da Triebwerke laufen.",
+            "location": "Overhead Panel - APU",
+            "image": "/images/apu_master1.png"
+          }
+        },
+        {
+          "id": "pb-speed-brake",
+          "item": "SPEED BRAKE",
+          "action": "ARM",
+          "autoCheck": { "simVar": "spoilersArmed", "expectedValue": true },
+          "details": {
+            "description": "Speed Brakes (Spoiler) auf ARMED stellen. Fahren bei Landung automatisch aus um Bremswirkung zu erhöhen.",
+            "location": "Pedestal",
+            "image": "/images/speedbrk1.png"
+          }
+        },
+        {
+          "id": "pb-flaps",
+          "item": "FLAPS",
+          "action": "CONFIG 1",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 1, "comparison": "gte" },
+          "details": {
+            "description": "Klappen auf Konfiguration 1 setzen für den Start. Takeoff-Konfiguration je nach Flugzeuggewicht und Runway.",
+            "location": "Pedestal",
+            "image": "/images/flaps1.png"
+          }
+        },
+        {
+          "id": "pb-nav-logo",
+          "item": "NAV / LOGO",
+          "action": "2",
+          "autoCheck": { "simVar": "lightNav", "expectedValue": true },
+          "details": {
+            "description": "Navigationslichter und Logo-Beleuchtung einschalten. NAV = Positionslichter (rot/grün/weiß), LOGO = Airline-Logo am Seitenleitwerk.",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/extlt1.png"
+          }
+        },
+        {
+          "id": "pb-nose-taxi",
+          "item": "NOSE",
+          "action": "TAXI",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Bugradscheinwerfer auf TAXI stellen. Beleuchtet den Rollweg vor dem Flugzeug.",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/extlt2.png"
+          }
+        },
+        {
+          "id": "pb-rwy-turnoff",
+          "item": "RWY TURNOFF",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightRecognition", "expectedValue": true },
+          "details": {
+            "description": "Runway Turnoff Lights einschalten. Seitliche Scheinwerfer am Bugfahrwerk für bessere Sicht beim Abbiegen und in Kurven.",
+            "location": "Overhead Panel - EXT LT",
+            "image": "/images/extlt3.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-taxi",
+      "title": "TAXI",
+      "color": "#20b2aa",
+      "items": [
+        {
+          "id": "tx-taxi-request",
+          "item": "TAXI CLEARANCE",
+          "action": "ANFORDERN",
+          "details": {
+            "description": "Taxi-Freigabe über Funk bei Ground anfordern. Enthält zugewiesene Runway und Rollweg.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "tx-taxi-confirm",
+          "item": "TAXI CLEARANCE",
+          "action": "BESTÄTIGEN",
+          "details": {
+            "description": "Taxi-Freigabe zurücklesen (Readback). Runway und Rollweg bestätigen.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "tx-autobrake",
+          "item": "AUTO BRAKE",
+          "action": "MAX",
+          "details": {
+            "description": "Automatische Bremsung auf MAX stellen. Bei abgebrochenem Start (RTO) wird maximal gebremst.",
+            "location": "Pedestal",
+            "image": "/images/autobrk1.png"
+          }
+        },
+        {
+          "id": "tx-seatbelt-sign",
+          "item": "SEAT BELT SIGN",
+          "action": "ON",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true },
+          "details": {
+            "description": "Anschnallzeichen einschalten. Passagiere müssen angeschnallt bleiben.",
+            "location": "Overhead Panel",
+            "image": "/images/seatbelt1.png"
+          }
+        },
+        {
+          "id": "tx-to-config",
+          "item": "T.O. CONFIG",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Takeoff-Konfiguration prüfen und bestätigen. System checkt Klappen, Trimmung und andere Start-Einstellungen.",
+            "location": "Pedestal",
+            "image": "/images/toconfig1.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-before-takeoff",
+      "title": "BEFORE TAKEOFF",
+      "color": "#32cd32",
+      "items": [
+        {
+          "id": "bt-xpdr",
+          "item": "XPDR",
+          "action": "TA/RA",
+          "autoCheck": { "simVar": "transponderState", "expectedValue": 4, "comparison": "gte" },
+          "details": {
+            "description": "Transponder auf TA/RA (Traffic Advisory / Resolution Advisory) stellen. Voller TCAS-Modus mit Ausweichanweisungen.",
+            "location": "Pedestal",
+            "image": "/images/xpdr1.png"
+          }
+        },
+        {
+          "id": "bt-takeoff-clearance",
+          "item": "TAKEOFF CLEARANCE",
+          "action": "ANFORDERN",
+          "details": {
+            "description": "Starterlaubnis bei Tower anfordern. 'Ready for departure' melden.",
+            "location": "ATC / Tower"
+          }
+        },
+        {
+          "id": "bt-takeoff-confirm",
+          "item": "TAKEOFF CLEARANCE",
+          "action": "BESTÄTIGEN",
+          "details": {
+            "description": "Startfreigabe zurücklesen (Readback). Runway bestätigen.",
+            "location": "ATC / Tower"
+          }
+        },
+        {
+          "id": "bt-strobe-on",
+          "item": "STROBE",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": true },
+          "details": {
+            "description": "Blitzlichter manuell einschalten beim Einrollen auf die Runway. Bewusste Bestätigung vor dem Start.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "bt-nose-to",
+          "item": "NOSE",
+          "action": "T.O.",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Bugradscheinwerfer von TAXI auf Takeoff stellen. Hellere Beleuchtung für den Start.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "bt-land-on",
+          "item": "LAND",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
+          "details": {
+            "description": "Landescheinwerfer einschalten vor dem Start. Erhöht Sichtbarkeit für andere Flugzeuge und beleuchtet die Runway.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "bt-rwy-turnoff-off",
+          "item": "RWY TURNOFF",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightRecognition", "expectedValue": false },
+          "details": {
+            "description": "Runway Turnoff Lights ausschalten. Werden auf der Runway nicht mehr benötigt - Landescheinwerfer übernehmen.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-takeoff",
+      "title": "TAKE OFF",
+      "color": "#00e676",
+      "items": [
+        {
+          "id": "to-toga",
+          "item": "THRUST",
+          "action": "TOGA",
+          "details": {
+            "description": "Take Off / Go Around Schub setzen. Schubhebel nach vorne auf TOGA-Position für maximalen Startschub.",
+            "location": "Pedestal - Thrust Levers"
+          }
+        },
+        {
+          "id": "to-gear-up",
+          "item": "LANDING GEAR",
+          "action": "UP",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": false },
+          "details": {
+            "description": "Fahrwerk einfahren nach dem Abheben. Positive Steigrate abwarten, dann Gear Up.",
+            "location": "Pedestal - Gear Lever"
+          }
+        },
+        {
+          "id": "to-flaps-0",
+          "item": "FLAPS",
+          "action": "0",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 0 },
+          "details": {
+            "description": "Klappen vollständig einfahren. Bei ausreichender Geschwindigkeit (Green Dot Speed) schrittweise auf 0 zurücknehmen.",
+            "location": "Pedestal - Flaps Lever"
+          }
+        },
+        {
+          "id": "to-ap1",
+          "item": "AUTOPILOT AP1",
+          "action": "ON",
+          "autoCheck": { "simVar": "autopilotMaster", "expectedValue": true },
+          "details": {
+            "description": "Autopilot 1 einschalten. Übernimmt die Flugsteuerung und folgt dem programmierten Flugplan.",
+            "location": "Glareshield - FCU"
+          }
+        },
+        {
+          "id": "to-athr",
+          "item": "A/THR",
+          "action": "ON",
+          "details": {
+            "description": "Autothrust einschalten. Regelt automatisch den Schub für die gewünschte Geschwindigkeit.",
+            "location": "Glareshield - FCU"
+          }
+        },
+        {
+          "id": "to-land-off",
+          "item": "LAND",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": false },
+          "details": {
+            "description": "Landescheinwerfer ausschalten beim Passieren von 10.000ft. Oberhalb nicht mehr erforderlich.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "to-nose-off",
+          "item": "NOSE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": false },
+          "details": {
+            "description": "Bugradscheinwerfer ausschalten beim Passieren von 10.000ft. Oberhalb nicht mehr erforderlich.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "to-baro-std",
+          "item": "BARO",
+          "action": "STD",
+          "details": {
+            "description": "Höhenmesser auf Standarddruck (1013 hPa / 29.92 inHg) umstellen beim Passieren der Transition Altitude. Alle Flugzeuge fliegen dann mit gleicher Referenz.",
+            "location": "Glareshield - EFIS CPT"
+          }
+        },
+        {
+          "id": "to-seatbelt-off",
+          "item": "SEAT BELT SIGN",
+          "action": "OFF",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": false },
+          "details": {
+            "description": "Anschnallzeichen ausschalten nach Erreichen der Reiseflughöhe. Passagiere dürfen sich frei bewegen.",
+            "location": "Overhead Panel"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-cruise",
+      "title": "CRUISE",
+      "color": "#4fc3f7",
+      "items": [
+        {
+          "id": "cr-anti-ice-eng1",
+          "item": "ANTI ICE ENG 1",
+          "action": "OFF",
+          "autoCheck": { "simVar": "antiIceEng1", "expectedValue": false },
+          "details": {
+            "description": "Triebwerk 1 Enteisungssystem ausschalten. In Reiseflughöhe keine Vereisung erwartet.",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "cr-anti-ice-eng2",
+          "item": "ANTI ICE ENG 2",
+          "action": "OFF",
+          "autoCheck": { "simVar": "antiIceEng2", "expectedValue": false },
+          "details": {
+            "description": "Triebwerk 2 Enteisungssystem ausschalten. In Reiseflughöhe keine Vereisung erwartet.",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "cr-anti-ice-wing",
+          "item": "ANTI ICE WING",
+          "action": "OFF",
+          "autoCheck": { "simVar": "antiIceStructural", "expectedValue": false },
+          "details": {
+            "description": "Tragflächen-Enteisungssystem ausschalten. In Reiseflughöhe keine Vereisung erwartet.",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-approach",
+      "title": "APPROACH",
+      "color": "#ffa726",
+      "items": [
+        {
+          "id": "ap-altitude",
+          "item": "ALTITUDE",
+          "action": "SET",
+          "details": {
+            "description": "Ziel-Flughöhe für den Sinkflug am FCU einstellen. Erste Freigabe von ATC abwarten.",
+            "location": "Glareshield - FCU"
+          }
+        },
+        {
+          "id": "ap-autobrake",
+          "item": "AUTO BRAKE",
+          "action": "SET",
+          "details": {
+            "description": "Automatische Bremsstärke für die Landung einstellen (LOW/MED). Abhängig von Runway-Länge und Bedingungen.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "ap-fmc-qnh",
+          "item": "FMC PERF APPR - QNH",
+          "action": "SET",
+          "details": {
+            "description": "QNH des Zielflughafens in der PERF APPR Seite eingeben. Erhältst du vom ATIS oder ATC.",
+            "location": "Pedestal - MCDU/FMC"
+          }
+        },
+        {
+          "id": "ap-fmc-temp",
+          "item": "FMC PERF APPR - TEMP",
+          "action": "SET",
+          "details": {
+            "description": "Temperatur am Zielflughafen eingeben. Beeinflusst die Berechnung der Anfluggeschwindigkeiten.",
+            "location": "Pedestal - MCDU/FMC"
+          }
+        },
+        {
+          "id": "ap-fmc-wind",
+          "item": "FMC PERF APPR - MAG WIND",
+          "action": "SET",
+          "details": {
+            "description": "Wind am Zielflughafen eingeben (Richtung/Stärke). Beeinflusst Anfluggeschwindigkeit und Korrekturen.",
+            "location": "Pedestal - MCDU/FMC"
+          }
+        },
+        {
+          "id": "ap-baro",
+          "item": "BARO",
+          "action": "SET",
+          "details": {
+            "description": "Höhenmesser auf QNH des Zielflughafens umstellen beim Passieren der Transition Level.",
+            "location": "Glareshield - EFIS CPT"
+          }
+        },
+        {
+          "id": "ap-rad-nav-ils",
+          "item": "RAD NAV - ILS FREQ",
+          "action": "CHECK/SET",
+          "details": {
+            "description": "ILS-Frequenz der Ziel-Runway prüfen und ggf. manuell eingeben. Ermöglicht Präzisionsanflug.",
+            "location": "Pedestal - MCDU/FMC - RAD NAV"
+          }
+        },
+        {
+          "id": "ap-seatbelt-on",
+          "item": "SEAT BELT SIGN",
+          "action": "ON",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true },
+          "details": {
+            "description": "Anschnallzeichen einschalten für den Anflug und die Landung.",
+            "location": "Overhead Panel"
+          }
+        },
+        {
+          "id": "ap-land-on",
+          "item": "LAND",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
+          "details": {
+            "description": "Landescheinwerfer einschalten unter 10.000ft.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "ap-speed-brake-arm",
+          "item": "SPEED BRAKE",
+          "action": "ARM",
+          "autoCheck": { "simVar": "spoilersArmed", "expectedValue": true },
+          "details": {
+            "description": "Speed Brakes für die Landung auf ARMED stellen.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "ap-gear-down",
+          "item": "LANDING GEAR",
+          "action": "DOWN",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": true },
+          "details": {
+            "description": "Fahrwerk ausfahren für die Landung.",
+            "location": "Pedestal - Gear Lever"
+          }
+        },
+        {
+          "id": "ap-flaps-full",
+          "item": "FLAPS",
+          "action": "FULL",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 4, "comparison": "gte" },
+          "details": {
+            "description": "Klappen voll ausfahren für die Landung.",
+            "location": "Pedestal - Flaps Lever"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-after-landing",
+      "title": "AFTER LANDING",
+      "color": "#ef5350",
+      "items": [
+        {
+          "id": "al-spoilers-disarm",
+          "item": "SPEED BRAKE",
+          "action": "DISARM",
+          "autoCheck": { "simVar": "spoilersArmed", "expectedValue": false },
+          "details": {
+            "description": "Speed Brakes deaktivieren nach der Landung.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "al-flaps-0",
+          "item": "FLAPS",
+          "action": "0",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 0 },
+          "details": {
+            "description": "Klappen einfahren nach dem Verlassen der Runway.",
+            "location": "Pedestal - Flaps Lever"
+          }
+        },
+        {
+          "id": "al-strobe-off",
+          "item": "STROBE",
+          "action": "OFF/AUTO",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": false },
+          "details": {
+            "description": "Blitzlichter ausschalten oder auf AUTO nach Verlassen der Runway.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "al-land-off",
+          "item": "LAND",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": false },
+          "details": {
+            "description": "Landescheinwerfer ausschalten.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "al-nose-taxi",
+          "item": "NOSE",
+          "action": "TAXI",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Bugradscheinwerfer auf TAXI stellen.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "al-rwy-turnoff-on",
+          "item": "RWY TURNOFF",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightRecognition", "expectedValue": true },
+          "details": {
+            "description": "Runway Turnoff Lights einschalten für bessere Sicht beim Rollen.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "al-apu-master",
+          "item": "APU MASTER",
+          "action": "ON",
+          "autoCheck": { "simVar": "apuMaster", "expectedValue": true },
+          "details": {
+            "description": "APU starten für die Stromversorgung am Gate.",
+            "location": "Overhead Panel - APU"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-shutdown",
+      "title": "SHUTDOWN",
+      "color": "#78909c",
+      "items": [
+        {
+          "id": "sd-parking-brake",
+          "item": "PARKING BRAKE",
+          "action": "ON",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": true },
+          "details": {
+            "description": "Parkbremse setzen am Gate.",
+            "location": "Pedestal"
+          }
+        },
+        {
+          "id": "sd-eng1-off",
+          "item": "ENG 1 MASTER",
+          "action": "OFF",
+          "autoCheck": { "simVar": "engineMaster1", "expectedValue": false },
+          "details": {
+            "description": "Triebwerk 1 abstellen.",
+            "location": "Pedestal - Engine Master"
+          }
+        },
+        {
+          "id": "sd-eng2-off",
+          "item": "ENG 2 MASTER",
+          "action": "OFF",
+          "autoCheck": { "simVar": "engineMaster2", "expectedValue": false },
+          "details": {
+            "description": "Triebwerk 2 abstellen.",
+            "location": "Pedestal - Engine Master"
+          }
+        },
+        {
+          "id": "sd-beacon-off",
+          "item": "BEACON",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightBeacon", "expectedValue": false },
+          "details": {
+            "description": "Beacon ausschalten - Triebwerke sind aus.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "sd-seatbelt-off",
+          "item": "SEAT BELT SIGN",
+          "action": "OFF",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": false },
+          "details": {
+            "description": "Anschnallzeichen ausschalten - Passagiere können aussteigen.",
+            "location": "Overhead Panel"
+          }
+        },
+        {
+          "id": "sd-nav-off",
+          "item": "NAV / LOGO",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightNav", "expectedValue": false },
+          "details": {
+            "description": "Navigationslichter ausschalten.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "sd-nose-off",
+          "item": "NOSE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": false },
+          "details": {
+            "description": "Bugradscheinwerfer ausschalten.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        },
+        {
+          "id": "sd-rwy-turnoff-off",
+          "item": "RWY TURNOFF",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightRecognition", "expectedValue": false },
+          "details": {
+            "description": "Runway Turnoff Lights ausschalten.",
+            "location": "Overhead Panel - EXT LT"
+          }
+        }
+      ]
+    }
+  ]
+}

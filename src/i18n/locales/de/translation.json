@@ -1,0 +1,162 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Abbrechen",
+    "close": "Schliessen",
+    "reset": "Zuruecksetzen",
+    "save": "Speichern",
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "menu": {
+    "title": "MENU",
+    "flightPrep": "Flugvorbereitung",
+    "news": "News & Info",
+    "changelog": "Changelog",
+    "bridge": "SimConnect Bridge",
+    "tablet": "Tablet verbinden",
+    "github": "GitHub / Open Source",
+    "newFlight": "Neuer Flug (Reset Distanz)",
+    "resetChecklist": "Checkliste zuruecksetzen",
+    "language": "Sprache"
+  },
+  "header": {
+    "aircraft": "Flugzeug",
+    "normalMode": "Normal",
+    "careerMode": "Karriere"
+  },
+  "checklist": {
+    "progress": "{{checked}} von {{total}}",
+    "expandAll": "Alle aufklappen",
+    "collapseAll": "Alle einklappen"
+  },
+  "flightInfo": {
+    "title": "Fluginfo",
+    "origin": "Von",
+    "destination": "Nach",
+    "distance": "Distanz",
+    "flown": "Geflogen",
+    "remaining": "Verbleibend",
+    "progress": "Fortschritt",
+    "noRoute": "Keine Route eingegeben",
+    "enterRoute": "Route eingeben"
+  },
+  "detailPanel": {
+    "noSelection": "Waehle ein Item fuer Details",
+    "description": "Beschreibung",
+    "location": "Position im Cockpit",
+    "tip": "Tipp"
+  },
+  "simStatus": {
+    "connected": "Verbunden",
+    "disconnected": "Nicht verbunden",
+    "demoMode": "Demo-Modus",
+    "connecting": "Verbinde..."
+  },
+  "modals": {
+    "workflow": {
+      "title": "Flugvorbereitung",
+      "intro": "Diese Anleitung beschreibt den empfohlenen Ablauf vor dem Start eines Fluges im MSFS 2024 Karriere-Modus.",
+      "step1Title": "Flug im Karriere-Modus auswaehlen",
+      "step1Text": "Oeffne den Karriere-Modus in MSFS 2024 und waehle einen Flug aus.",
+      "step1Important": "Wichtig:",
+      "step1ImportantText": "Waehle einen Flug, dessen Startflughafen dort ist, wo sich dein Flugzeug aktuell befindet.",
+      "step1Tip": "So vermeidest du unnoetige Repositionierungskosten und startest direkt am Gate.",
+      "step2Title": "Route im Flight Planner erstellen",
+      "step2Text": "Oeffne den MSFS Flight Planner und erstelle eine neue Route fuer deinen Flug.",
+      "step2Warning": "Warum?",
+      "step2WarningText": "Die automatisch im Spiel erstellten Routen haben oft Fehler im Anflug (falsche Approaches, fehlende Wegpunkte). Der externe Planner erstellt zuverlaessigere Flugrouten.",
+      "step3Title": "Route in MSFS laden",
+      "step3Text": "Speichere die Route im Flight Planner und lade sie in MSFS. Du kannst die Route direkt aus dem Planner exportieren oder manuell ins MCDU eingeben.",
+      "step4Title": "Checkliste starten",
+      "step4Text": "Jetzt bist du bereit! Wechsle in den Karriere-Modus dieser App und arbeite die Checkliste von oben nach unten ab.",
+      "step4Tip": "Mit der SimConnect Bridge werden viele Punkte automatisch ueberprueft.",
+      "usefulLinks": "Nuetzliche Links",
+      "flightPlanner": "MSFS Flight Planner",
+      "flightPlannerDesc": "Externe Flugplanung",
+      "simbrief": "SimBrief",
+      "simbriefDesc": "Detaillierte OFP & Fuel Planning"
+    },
+    "news": {
+      "title": "News & Info",
+      "welcome": "Willkommen!",
+      "welcomeText": "Diese Checklisten-App wurde fuer MSFS 2024 entwickelt und hilft dir dabei, strukturiert durch alle Flugphasen zu navigieren.",
+      "features": "Features",
+      "featureNormal": "Normal-Modus:",
+      "featureNormalDesc": "Vollstaendige A330 Checkliste",
+      "featureCareer": "Karriere-Modus:",
+      "featureCareerDesc": "Optimiert fuer MSFS 2024 Career Mode",
+      "featureDetail": "Detail-Panel:",
+      "featureDetailDesc": "Klicke auf Items fuer Erklaerungen",
+      "featureProgress": "Fortschritt wird gespeichert:",
+      "featureProgressDesc": "Deine Haken bleiben erhalten",
+      "storage": "Datenspeicherung",
+      "storageText": "Dein Fortschritt wird lokal in deinem Browser gespeichert (LocalStorage). Es werden keine Daten an Server gesendet - alles bleibt auf deinem Geraet."
+    },
+    "changelog": {
+      "title": "Changelog"
+    },
+    "tablet": {
+      "title": "Tablet verbinden",
+      "intro": "So verbindest du dein Tablet",
+      "introText": "Du kannst die Checkliste auf einem Tablet oder Smartphone im gleichen Netzwerk oeffnen. Alle Daten werden automatisch synchronisiert.",
+      "step1": "Vite-Server mit Netzwerkzugriff starten",
+      "step1Hint": "Beende den aktuellen Server (Strg+C) und starte ihn mit diesem Befehl neu.",
+      "step2": "IP-Adresse finden",
+      "step2Text": "Nach dem Start zeigt Vite die Netzwerk-URL an:",
+      "step2Hint": "Oder in der Eingabeaufforderung:",
+      "step3": "Am Tablet oeffnen",
+      "step3Text": "Oeffne Safari/Chrome auf deinem Tablet und gib die Adresse ein:",
+      "currentConnection": "Aktuelle Verbindung",
+      "runningOn": "Diese Seite laeuft auf:",
+      "wsConnects": "WebSocket verbindet zu:",
+      "hints": "Hinweise",
+      "hint1": "Beide Geraete muessen im gleichen WLAN sein",
+      "hint2": "Die Bridge muss auf dem PC laufen",
+      "hint3": "Firewall muss Port 5173 und 8080 erlauben"
+    },
+    "bridge": {
+      "title": "SimConnect Bridge",
+      "whatIs": "Was ist die Bridge?",
+      "whatIsText": "Die SimConnect Bridge verbindet diese Web-App mit dem Microsoft Flight Simulator. Sie liest Cockpit-Zustaende aus und zeigt automatisch an, ob Checklist-Items korrekt gesetzt sind.",
+      "status": "Status",
+      "statusConnected": "Verbunden mit MSFS",
+      "statusDemo": "Demo-Modus aktiv",
+      "statusDisconnected": "Nicht verbunden",
+      "installation": "Installation",
+      "autoCheck": "Auto-Check Feature",
+      "autoCheckText": "Bei verbundener Bridge erscheint ein farbiger Punkt neben Items:",
+      "autoCheckGreen": "Gruen = Status korrekt",
+      "autoCheckRed": "Rot = Status nicht korrekt",
+      "autoCheckGray": "Grau = Unbekannt"
+    },
+    "github": {
+      "title": "GitHub / Open Source",
+      "openSource": "Dieses Projekt ist Open Source!",
+      "openSourceText": "MSFS Checklists ist ein Community-Projekt unter der GPL-3.0 Lizenz. Der gesamte Quellcode ist frei verfuegbar und jeder kann mitmachen.",
+      "whyTitle": "Warum Open Source?",
+      "whyTransparency": "Transparenz:",
+      "whyTransparencyDesc": "Du kannst sehen, wie alles funktioniert",
+      "whyCommunity": "Community:",
+      "whyCommunityDesc": "Gemeinsam bessere Checklisten erstellen",
+      "whyExtensible": "Erweiterbar:",
+      "whyExtensibleDesc": "Neue Flugzeuge von der Community",
+      "whyFree": "Kostenlos:",
+      "whyFreeDesc": "Keine versteckten Kosten, keine Werbung",
+      "howTitle": "Wie kann ich mitmachen?",
+      "howChecklists": "Neue Flugzeug-Checklisten beisteuern",
+      "howBugs": "Fehler melden oder beheben",
+      "howTranslations": "Uebersetzungen hinzufuegen",
+      "howFeatures": "Features vorschlagen",
+      "buttonText": "Zum GitHub Repository"
+    },
+    "aircraft": {
+      "title": "COMING SOON",
+      "text": "Weitere Flugzeuge werden bald verfuegbar sein."
+    }
+  },
+  "confirm": {
+    "resetChecklist": "Checkliste wirklich zuruecksetzen? Alle Haken werden entfernt.",
+    "resetFlight": "Flug zuruecksetzen? Die geflogene Distanz wird auf 0 gesetzt."
+  }
+}

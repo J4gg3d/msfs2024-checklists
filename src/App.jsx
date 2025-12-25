@@ -512,17 +512,20 @@ function App() {
       {/* Bridge Modal */}
       {activeModal === 'bridge' && (
         <div className="modal-overlay" onClick={() => setActiveModal(null)}>
-          <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content modal-large modal-scrollable" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>🔗 {t('modals.bridge.title')}</h2>
               <button className="modal-close-btn" onClick={() => setActiveModal(null)}>✕</button>
             </div>
             <div className="modal-body">
+              {/* Was ist die Bridge */}
               <div className="info-section">
                 <h3>{t('modals.bridge.whatIs')}</h3>
                 <p>{t('modals.bridge.whatIsText')}</p>
               </div>
-              <div className="info-section">
+
+              {/* Aktueller Status */}
+              <div className="info-section bridge-status-section">
                 <h3>{t('modals.bridge.status')}</h3>
                 <p className="bridge-status">
                   {isConnected ? (
@@ -532,23 +535,90 @@ function App() {
                   )}
                 </p>
               </div>
-              <div className="info-section">
-                <h3>{t('modals.bridge.installation')}</h3>
-                <ol>
-                  <li>MSFS SDK (SimConnect.dll)</li>
-                  <li><code>cd SimConnectBridge</code></li>
-                  <li><code>dotnet build</code></li>
-                  <li><code>dotnet run</code></li>
-                </ol>
+
+              {/* Voraussetzungen */}
+              <div className="info-section info-warning">
+                <h3>⚠️ {t('modals.bridge.requirements')}</h3>
+                <p>{t('modals.bridge.requirementsText')}</p>
               </div>
+
+              {/* SDK Installation */}
+              <div className="info-section bridge-steps">
+                <h3>📦 {t('modals.bridge.sdkTitle')}</h3>
+                <ol>
+                  <li>{t('modals.bridge.sdkStep1')}</li>
+                  <li>{t('modals.bridge.sdkStep2')}</li>
+                  <li>{t('modals.bridge.sdkStep3')}</li>
+                  <li>{t('modals.bridge.sdkStep4')}<br/>
+                    <code className="code-box-inline">{t('modals.bridge.sdkPath')}</code>
+                  </li>
+                </ol>
+                <p className="hint-text">💡 {t('modals.bridge.sdkNote')}</p>
+              </div>
+
+              {/* Bridge Installation */}
+              <div className="info-section bridge-steps">
+                <h3>🔧 {t('modals.bridge.installation')}</h3>
+                <ol>
+                  <li>{t('modals.bridge.installStep1')}</li>
+                  <li>{t('modals.bridge.installStep2')}<br/>
+                    <code className="code-box-inline">cd SimConnectBridge</code>
+                  </li>
+                  <li>{t('modals.bridge.installStep3')}<br/>
+                    <code className="code-box-inline">dotnet build</code>
+                  </li>
+                  <li>{t('modals.bridge.installStep4')}<br/>
+                    <code className="code-box-inline">dotnet run</code>
+                  </li>
+                </ol>
+                <p className="hint-text">💡 {t('modals.bridge.installNote')}</p>
+              </div>
+
+              {/* Verbindung */}
               <div className="info-section">
-                <h3>{t('modals.bridge.autoCheck')}</h3>
+                <h3>🔌 {t('modals.bridge.connection')}</h3>
+                <p>{t('modals.bridge.connectionText')}</p>
+                <div className="step-tip">💡 {t('modals.bridge.connectionTip')}</div>
+              </div>
+
+              {/* Auto-Check Feature */}
+              <div className="info-section">
+                <h3>✅ {t('modals.bridge.autoCheck')}</h3>
                 <p>{t('modals.bridge.autoCheckText')}</p>
-                <ul>
+                <ul className="status-legend">
                   <li><span style={{color: '#66bb6a'}}>●</span> {t('modals.bridge.autoCheckGreen')}</li>
                   <li><span style={{color: '#ef5350'}}>●</span> {t('modals.bridge.autoCheckRed')}</li>
                   <li><span style={{color: '#666'}}>○</span> {t('modals.bridge.autoCheckGray')}</li>
                 </ul>
+              </div>
+
+              {/* Troubleshooting */}
+              <div className="info-section troubleshooting-section">
+                <h3>🔍 {t('modals.bridge.troubleshooting')}</h3>
+
+                <div className="trouble-item">
+                  <strong>{t('modals.bridge.troubleConnection')}</strong>
+                  <ul>
+                    <li>{t('modals.bridge.troubleConnectionTip1')}</li>
+                    <li>{t('modals.bridge.troubleConnectionTip2')}</li>
+                    <li>{t('modals.bridge.troubleConnectionTip3')}</li>
+                  </ul>
+                </div>
+
+                <div className="trouble-item">
+                  <strong>{t('modals.bridge.troubleSdk')}</strong>
+                  <ul>
+                    <li>{t('modals.bridge.troubleSdkTip1')}</li>
+                    <li>{t('modals.bridge.troubleSdkTip2')}</li>
+                  </ul>
+                </div>
+
+                <div className="trouble-item">
+                  <strong>{t('modals.bridge.troubleFirewall')}</strong>
+                  <ul>
+                    <li>{t('modals.bridge.troubleFirewallTip')}</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

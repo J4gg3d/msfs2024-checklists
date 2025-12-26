@@ -1,7 +1,20 @@
 services:
   msfs-checklist:
     build: .
-    container_name: msfs-checklist
-    ports:
-      - "8080:80"
+    container_name: simchecklist
     restart: unless-stopped
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      # HTTPS Router
+      - "traefik.http.routers.simchecklist.rule=Host(`simchecklist.app`)"
+      - "traefik.http.routers.simchecklist.entrypoints=websecure"
+      - "traefik.http.routers.simchecklist.tls=true"
+      - "traefik.http.routers.simchecklist.tls.certresolver=letsencrypt"
+      # Service
+      - "traefik.http.services.simchecklist.loadbalancer.server.port=80"
+
+networks:
+  web:
+    external: true

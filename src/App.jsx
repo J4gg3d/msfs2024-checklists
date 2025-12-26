@@ -118,7 +118,69 @@ function App() {
   }
 
   // SimConnect Integration
-  const { isConnected, simData, isDemoMode, connect, disconnect, checkAutoStatus } = useSimConnect()
+  const {
+    isConnected,
+    simData,
+    isDemoMode,
+    isSessionMode,
+    sessionCode,
+    bridgeSessionCode,
+    sessionError,
+    receivedFlightRoute,
+    isSessionSyncAvailable,
+    connect,
+    disconnect,
+    connectToSession,
+    disconnectSession,
+    sendFlightRoute,
+    checkAutoStatus
+  } = useSimConnect()
+
+  // FlightRoute an Tablets senden (nur am PC mit Bridge)
+  // Sendet bei Änderungen und regelmäßig alle 5 Sekunden
+  const lastSentFlightRoute = useRef(null)
+  useEffect(() => {
+    console.log('App: FlightRoute Sync useEffect', { bridgeSessionCode, isSessionMode, flightRoute })
+
+    if (!bridgeSessionCode || isSessionMode || !flightRoute) {
+      console.log('App: FlightRoute Sync übersprungen - Bedingungen nicht erfüllt')
+      return
+    }
+
+    // Bei Änderungen sofort senden
+    const routeString = JSON.stringify(flightRoute)
+    if (lastSentFlightRoute.current !== routeString) {
+      console.log('App: FlightRoute geändert, sende...')
+      lastSentFlightRoute.current = routeString
+      sendFlightRoute(flightRoute)
+    }
+
+    // Regelmäßig senden (für neu verbundene Tablets)
+    const interval = setInterval(() => {
+      console.log('App: Periodisches FlightRoute senden...')
+      sendFlightRoute(flightRoute)
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [flightRoute, bridgeSessionCode, isSessionMode, sendFlightRoute])
+
+  // FlightRoute von PC empfangen (nur am Tablet)
+  useEffect(() => {
+    if (isSessionMode && receivedFlightRoute) {
+      console.log('App: FlightRoute vom PC empfangen:', receivedFlightRoute)
+      setFlightRoute(prev => {
+        // Nur aktualisieren wenn sich etwas geändert hat
+        if (JSON.stringify(prev) !== JSON.stringify(receivedFlightRoute)) {
+          return receivedFlightRoute
+        }
+        return prev
+      })
+    }
+  }, [receivedFlightRoute, isSessionMode])
+
+  // Session-Code Eingabe State
+  const [sessionCodeInput, setSessionCodeInput] = useState('')
+  const [isConnectingSession, setIsConnectingSession] = useState(false)
 
   // Automatisch mit SimConnect verbinden beim Start
   useEffect(() => {
@@ -219,6 +281,24 @@ function App() {
     if (confirm(t('confirm.resetFlight'))) {
       setFlightRoute(prev => ({ ...prev, flownDistance: 0 }))
     }
+  }
+
+  const handleSessionConnect = async () => {
+    if (!sessionCodeInput.trim()) return
+
+    setIsConnectingSession(true)
+    const success = await connectToSession(sessionCodeInput.trim())
+    setIsConnectingSession(false)
+
+    if (success) {
+      setSessionCodeInput('')
+    }
+  }
+
+  const handleSessionDisconnect = async () => {
+    await disconnectSession()
+    // Nach Trennung wieder normale Verbindung versuchen
+    connect()
   }
 
   return (
@@ -454,6 +534,80 @@ function App() {
               <button className="modal-close-btn" onClick={() => setActiveModal(null)}>✕</button>
             </div>
             <div className="modal-body">
+              {/* Session-Code von der Bridge anzeigen (wenn verfügbar) */}
+              {bridgeSessionCode && !isSessionMode && (
+                <div className="info-section bridge-session-section">
+                  <h3>{t('modals.tablet.bridgeSessionTitle', 'Dein Session-Code')}</h3>
+                  <p>{t('modals.tablet.bridgeSessionIntro', 'Gib diesen Code auf deinem Tablet ein:')}</p>
+                  <div className="bridge-session-code">
+                    <code>{bridgeSessionCode}</code>
+                  </div>
+                  <p className="hint-text">{t('modals.tablet.bridgeSessionHint', 'Die Bridge ist verbunden und sendet Daten an alle Geräte mit diesem Code.')}</p>
+                </div>
+              )}
+
+              {/* Session-Code Verbindung */}
+              <div className="info-section session-connect-section">
+                <h3>{t('modals.tablet.sessionTitle', 'Session-Verbindung')}</h3>
+                <p>{t('modals.tablet.sessionIntro', 'Verbinde dich mit dem PC, auf dem die Bridge läuft. Der Session-Code wird oben angezeigt.')}</p>
+
+                {isSessionMode ? (
+                  <div className="session-connected">
+                    <div className="session-status connected">
+                      <span className="status-icon">✓</span>
+                      <span>{t('modals.tablet.sessionConnected', 'Verbunden mit Session')}</span>
+                    </div>
+                    <div className="session-code-display">
+                      <code>{sessionCode}</code>
+                    </div>
+                    <button
+                      className="session-disconnect-btn"
+                      onClick={handleSessionDisconnect}
+                    >
+                      {t('modals.tablet.sessionDisconnect', 'Trennen')}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="session-input-container">
+                    <input
+                      type="text"
+                      className="session-code-input"
+                      placeholder={t('modals.tablet.sessionPlaceholder', 'XXXX-XXXX')}
+                      value={sessionCodeInput}
+                      onChange={(e) => setSessionCodeInput(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSessionConnect()}
+                      maxLength={9}
+                      disabled={isConnectingSession || !isSessionSyncAvailable}
+                    />
+                    <button
+                      className="session-connect-btn"
+                      onClick={handleSessionConnect}
+                      disabled={isConnectingSession || !sessionCodeInput.trim() || !isSessionSyncAvailable}
+                    >
+                      {isConnectingSession
+                        ? t('modals.tablet.sessionConnecting', 'Verbinde...')
+                        : t('modals.tablet.sessionConnect', 'Verbinden')}
+                    </button>
+                  </div>
+                )}
+
+                {sessionError && (
+                  <div className="session-error">
+                    {sessionError}
+                  </div>
+                )}
+
+                {!isSessionSyncAvailable && (
+                  <div className="session-unavailable">
+                    {t('modals.tablet.sessionUnavailable', 'Session-Sync ist nicht konfiguriert. Bitte Supabase-Zugangsdaten in der .env Datei hinterlegen.')}
+                  </div>
+                )}
+              </div>
+
+              <div className="info-section-divider">
+                <span>{t('modals.tablet.orLocalNetwork', 'oder im lokalen Netzwerk')}</span>
+              </div>
+
               <div className="info-section">
                 <h3>{t('modals.tablet.intro')}</h3>
                 <p>{t('modals.tablet.introText')}</p>
@@ -697,6 +851,7 @@ function App() {
                 isDemoMode={isDemoMode}
                 onConnect={connect}
                 onDisconnect={disconnect}
+                sessionCode={bridgeSessionCode}
               />
             }
           />

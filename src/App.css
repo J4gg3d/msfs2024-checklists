@@ -764,3 +764,213 @@ body {
   font-size: 14px;
   color: #888;
 }
+
+/* Session Connect Styles */
+.session-connect-section {
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.1) 0%, rgba(74, 144, 217, 0.05) 100%);
+  border: 1px solid rgba(74, 144, 217, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.session-connect-section h3 {
+  color: #4a90d9;
+  margin-bottom: 12px;
+}
+
+.session-input-container {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.session-code-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(74, 144, 217, 0.3);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.session-code-input::placeholder {
+  color: #666;
+  letter-spacing: 4px;
+}
+
+.session-code-input:focus {
+  outline: none;
+  border-color: #4a90d9;
+  box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.2);
+}
+
+.session-code-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.session-connect-btn {
+  background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.session-connect-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a9fe9 0%, #4a8acd 100%);
+  transform: translateY(-1px);
+}
+
+.session-connect-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.session-connected {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.session-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+}
+
+.session-status.connected {
+  color: #66bb6a;
+}
+
+.session-status .status-icon {
+  font-size: 18px;
+}
+
+.session-code-display {
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(102, 187, 106, 0.3);
+  border-radius: 8px;
+  padding: 12px 24px;
+}
+
+.session-code-display code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  color: #66bb6a;
+}
+
+.session-disconnect-btn {
+  background: rgba(239, 83, 80, 0.2);
+  border: 1px solid rgba(239, 83, 80, 0.3);
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #ef5350;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.session-disconnect-btn:hover {
+  background: rgba(239, 83, 80, 0.3);
+  border-color: #ef5350;
+}
+
+.session-error {
+  background: rgba(239, 83, 80, 0.1);
+  border: 1px solid rgba(239, 83, 80, 0.3);
+  border-radius: 6px;
+  padding: 10px 16px;
+  margin-top: 12px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #ef5350;
+}
+
+.session-unavailable {
+  background: rgba(255, 171, 64, 0.1);
+  border: 1px solid rgba(255, 171, 64, 0.3);
+  border-radius: 6px;
+  padding: 10px 16px;
+  margin-top: 12px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #ffab40;
+}
+
+.info-section-divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  color: #666;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.info-section-divider::before,
+.info-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.info-section-divider span {
+  padding: 0 16px;
+}
+
+/* Bridge Session Code Display (für PC) */
+.bridge-session-section {
+  background: linear-gradient(135deg, rgba(102, 187, 106, 0.15) 0%, rgba(102, 187, 106, 0.05) 100%);
+  border: 2px solid rgba(102, 187, 106, 0.4);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.bridge-session-section h3 {
+  color: #66bb6a;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.bridge-session-code {
+  background: rgba(0, 0, 0, 0.4);
+  border: 3px solid rgba(102, 187, 106, 0.5);
+  border-radius: 12px;
+  padding: 20px 32px;
+  margin: 16px 0;
+  display: inline-block;
+}
+
+.bridge-session-code code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 36px;
+  font-weight: bold;
+  letter-spacing: 6px;
+  color: #66bb6a;
+  text-shadow: 0 0 20px rgba(102, 187, 106, 0.3);
+}

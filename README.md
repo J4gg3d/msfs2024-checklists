@@ -13,6 +13,7 @@ Interactive checklist web app for Microsoft Flight Simulator 2024. Currently fea
 - **Collapsible Sections**: Organize your workflow by flight phase
 - **Dark Cockpit Theme**: Easy on the eyes during night flights
 - **SimConnect Bridge** (optional): Live flight data from the simulator
+- **Tablet Sync** (optional): Use on iPad/tablet with real-time data from your PC
 - **Docker Support**: Easy deployment with Docker
 
 ## Screenshots
@@ -62,12 +63,51 @@ http://localhost:8080
 The SimConnect Bridge provides live flight data from the simulator. Requires MSFS 2024 SDK.
 
 ```bash
-cd SimConnectBridge
+cd bridge-server/MSFSBridge
 dotnet build
 dotnet run
 ```
 
-The bridge runs on WebSocket port 8765 and automatically connects to the web app.
+The bridge runs on WebSocket port 8080 and automatically connects to the web app.
+
+## Tablet Sync (Optional)
+
+Use the checklist on your iPad or tablet while receiving live flight data from your gaming PC - even over the internet!
+
+### How it works
+
+1. **PC with Bridge** shows a session code (e.g., "ABCD-1234")
+2. **Tablet** enters the code in Menu → Tablet
+3. **Done!** Flight data syncs in real-time
+
+### Setup
+
+Requires a free [Supabase](https://supabase.com) account for the cloud relay:
+
+1. Create a Supabase project
+2. Copy your API credentials (Settings → API)
+3. Create `.env` file in project root:
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+4. For the Bridge, set the same variables (or use a `.env` file in the bridge folder):
+
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+```
+
+### Architecture
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│ Gaming PC   │     │  Supabase   │     │ iPad/Tablet │
+│ MSFS+Bridge │────▶│  (Cloud)    │◀────│   Browser   │
+└─────────────┘     └─────────────┘     └─────────────┘
+```
 
 ## Available Aircraft
 

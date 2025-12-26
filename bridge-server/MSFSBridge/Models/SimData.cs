@@ -9,6 +9,9 @@ public class SimData
     public bool Paused { get; set; } = false;
     public bool Connected { get; set; } = false;
 
+    // Remote Session
+    public string? SessionCode { get; set; }
+
     // Flugdaten
     public double? Altitude { get; set; }
     public double? GroundSpeed { get; set; }

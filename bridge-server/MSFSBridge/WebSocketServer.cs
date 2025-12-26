@@ -22,6 +22,7 @@ public class BridgeWebSocketServer : IDisposable
     };
 
     public event Action<string>? OnLog;
+    public event Action<IWebSocketConnection>? OnClientConnected;
 
     public int ClientCount
     {
@@ -52,6 +53,7 @@ public class BridgeWebSocketServer : IDisposable
                         _clients.Add(socket);
                     }
                     OnLog?.Invoke($"Client verbunden: {socket.ConnectionInfo.ClientIpAddress} (Gesamt: {ClientCount})");
+                    OnClientConnected?.Invoke(socket);
                 };
 
                 socket.OnClose = () =>
@@ -120,6 +122,25 @@ public class BridgeWebSocketServer : IDisposable
     {
         var json = JsonConvert.SerializeObject(data, _jsonSettings);
         Broadcast(json);
+    }
+
+    /// <summary>
+    /// Sendet Sim-Daten an einen einzelnen Client
+    /// </summary>
+    public void SendToClient(IWebSocketConnection client, SimData data)
+    {
+        try
+        {
+            if (client.IsAvailable)
+            {
+                var json = JsonConvert.SerializeObject(data, _jsonSettings);
+                client.Send(json);
+            }
+        }
+        catch (Exception ex)
+        {
+            OnLog?.Invoke($"Send-Fehler: {ex.Message}");
+        }
     }
 
     /// <summary>

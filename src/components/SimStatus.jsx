@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import './SimStatus.css';
 
-function SimStatus({ isConnected, simData, isDemoMode, onConnect, onDisconnect }) {
+function SimStatus({ isConnected, simData, isDemoMode, onConnect, onDisconnect, sessionCode }) {
+  const { t } = useTranslation();
+
   const getStatusLabel = () => {
     if (!isConnected) return 'MSFS DISCONNECTED';
     if (isDemoMode) return 'DEMO MODE';
@@ -23,6 +26,14 @@ function SimStatus({ isConnected, simData, isDemoMode, onConnect, onDisconnect }
           {simData.paused && (
             <div className="sim-paused-badge">PAUSED</div>
           )}
+        </div>
+      )}
+
+      {/* Session-Code für Tablet anzeigen */}
+      {sessionCode && (
+        <div className="session-code-badge">
+          <span className="session-code-label">{t('simStatus.tabletCode', 'TABLET CODE')}</span>
+          <span className="session-code-value">{sessionCode}</span>
         </div>
       )}
 

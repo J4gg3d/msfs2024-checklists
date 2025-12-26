@@ -11,6 +11,7 @@ Interaktive Checklisten-Webapp für Microsoft Flight Simulator 2024. Fokus auf A
 - **Daten**: JSON-Dateien für Checklisten
 - **Persistenz**: LocalStorage für Fortschritt
 - **Bridge** (optional): C# SimConnect Server für Live-Daten
+- **Remote-Sync** (optional): Supabase Realtime für Tablet-Zugriff
 
 ## Projektstruktur
 ```
@@ -29,7 +30,11 @@ src/
 │   ├── SimStatus.jsx       # SimConnect Verbindungsstatus
 │   └── SimStatus.css
 ├── hooks/
-│   └── useSimConnect.js    # WebSocket-Hook für SimConnect Bridge
+│   └── useSimConnect.js    # WebSocket-Hook für SimConnect Bridge + Session-Sync
+├── config/
+│   └── supabase.js         # Supabase Konfiguration
+├── services/
+│   └── sessionService.js   # Session-Sync Service für Remote-Zugriff
 ├── data/
 │   ├── a330-checklist.json      # Normal-Modus Checkliste
 │   └── a330-career-checklist.json # Karriere-Modus Checkliste
@@ -38,10 +43,13 @@ src/
 public/
 └── images/                 # Bilder für Detail-Panel
 
-SimConnectBridge/           # C# SimConnect Server (optional)
-├── Program.cs
-├── SimConnectBridge.csproj
-└── bin/                    # Kompilierte Bridge
+bridge-server/MSFSBridge/   # C# SimConnect Server (optional)
+├── Program.cs              # Hauptprogramm mit Session-Management
+├── MSFSBridge.csproj
+├── WebSocketServer.cs      # Lokaler WebSocket-Server
+├── SimConnectManager.cs    # SimConnect Integration
+├── SupabaseSessionManager.cs # Remote-Session für Tablets
+└── Models/SimData.cs       # Datenmodell
 ```
 
 ## Wichtige Befehle
@@ -53,8 +61,9 @@ npm run dev
 npm run build
 
 # Bridge kompilieren (optional)
-cd SimConnectBridge
+cd bridge-server/MSFSBridge
 dotnet build
+dotnet run
 ```
 
 ## Checklisten-Datenstruktur
@@ -115,10 +124,45 @@ msfs-checklist-collapsed-*     # Eingeklappte Sektionen
 ```
 
 ## SimConnect Bridge
-Die Bridge läuft als separater C# Prozess und kommuniziert über WebSocket (Port 8765).
+Die Bridge läuft als separater C# Prozess und kommuniziert über WebSocket (Port 8080).
 - Sendet Flugdaten (Altitude, Speed, Position)
 - Erkennt Pause-Status via SimConnect Events
 - Demo-Modus wenn MSFS nicht läuft
+
+## Remote-Session (Tablet-Zugriff)
+Ermöglicht Zugriff auf Flugdaten von externen Geräten (iPad, Tablet, Handy).
+
+### Setup
+1. Kostenlosen Supabase Account erstellen: https://supabase.com
+2. Neues Projekt anlegen
+3. API-Zugangsdaten kopieren (Settings → API)
+
+### Web-App Konfiguration (.env)
+```
+VITE_SUPABASE_URL=https://dein-projekt.supabase.co
+VITE_SUPABASE_ANON_KEY=dein-anon-key
+```
+
+### Bridge Konfiguration (Umgebungsvariablen)
+```
+SUPABASE_URL=https://dein-projekt.supabase.co
+SUPABASE_ANON_KEY=dein-anon-key
+```
+
+### Nutzung
+1. Bridge starten → zeigt Session-Code an (z.B. "FLUG-1234")
+2. Auf Tablet: Website öffnen → Menü → Tablet → Session-Code eingeben
+3. Flugdaten werden in Echtzeit synchronisiert
+
+### Architektur
+```
+┌───────────────┐     ┌─────────────────┐     ┌───────────────┐
+│ Gaming-PC     │     │ Supabase        │     │ iPad/Tablet   │
+│               │     │ Realtime        │     │               │
+│ MSFS ──────── │────▶│ (Cloud)         │◀────│ Browser       │
+│ Bridge        │     │                 │     │               │
+└───────────────┘     └─────────────────┘     └───────────────┘
+```
 
 ## Hinweise für Entwicklung
 - Sprache in UI/Daten: Deutsch

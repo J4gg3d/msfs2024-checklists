@@ -11,7 +11,7 @@ Interaktive Checklisten-Webapp für Microsoft Flight Simulator 2024. Fokus auf A
 - **Daten**: JSON-Dateien für Checklisten
 - **Persistenz**: LocalStorage für Fortschritt
 - **Bridge** (optional): C# SimConnect Server für Live-Daten
-- **Remote-Sync** (optional): Supabase Realtime für Tablet-Zugriff
+- **Tablet-Zugriff**: Lokales Netzwerk via IP-Adresse
 
 ## Projektstruktur
 ```
@@ -25,16 +25,16 @@ src/
 │   ├── ChecklistSection.css
 │   ├── ChecklistItem.jsx   # Einzelner Checkpunkt mit Checkbox
 │   ├── ChecklistItem.css
+│   ├── FlightInfo.jsx      # Fluginformationen (Route, Distanz, ETE)
+│   ├── FlightInfo.css
 │   ├── DetailPanel.jsx     # Seitenpanel mit Item-Details
 │   ├── DetailPanel.css
 │   ├── SimStatus.jsx       # SimConnect Verbindungsstatus
 │   └── SimStatus.css
 ├── hooks/
-│   └── useSimConnect.js    # WebSocket-Hook für SimConnect Bridge + Session-Sync
-├── config/
-│   └── supabase.js         # Supabase Konfiguration
-├── services/
-│   └── sessionService.js   # Session-Sync Service für Remote-Zugriff
+│   └── useSimConnect.js    # WebSocket-Hook für SimConnect Bridge
+├── utils/
+│   └── geoUtils.js         # Flughafen-Koordinaten & Distanzberechnung
 ├── data/
 │   ├── a330-checklist.json      # Normal-Modus Checkliste
 │   └── a330-career-checklist.json # Karriere-Modus Checkliste
@@ -44,11 +44,10 @@ public/
 └── images/                 # Bilder für Detail-Panel
 
 bridge-server/MSFSBridge/   # C# SimConnect Server (optional)
-├── Program.cs              # Hauptprogramm mit Session-Management
+├── Program.cs              # Hauptprogramm mit Auto-Connect
 ├── MSFSBridge.csproj
 ├── WebSocketServer.cs      # Lokaler WebSocket-Server
 ├── SimConnectManager.cs    # SimConnect Integration
-├── SupabaseSessionManager.cs # Remote-Session für Tablets
 └── Models/SimData.cs       # Datenmodell
 ```
 
@@ -121,51 +120,68 @@ msfs-checklist-mode           # "normal" | "career"
 msfs-checklist-checked-normal  # Array von Item-IDs
 msfs-checklist-checked-career  # Array von Item-IDs
 msfs-checklist-collapsed-*     # Eingeklappte Sektionen
+msfs-checklist-bridge-ip       # IP-Adresse für Tablet-Verbindung
+msfs-checklist-airport-cache   # Gecachte Flughafen-Koordinaten (von API)
 ```
 
 ## SimConnect Bridge
+
 Die Bridge läuft als separater C# Prozess und kommuniziert über WebSocket (Port 8080).
-- Sendet Flugdaten (Altitude, Speed, Position)
-- Erkennt Pause-Status via SimConnect Events
-- Demo-Modus wenn MSFS nicht läuft
 
-## Remote-Session (Tablet-Zugriff)
-Ermöglicht Zugriff auf Flugdaten von externen Geräten (iPad, Tablet, Handy).
+### Features
+- **Auto-Connect**: Verbindet sich automatisch mit MSFS beim Start
+- **Auto-Retry**: Versucht alle 5 Sekunden erneut zu verbinden wenn MSFS nicht läuft
+- **IP-Anzeige**: Zeigt lokale IP-Adresse für Tablet-Zugriff
+- **Demo-Modus**: Simulierte Daten wenn MSFS nicht läuft
 
-### Setup
-1. Kostenlosen Supabase Account erstellen: https://supabase.com
-2. Neues Projekt anlegen
-3. API-Zugangsdaten kopieren (Settings → API)
+### Übertragene Daten
+- Flugdaten: Altitude, Ground Speed, Heading, Latitude, Longitude
+- ATC-Daten: Callsign, Airline, Flugnummer
+- Flugzeugstatus: On Ground, Engines Running, Gear, Flaps
+- Systeme: Lichter, Elektrik, APU, Anti-Ice, Transponder
 
-### Web-App Konfiguration (.env)
-```
-VITE_SUPABASE_URL=https://dein-projekt.supabase.co
-VITE_SUPABASE_ANON_KEY=dein-anon-key
+### Start
+```bash
+cd bridge-server/MSFSBridge
+dotnet run
+# Oder: start-bridge.bat doppelklicken
 ```
 
-### Bridge Konfiguration (Umgebungsvariablen)
-```
-SUPABASE_URL=https://dein-projekt.supabase.co
-SUPABASE_ANON_KEY=dein-anon-key
-```
+## Tablet-Zugriff (Lokales Netzwerk)
+
+Ermöglicht Zugriff auf die Checklist und Flugdaten von Tablets/iPads im gleichen WLAN.
 
 ### Nutzung
-1. Bridge starten → zeigt Session-Code an (z.B. "FLUG-1234")
-2. Auf Tablet: Website öffnen → Menü → Tablet → Session-Code eingeben
-3. Flugdaten werden in Echtzeit synchronisiert
+1. Bridge auf dem Gaming-PC starten
+2. IP-Adresse aus der Bridge-Konsole notieren (z.B. `192.168.1.100`)
+3. Auf dem Tablet: Webseite öffnen → Menü → Tablet
+4. IP-Adresse eingeben und verbinden
 
 ### Architektur
 ```
-┌───────────────┐     ┌─────────────────┐     ┌───────────────┐
-│ Gaming-PC     │     │ Supabase        │     │ iPad/Tablet   │
-│               │     │ Realtime        │     │               │
-│ MSFS ──────── │────▶│ (Cloud)         │◀────│ Browser       │
-│ Bridge        │     │                 │     │               │
-└───────────────┘     └─────────────────┘     └───────────────┘
+┌─────────────────┐     WebSocket (Port 8080)     ┌───────────────┐
+│ Gaming-PC       │◀─────────────────────────────▶│ iPad/Tablet   │
+│ MSFS + Bridge   │        Lokales WLAN           │ Browser       │
+└─────────────────┘                               └───────────────┘
 ```
 
+## Flugrouten-Tracking
+
+Die App berechnet automatisch die geflogene Distanz basierend auf GPS-Position.
+
+### Features
+- **GPS-basiert**: Distanz wird aus aktueller Position zum Startflughafen berechnet
+- **Weltweite Flughäfen**: Unbekannte ICAO-Codes werden automatisch via API nachgeschlagen
+- **Caching**: Einmal geladene Flughäfen werden im LocalStorage gespeichert
+- **Bridge-Restart sicher**: Distanz wird korrekt aus Position rekonstruiert
+
+### Flughafen-API
+- Verwendet: `airport-data.com` (kostenlos, kein API-Key nötig)
+- ~80 Flughäfen in statischer Datenbank (schneller Zugriff)
+- Alle anderen Flughäfen werden on-demand geladen
+
 ## Hinweise für Entwicklung
-- Sprache in UI/Daten: Deutsch
+- Sprache in UI/Daten: Deutsch (mit i18n für Englisch)
 - Monospace-Font für Cockpit-Ästhetik
 - Dunkles Theme (Cockpit-Style)
 - Bilder in `public/images/` ablegen

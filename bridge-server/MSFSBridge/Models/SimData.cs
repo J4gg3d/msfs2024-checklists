@@ -16,6 +16,8 @@ public class SimData
     public double? Altitude { get; set; }
     public double? GroundSpeed { get; set; }
     public double? Heading { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public string? AircraftTitle { get; set; }
 
     // Flugphase
@@ -86,13 +88,23 @@ public class SimData
     public bool? HydraulicPump1 { get; set; }
     public bool? HydraulicPump2 { get; set; }
 
-    // Flugplan / ATC Info
+    // GPS Flugplan
+    public bool? GpsIsActiveFlightPlan { get; set; }
+    public int? GpsFlightPlanWpCount { get; set; }
+    public int? GpsFlightPlanWpIndex { get; set; }
+    public double? GpsFlightPlanTotalDistance { get; set; } // in NM
+    public double? GpsWpDistance { get; set; } // in NM
+    public double? GpsWpEte { get; set; } // in Sekunden
+    public double? GpsEte { get; set; } // in Sekunden
+    public double? GpsEta { get; set; } // in Sekunden
+
+    // ATC / Flug-Identifikation
     public string? AtcId { get; set; }
     public string? AtcAirline { get; set; }
     public string? AtcFlightNumber { get; set; }
+
+    // GPS Waypoints
     public string? GpsWpNextId { get; set; }
-    public int? GpsWpIndex { get; set; }
-    public int? GpsWpCount { get; set; }
-    public double? GpsWpDistance { get; set; }
-    public double? GpsWpEte { get; set; }
+    public string? GpsWpPrevId { get; set; }
+    public string? GpsApproachAirportId { get; set; } // Zielflughafen
 }

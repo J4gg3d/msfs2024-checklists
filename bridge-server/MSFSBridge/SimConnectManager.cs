@@ -15,6 +15,7 @@ public class SimConnectManager : IDisposable
     private Thread? _messageThread;
     private bool _running = false;
     private bool _isPaused = false;  // Wird durch System-Event gesetzt
+    private bool _atcDebugLogged = false;
 
     // Windows Message für SimConnect
     private const int WM_USER_SIMCONNECT = 0x0402;
@@ -47,6 +48,8 @@ public class SimConnectManager : IDisposable
         public double Altitude;
         public double GroundSpeed;
         public double Heading;
+        public double Latitude;
+        public double Longitude;
         public double EngCombustion1;
         public double FlapsPosition;
         public double GearPosition;
@@ -107,13 +110,21 @@ public class SimConnectManager : IDisposable
         public double FuelPump1;
         public double FuelPump2;
 
-        // Hydraulik
-        public double HydraulicPump1;
-        public double HydraulicPump2;
+        // Hydraulik - deaktiviert, existiert nicht mit Index in MSFS 2024
+        // public double HydraulicPump1;
+        // public double HydraulicPump2;
 
-        // String am Ende
+        // Strings am Ende (müssen am Ende stehen wegen Marshalling)
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
         public string AircraftTitle;
+
+        // ATC-SimVars für Flugnummer
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string AtcId;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string AtcAirline;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
+        public string AtcFlightNumber;
     }
 
     // Events
@@ -122,6 +133,36 @@ public class SimConnectManager : IDisposable
     public event Action<string>? OnError;
 
     public bool IsConnected => _isConnected;
+
+    /// <summary>
+    /// Prüft ob ein String gültige Zeichen enthält (keine Sonderzeichen/Müll)
+    /// </summary>
+    private static bool IsValidString(string? str)
+    {
+        if (string.IsNullOrWhiteSpace(str)) return false;
+        // Prüfen ob der String nur druckbare ASCII-Zeichen enthält
+        foreach (char c in str)
+        {
+            if (c < 32 || c > 126) return false;
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Prüft ob ein String ein gültiger ICAO-Code ist (4 Buchstaben)
+    /// </summary>
+    private static bool IsValidIcao(string? str)
+    {
+        if (string.IsNullOrWhiteSpace(str)) return false;
+        str = str.Trim();
+        if (str.Length < 3 || str.Length > 4) return false;
+        // ICAO-Codes sind alphanumerisch
+        foreach (char c in str)
+        {
+            if (!char.IsLetterOrDigit(c)) return false;
+        }
+        return true;
+    }
 
     /// <summary>
     /// Verbindung zum Simulator herstellen
@@ -152,35 +193,38 @@ public class SimConnectManager : IDisposable
             _simConnect.SubscribeToSystemEvent(EVENTS.PAUSE_STATE, "Pause");
             _simConnect.SubscribeToSystemEvent(EVENTS.PAUSE_EX1, "Pause_EX1");
 
-            // Daten-Definition erstellen - REIHENFOLGE MUSS MIT STRUCT ÜBEREINSTIMMEN!
+            // MINIMALE Daten-Definition für MSFS 2024 Kompatibilität
+            // Viele SimVars aus MSFS 2020 sind in MSFS 2024 obsolete!
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "SIMULATION RATE", "number", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "SIM ON GROUND", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "PLANE ALTITUDE", "feet", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GROUND VELOCITY", "knots", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "PLANE HEADING DEGREES TRUE", "degrees", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "PLANE LATITUDE", "degrees", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "PLANE LONGITUDE", "degrees", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GENERAL ENG COMBUSTION:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "FLAPS HANDLE PERCENT", "percent", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GEAR HANDLE POSITION", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GEAR TOTAL PCT EXTENDED", "percent", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);  // Ersetzt GEAR HANDLE POSITION
 
             // Parkbremse
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "BRAKE PARKING INDICATOR", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
             // Lichter
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT NAV", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT BEACON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT LANDING", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT TAXI", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT STROBE", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT RECOGNITION", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT WING", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT LOGO", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT PANEL", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT NAV ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT BEACON ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT LANDING ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT TAXI ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT STROBE ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT RECOGNITION ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT WING ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT LOGO ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "LIGHT PANEL ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
-            // Elektrisch
+            // Elektrisch - vereinfacht für MSFS 2024
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "ELECTRICAL MASTER BATTERY:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "ELECTRICAL MASTER BATTERY:2", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "EXTERNAL POWER ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "AVIONICS MASTER SWITCH", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "EXTERNAL POWER ON:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "CIRCUIT AVIONICS ON", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);  // Ersetzt AVIONICS MASTER SWITCH
 
             // APU
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "APU SWITCH", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
@@ -201,7 +245,7 @@ public class SimConnectManager : IDisposable
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "AUTOPILOT MASTER", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "AUTOPILOT THROTTLE ARM", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
-            // Kabine
+            // Kabine - deaktiviert, möglicherweise nicht in MSFS 2024
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "CABIN SEATBELTS ALERT SWITCH", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "CABIN NO SMOKING ALERT SWITCH", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
@@ -215,15 +259,20 @@ public class SimConnectManager : IDisposable
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "PITOT HEAT", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
             // Treibstoffpumpen
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "FUEL PUMP SWITCH:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "FUEL PUMP SWITCH:2", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GENERAL ENG FUEL PUMP SWITCH:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GENERAL ENG FUEL PUMP SWITCH:2", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
-            // Hydraulik
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "HYDRAULIC SWITCH:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "HYDRAULIC SWITCH:2", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            // Hydraulik - deaktiviert, HYDRAULIC SWITCH existiert nicht mit Index in MSFS 2024
+            // _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "HYDRAULIC SWITCH:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            // _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "HYDRAULIC SWITCH:2", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
             // Strings am Ende
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "TITLE", null, SIMCONNECT_DATATYPE.STRING256, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+
+            // ATC-SimVars für Flugnummer
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "ATC ID", null, SIMCONNECT_DATATYPE.STRING64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "ATC AIRLINE", null, SIMCONNECT_DATATYPE.STRING64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "ATC FLIGHT NUMBER", null, SIMCONNECT_DATATYPE.STRING8, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
             // Struct registrieren
             _simConnect.RegisterDataDefineStruct<SimDataStruct>(DEFINITIONS.SimData);
@@ -361,6 +410,8 @@ public class SimConnectManager : IDisposable
                     Altitude = Math.Round(simData.Altitude, 0),
                     GroundSpeed = Math.Round(simData.GroundSpeed, 0),
                     Heading = Math.Round(simData.Heading, 0),
+                    Latitude = simData.Latitude,
+                    Longitude = simData.Longitude,
                     EnginesRunning = simData.EngCombustion1 > 0 || simData.EngCombustion2 > 0,
                     FlapsPosition = (int)Math.Round(simData.FlapsPosition),
                     GearDown = simData.GearPosition > 0,
@@ -424,9 +475,14 @@ public class SimConnectManager : IDisposable
                     FuelPump1 = simData.FuelPump1 > 0,
                     FuelPump2 = simData.FuelPump2 > 0,
 
-                    // Hydraulik
-                    HydraulicPump1 = simData.HydraulicPump1 > 0,
-                    HydraulicPump2 = simData.HydraulicPump2 > 0
+                    // Hydraulik - deaktiviert
+                    // HydraulicPump1 = simData.HydraulicPump1 > 0,
+                    // HydraulicPump2 = simData.HydraulicPump2 > 0,
+
+                    // ATC-Daten für Flugnummer
+                    AtcId = IsValidString(simData.AtcId) ? simData.AtcId?.Trim() : null,
+                    AtcAirline = IsValidString(simData.AtcAirline) ? simData.AtcAirline?.Trim() : null,
+                    AtcFlightNumber = IsValidString(simData.AtcFlightNumber) ? simData.AtcFlightNumber?.Trim() : null
                 };
 
                 OnDataReceived?.Invoke(result);

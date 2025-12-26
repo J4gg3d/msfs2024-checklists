@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import Checklist from './components/Checklist'
 import SimStatus from './components/SimStatus'
@@ -6,6 +6,7 @@ import DetailPanel from './components/DetailPanel'
 import FlightInfo from './components/FlightInfo'
 import useSimConnect from './hooks/useSimConnect'
 import { useChecklist } from './hooks/useChecklist'
+import { calculateFlownDistance, isAirportKnown, getAirportCoordinatesAsync } from './utils/geoUtils'
 import './App.css'
 
 // LocalStorage Keys
@@ -122,100 +123,84 @@ function App() {
     isConnected,
     simData,
     isDemoMode,
-    isSessionMode,
-    sessionCode,
-    bridgeSessionCode,
-    sessionError,
-    receivedFlightRoute,
-    isSessionSyncAvailable,
+    // Manuelle IP-Verbindung (lokales Netzwerk)
+    bridgeIP,
+    isManualIPMode,
+    connectToIP,
+    disconnectFromIP,
+    error: connectionError,
+    // Standard-Funktionen
     connect,
     disconnect,
-    connectToSession,
-    disconnectSession,
-    sendFlightRoute,
     checkAutoStatus
   } = useSimConnect()
 
-  // FlightRoute an Tablets senden (nur am PC mit Bridge)
-  // Sendet bei Änderungen und regelmäßig alle 5 Sekunden
-  const lastSentFlightRoute = useRef(null)
-  useEffect(() => {
-    console.log('App: FlightRoute Sync useEffect', { bridgeSessionCode, isSessionMode, flightRoute })
+  // Bridge-IP Eingabe State (für lokales Netzwerk)
+  const [bridgeIPInput, setBridgeIPInput] = useState('')
+  const [isConnectingIP, setIsConnectingIP] = useState(false)
 
-    if (!bridgeSessionCode || isSessionMode || !flightRoute) {
-      console.log('App: FlightRoute Sync übersprungen - Bedingungen nicht erfüllt')
+  // Automatisch mit SimConnect verbinden beim Start
+  // (wird vom Hook selbst gehandhabt wenn eine gespeicherte IP existiert)
+  useEffect(() => {
+    // Nur verbinden wenn keine gespeicherte Bridge-IP existiert
+    // (sonst übernimmt der Hook die Verbindung)
+    const savedIP = localStorage.getItem('msfs-checklist-bridge-ip');
+    if (!savedIP) {
+      connect()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Flughafen-Koordinaten vorladen wenn Origin gesetzt wird
+  // Lädt unbekannte Flughäfen automatisch von der API
+  useEffect(() => {
+    if (!flightRoute?.origin) return
+
+    const loadAirport = async () => {
+      if (!isAirportKnown(flightRoute.origin)) {
+        console.log('App: Lade Flughafen von API:', flightRoute.origin)
+        const coords = await getAirportCoordinatesAsync(flightRoute.origin)
+        if (coords) {
+          console.log('App: Flughafen geladen:', flightRoute.origin, coords)
+        } else {
+          console.warn('App: Flughafen nicht gefunden:', flightRoute.origin)
+        }
+      }
+    }
+
+    loadAirport()
+  }, [flightRoute?.origin])
+
+  // Automatisches Tracking der geflogenen Distanz basierend auf GPS-Position
+  // Berechnet die Distanz vom Startflughafen zur aktuellen Position
+  useEffect(() => {
+    if (!isConnected) return
+    if (!flightRoute?.origin) return
+    if (simData?.latitude == null || simData?.longitude == null) return
+
+    // Prüfen ob der Startflughafen bekannt ist (inkl. Cache von API)
+    if (!isAirportKnown(flightRoute.origin)) {
+      // Flughafen wird gerade geladen oder existiert nicht
       return
     }
 
-    // Bei Änderungen sofort senden
-    const routeString = JSON.stringify(flightRoute)
-    if (lastSentFlightRoute.current !== routeString) {
-      console.log('App: FlightRoute geändert, sende...')
-      lastSentFlightRoute.current = routeString
-      sendFlightRoute(flightRoute)
-    }
+    // Distanz vom Startflughafen zur aktuellen Position berechnen
+    const gpsFlownDistance = calculateFlownDistance(
+      flightRoute.origin,
+      simData.latitude,
+      simData.longitude
+    )
 
-    // Regelmäßig senden (für neu verbundene Tablets)
-    const interval = setInterval(() => {
-      console.log('App: Periodisches FlightRoute senden...')
-      sendFlightRoute(flightRoute)
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [flightRoute, bridgeSessionCode, isSessionMode, sendFlightRoute])
-
-  // FlightRoute von PC empfangen (nur am Tablet)
-  useEffect(() => {
-    if (isSessionMode && receivedFlightRoute) {
-      console.log('App: FlightRoute vom PC empfangen:', receivedFlightRoute)
+    if (gpsFlownDistance != null && gpsFlownDistance >= 0) {
       setFlightRoute(prev => {
-        // Nur aktualisieren wenn sich etwas geändert hat
-        if (JSON.stringify(prev) !== JSON.stringify(receivedFlightRoute)) {
-          return receivedFlightRoute
+        // Nur aktualisieren wenn sich die Distanz signifikant geändert hat (> 0.5 NM)
+        const currentFlown = prev.flownDistance || 0
+        if (Math.abs(gpsFlownDistance - currentFlown) > 0.5) {
+          return { ...prev, flownDistance: gpsFlownDistance }
         }
         return prev
       })
     }
-  }, [receivedFlightRoute, isSessionMode])
-
-  // Session-Code Eingabe State
-  const [sessionCodeInput, setSessionCodeInput] = useState('')
-  const [isConnectingSession, setIsConnectingSession] = useState(false)
-
-  // Automatisch mit SimConnect verbinden beim Start
-  useEffect(() => {
-    connect()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Automatisches Tracking der geflogenen Distanz (mit SimRate und Zeitstempel)
-  const lastTrackingTime = useRef(Date.now())
-
-  useEffect(() => {
-    if (!isConnected || !simData?.groundSpeed || simData.groundSpeed <= 0) return
-    if (!flightRoute?.totalDistance || flightRoute.totalDistance <= 0) return
-    if (simData.onGround) return // Nicht tracken wenn am Boden
-
-    const intervalId = setInterval(() => {
-      const now = Date.now()
-      const elapsedSeconds = (now - lastTrackingTime.current) / 1000
-      lastTrackingTime.current = now
-
-      const simRate = simData.simRate || 1
-      const groundSpeedNm = simData.groundSpeed // Groundspeed in Knoten = NM/h
-      const distancePerSecond = groundSpeedNm / 3600 // NM pro Sekunde
-      const distanceIncrement = distancePerSecond * elapsedSeconds * simRate
-
-      setFlightRoute(prev => {
-        const newFlown = Math.min(
-          (prev.flownDistance || 0) + distanceIncrement,
-          prev.totalDistance || 0
-        )
-        return { ...prev, flownDistance: newFlown }
-      })
-    }, 5000) // Alle 5 Sekunden aktualisieren
-
-    return () => clearInterval(intervalId)
-  }, [isConnected, simData?.groundSpeed, simData?.onGround, simData?.simRate, flightRoute?.totalDistance])
+  }, [isConnected, simData?.latitude, simData?.longitude, flightRoute?.origin])
 
   const handleItemToggle = (itemId) => {
     setCheckedItems(prev => {
@@ -283,22 +268,18 @@ function App() {
     }
   }
 
-  const handleSessionConnect = async () => {
-    if (!sessionCodeInput.trim()) return
+  // Handler für IP-Verbindung (lokales Netzwerk)
+  const handleIPConnect = async () => {
+    if (!bridgeIPInput.trim()) return
 
-    setIsConnectingSession(true)
-    const success = await connectToSession(sessionCodeInput.trim())
-    setIsConnectingSession(false)
-
-    if (success) {
-      setSessionCodeInput('')
-    }
+    setIsConnectingIP(true)
+    await connectToIP(bridgeIPInput.trim())
+    setIsConnectingIP(false)
+    setBridgeIPInput('')
   }
 
-  const handleSessionDisconnect = async () => {
-    await disconnectSession()
-    // Nach Trennung wieder normale Verbindung versuchen
-    connect()
+  const handleIPDisconnect = () => {
+    disconnectFromIP()
   }
 
   return (
@@ -534,37 +515,25 @@ function App() {
               <button className="modal-close-btn" onClick={() => setActiveModal(null)}>✕</button>
             </div>
             <div className="modal-body">
-              {/* Session-Code von der Bridge anzeigen (wenn verfügbar) */}
-              {bridgeSessionCode && !isSessionMode && (
-                <div className="info-section bridge-session-section">
-                  <h3>{t('modals.tablet.bridgeSessionTitle', 'Dein Session-Code')}</h3>
-                  <p>{t('modals.tablet.bridgeSessionIntro', 'Gib diesen Code auf deinem Tablet ein:')}</p>
-                  <div className="bridge-session-code">
-                    <code>{bridgeSessionCode}</code>
-                  </div>
-                  <p className="hint-text">{t('modals.tablet.bridgeSessionHint', 'Die Bridge ist verbunden und sendet Daten an alle Geräte mit diesem Code.')}</p>
-                </div>
-              )}
+              {/* LOKALES NETZWERK - IP-Verbindung (prominenter) */}
+              <div className="info-section bridge-session-section">
+                <h3>🌐 {t('modals.tablet.localNetworkTitle', 'Lokales Netzwerk')}</h3>
+                <p>{t('modals.tablet.localNetworkIntro', 'Verbinde dich mit dem PC, auf dem die Bridge läuft. Die IP-Adresse wird in der Bridge angezeigt.')}</p>
 
-              {/* Session-Code Verbindung */}
-              <div className="info-section session-connect-section">
-                <h3>{t('modals.tablet.sessionTitle', 'Session-Verbindung')}</h3>
-                <p>{t('modals.tablet.sessionIntro', 'Verbinde dich mit dem PC, auf dem die Bridge läuft. Der Session-Code wird oben angezeigt.')}</p>
-
-                {isSessionMode ? (
+                {isManualIPMode && isConnected ? (
                   <div className="session-connected">
                     <div className="session-status connected">
                       <span className="status-icon">✓</span>
-                      <span>{t('modals.tablet.sessionConnected', 'Verbunden mit Session')}</span>
+                      <span>{t('modals.tablet.ipConnected', 'Verbunden mit Bridge')}</span>
                     </div>
                     <div className="session-code-display">
-                      <code>{sessionCode}</code>
+                      <code>{bridgeIP}</code>
                     </div>
                     <button
                       className="session-disconnect-btn"
-                      onClick={handleSessionDisconnect}
+                      onClick={handleIPDisconnect}
                     >
-                      {t('modals.tablet.sessionDisconnect', 'Trennen')}
+                      {t('modals.tablet.ipDisconnect', 'Trennen')}
                     </button>
                   </div>
                 ) : (
@@ -572,81 +541,51 @@ function App() {
                     <input
                       type="text"
                       className="session-code-input"
-                      placeholder={t('modals.tablet.sessionPlaceholder', 'XXXX-XXXX')}
-                      value={sessionCodeInput}
-                      onChange={(e) => setSessionCodeInput(e.target.value.toUpperCase())}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSessionConnect()}
-                      maxLength={9}
-                      disabled={isConnectingSession || !isSessionSyncAvailable}
+                      placeholder={t('modals.tablet.ipPlaceholder', '192.168.1.100')}
+                      value={bridgeIPInput}
+                      onChange={(e) => setBridgeIPInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleIPConnect()}
+                      disabled={isConnectingIP}
                     />
                     <button
                       className="session-connect-btn"
-                      onClick={handleSessionConnect}
-                      disabled={isConnectingSession || !sessionCodeInput.trim() || !isSessionSyncAvailable}
+                      onClick={handleIPConnect}
+                      disabled={isConnectingIP || !bridgeIPInput.trim()}
                     >
-                      {isConnectingSession
-                        ? t('modals.tablet.sessionConnecting', 'Verbinde...')
-                        : t('modals.tablet.sessionConnect', 'Verbinden')}
+                      {isConnectingIP
+                        ? t('modals.tablet.ipConnecting', 'Verbinde...')
+                        : t('modals.tablet.ipConnect', 'Verbinden')}
                     </button>
                   </div>
                 )}
 
-                {sessionError && (
+                {connectionError && (
                   <div className="session-error">
-                    {sessionError}
+                    {connectionError}
                   </div>
                 )}
 
-                {!isSessionSyncAvailable && (
-                  <div className="session-unavailable">
-                    {t('modals.tablet.sessionUnavailable', 'Session-Sync ist nicht konfiguriert. Bitte Supabase-Zugangsdaten in der .env Datei hinterlegen.')}
-                  </div>
-                )}
-              </div>
-
-              <div className="info-section-divider">
-                <span>{t('modals.tablet.orLocalNetwork', 'oder im lokalen Netzwerk')}</span>
-              </div>
-
-              <div className="info-section">
-                <h3>{t('modals.tablet.intro')}</h3>
-                <p>{t('modals.tablet.introText')}</p>
-              </div>
-
-              <div className="info-section tablet-connection-box">
-                <h3>1. {t('modals.tablet.step1')}</h3>
-                <div className="code-box">
-                  <code>npm run dev -- --host</code>
-                </div>
-                <p className="hint-text">{t('modals.tablet.step1Hint')}</p>
-              </div>
-
-              <div className="info-section tablet-connection-box">
-                <h3>2. {t('modals.tablet.step2')}</h3>
-                <p>{t('modals.tablet.step2Text')}</p>
-                <div className="code-box">
-                  <code>Network: http://192.168.x.x:5173</code>
-                </div>
-                <p className="hint-text">{t('modals.tablet.step2Hint')} <code>ipconfig</code> (Windows)</p>
-              </div>
-
-              <div className="info-section tablet-connection-box">
-                <h3>3. {t('modals.tablet.step3')}</h3>
-                <p>{t('modals.tablet.step3Text')}</p>
-                <div className="code-box">
-                  <code>http://[YOUR-IP]:5173</code>
+                <div className="hint-text" style={{marginTop: '12px'}}>
+                  💡 {t('modals.tablet.ipHint', 'Die IP-Adresse findest du in der Bridge-Konsole. Tablet und PC müssen im gleichen WLAN sein.')}
                 </div>
               </div>
 
+              {/* Aktueller Verbindungsstatus */}
               <div className="info-section info-storage">
                 <h3>{t('modals.tablet.currentConnection')}</h3>
                 <p>
-                  <strong>{t('modals.tablet.runningOn')}</strong><br/>
-                  <code className="current-url">{window.location.href}</code>
-                </p>
-                <p>
-                  <strong>{t('modals.tablet.wsConnects')}</strong><br/>
-                  <code className="current-url">ws://{window.location.hostname}:8080</code>
+                  <strong>Status:</strong>{' '}
+                  {isConnected ? (
+                    isDemoMode ? (
+                      <span style={{color: '#ffa726'}}>Demo-Modus (keine Bridge)</span>
+                    ) : isManualIPMode ? (
+                      <span style={{color: '#66bb6a'}}>Verbunden mit {bridgeIP}</span>
+                    ) : (
+                      <span style={{color: '#66bb6a'}}>Verbunden (lokal)</span>
+                    )
+                  ) : (
+                    <span style={{color: '#ef5350'}}>Nicht verbunden</span>
+                  )}
                 </p>
               </div>
 
@@ -851,7 +790,6 @@ function App() {
                 isDemoMode={isDemoMode}
                 onConnect={connect}
                 onDisconnect={disconnect}
-                sessionCode={bridgeSessionCode}
               />
             }
           />

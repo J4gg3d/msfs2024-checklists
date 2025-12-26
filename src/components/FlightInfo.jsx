@@ -13,10 +13,15 @@ function FlightInfo({ simData, isConnected, flightRoute, onFlightRouteChange }) 
     atcAirline = null,
     atcFlightNumber = null,
     gpsWpNextId = null,
-    gpsWpIndex = 0,
-    gpsWpCount = 0,
+    gpsWpPrevId = null,
+    gpsFlightPlanWpIndex = 0,
+    gpsFlightPlanWpCount = 0,
     gpsWpDistance = 0,
     gpsWpEte = 0,
+    gpsEte = 0,
+    gpsIsActiveFlightPlan = false,
+    gpsFlightPlanTotalDistance = 0,
+    gpsApproachAirportId = null,
     altitude = null,
     groundSpeed = null,
   } = simData || {};
@@ -31,6 +36,16 @@ function FlightInfo({ simData, isConnected, flightRoute, onFlightRouteChange }) 
 
   // Callsign zusammenbauen
   const callsign = atcId || (atcAirline && atcFlightNumber ? `${atcAirline}${atcFlightNumber}` : null);
+
+  // Effektive Route: GPS-Daten haben Vorrang, wenn verfügbar
+  const effectiveDestination = gpsApproachAirportId || flightRoute?.destination;
+  const effectiveOrigin = flightRoute?.origin; // Abflughafen nur aus manueller Eingabe
+  const effectiveTotalDistance = gpsFlightPlanTotalDistance > 0
+    ? gpsFlightPlanTotalDistance
+    : (flightRoute?.totalDistance || 0);
+
+  // GPS-basierte ETE formatieren
+  const gpsEteFormatted = formatEte(gpsEte);
 
   // Fortschritt berechnen basierend auf geflogener Distanz
   const progress = useMemo(() => {
@@ -99,8 +114,8 @@ function FlightInfo({ simData, isConnected, flightRoute, onFlightRouteChange }) 
             ? (callsign || 'VERBUNDEN')
             : 'OFFLINE'}
         </span>
-        {isConnected && gpsWpCount > 0 && (
-          <span className="flight-progress">WP {gpsWpIndex + 1}/{gpsWpCount}</span>
+        {isConnected && gpsFlightPlanWpCount > 0 && (
+          <span className="flight-progress">WP {gpsFlightPlanWpIndex + 1}/{gpsFlightPlanWpCount}</span>
         )}
       </div>
 
@@ -151,11 +166,11 @@ function FlightInfo({ simData, isConnected, flightRoute, onFlightRouteChange }) 
           </div>
         ) : (
           <div className="route-display-container" onClick={handleStartEdit}>
-            {flightRoute?.origin || flightRoute?.destination ? (
+            {effectiveOrigin || effectiveDestination ? (
               <>
                 <div className="route-airports">
-                  <span className="route-airport route-origin">{flightRoute.origin || '????'}</span>
-                  <span className="route-airport route-destination">{flightRoute.destination || '????'}</span>
+                  <span className="route-airport route-origin">{effectiveOrigin || '????'}</span>
+                  <span className="route-airport route-destination">{effectiveDestination || '????'}</span>
                 </div>
                 <div className="route-progress-container">
                   <div className="route-progress-line">
@@ -163,10 +178,10 @@ function FlightInfo({ simData, isConnected, flightRoute, onFlightRouteChange }) 
                     <div className="route-plane-icon" style={{ left: `${progress}%` }}>✈</div>
                   </div>
                 </div>
-                {flightRoute?.totalDistance > 0 && (
+                {effectiveTotalDistance > 0 && (
                   <div className="route-distance-info">
-                    <span className="route-flown">{Math.round(flightRoute.flownDistance || 0)} NM</span>
-                    <span className="route-total">{Math.round(flightRoute.totalDistance)} NM</span>
+                    <span className="route-flown">{Math.round(flightRoute?.flownDistance || 0)} NM</span>
+                    <span className="route-total">{Math.round(effectiveTotalDistance)} NM</span>
                   </div>
                 )}
               </>
@@ -197,7 +212,9 @@ function FlightInfo({ simData, isConnected, flightRoute, onFlightRouteChange }) 
         </div>
         <div className="flight-data-item">
           <span className="data-label">ETE</span>
-          <span className="data-value">{estimatedEte || '--:--'}</span>
+          <span className="data-value">
+            {isConnected && gpsEte > 0 ? gpsEteFormatted : (estimatedEte || '--:--')}
+          </span>
         </div>
         <div className="flight-data-item">
           <span className="data-label">ALT</span>

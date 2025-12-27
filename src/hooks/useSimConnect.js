@@ -101,6 +101,7 @@ function useSimConnect() {
   const [simData, setSimData] = useState(null);
   const [error, setError] = useState(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [sharedRoute, setSharedRoute] = useState(null); // Synchronisierte Route von Bridge
 
   // Manuelle Bridge-IP für Tablet-Zugriff
   const [bridgeIP, setBridgeIP] = useState(() => {
@@ -288,6 +289,14 @@ function useSimConnect() {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+
+          // Prüfen ob es eine Route-Nachricht ist
+          if (data.type === 'route') {
+            console.log('SimConnect: Route received:', data.route);
+            setSharedRoute(data.route);
+            return;
+          }
+
           // Debug: Zeige empfangene Daten einmalig
           if (!window._simDataLogged) {
             console.log('SimConnect received data keys:', Object.keys(data));
@@ -454,6 +463,23 @@ function useSimConnect() {
     };
   }, [simData]);
 
+  /**
+   * Sendet Route-Informationen an alle verbundenen Clients über die Bridge
+   * @param {Object} route - { origin: string, destination: string }
+   */
+  const sendRoute = useCallback((route) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const message = JSON.stringify({
+        type: 'route',
+        route: route
+      });
+      console.log('SimConnect: Sending route:', route);
+      wsRef.current.send(message);
+    } else {
+      console.log('SimConnect: Cannot send route - not connected');
+    }
+  }, []);
+
   // Automatisch mit gespeicherter Bridge-IP verbinden
   useEffect(() => {
     const savedIP = bridgeIP;
@@ -475,6 +501,9 @@ function useSimConnect() {
     isManualIPMode,
     connectToIP,
     disconnectFromIP,
+    // Route-Synchronisation
+    sharedRoute,
+    sendRoute,
     // Standard-Funktionen
     connect,
     disconnect,

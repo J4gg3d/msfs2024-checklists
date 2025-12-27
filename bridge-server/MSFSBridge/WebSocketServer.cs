@@ -15,6 +15,9 @@ public class BridgeWebSocketServer : IDisposable
     private readonly object _lock = new();
     private bool _disposed = false;
 
+    // Gespeicherte Route für Synchronisation zwischen Clients
+    private RouteData? _currentRoute = null;
+
     private readonly JsonSerializerSettings _jsonSettings = new()
     {
         ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -54,6 +57,18 @@ public class BridgeWebSocketServer : IDisposable
                     }
                     OnLog?.Invoke($"Client verbunden: {socket.ConnectionInfo.ClientIpAddress} (Gesamt: {ClientCount})");
                     OnClientConnected?.Invoke(socket);
+
+                    // Aktuelle Route an neuen Client senden
+                    if (_currentRoute != null)
+                    {
+                        try
+                        {
+                            var routeMessage = JsonConvert.SerializeObject(new { type = "route", route = _currentRoute }, _jsonSettings);
+                            socket.Send(routeMessage);
+                            OnLog?.Invoke($"Route an neuen Client gesendet: {_currentRoute.Origin} → {_currentRoute.Destination}");
+                        }
+                        catch { }
+                    }
                 };
 
                 socket.OnClose = () =>
@@ -176,11 +191,6 @@ public class BridgeWebSocketServer : IDisposable
     /// </summary>
     private void HandleClientMessage(IWebSocketConnection socket, string message)
     {
-        // Für zukünftige Erweiterungen:
-        // - Checklisten-Status synchronisieren
-        // - Befehle an den Simulator senden
-        // - etc.
-
         try
         {
             var command = JsonConvert.DeserializeObject<ClientCommand>(message);
@@ -191,13 +201,43 @@ public class BridgeWebSocketServer : IDisposable
                     case "ping":
                         socket.Send(JsonConvert.SerializeObject(new { type = "pong" }));
                         break;
-                    // Weitere Befehle hier hinzufügen
+
+                    case "route":
+                        HandleRouteMessage(socket, command);
+                        break;
                 }
             }
         }
         catch
         {
             // Ungültige Nachricht ignorieren
+        }
+    }
+
+    /// <summary>
+    /// Verarbeitet Route-Nachrichten und synchronisiert zwischen Clients
+    /// </summary>
+    private void HandleRouteMessage(IWebSocketConnection sender, ClientCommand command)
+    {
+        try
+        {
+            // Route-Daten aus dem Command extrahieren
+            var routeJson = JsonConvert.SerializeObject(command.Data);
+            var route = JsonConvert.DeserializeObject<RouteData>(routeJson);
+
+            if (route != null)
+            {
+                _currentRoute = route;
+                OnLog?.Invoke($"Route empfangen: {route.Origin} → {route.Destination}");
+
+                // Route an alle Clients broadcasten (inkl. Sender für Bestätigung)
+                var routeMessage = JsonConvert.SerializeObject(new { type = "route", route = route }, _jsonSettings);
+                Broadcast(routeMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            OnLog?.Invoke($"Route-Fehler: {ex.Message}");
         }
     }
 
@@ -218,4 +258,13 @@ public class ClientCommand
 {
     public string? Type { get; set; }
     public object? Data { get; set; }
+}
+
+/// <summary>
+/// Datenmodell für Flugrouten
+/// </summary>
+public class RouteData
+{
+    public string? Origin { get; set; }
+    public string? Destination { get; set; }
 }

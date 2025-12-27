@@ -140,6 +140,21 @@ function App() {
     }
   }, [flightRoute])
 
+  // Route-Synchronisation: Empfange Route von anderen Clients
+  useEffect(() => {
+    if (!sharedRoute) return
+
+    // Nur aktualisieren wenn sich die Route tatsächlich geändert hat
+    if (sharedRoute.origin !== flightRoute.origin || sharedRoute.destination !== flightRoute.destination) {
+      console.log('App: Route von Bridge empfangen:', sharedRoute)
+      setFlightRoute(prev => ({
+        ...prev,
+        origin: sharedRoute.origin || prev.origin,
+        destination: sharedRoute.destination || prev.destination
+      }))
+    }
+  }, [sharedRoute]) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Sprachwechsel-Funktion
   const toggleLanguage = () => {
     const newLang = i18n.language === 'de' ? 'en' : 'de'
@@ -157,6 +172,9 @@ function App() {
     connectToIP,
     disconnectFromIP,
     error: connectionError,
+    // Route-Synchronisation
+    sharedRoute,
+    sendRoute,
     // Standard-Funktionen
     connect,
     disconnect,
@@ -308,6 +326,14 @@ function App() {
 
   const handleFlightRouteChange = (newRoute) => {
     setFlightRoute(newRoute)
+
+    // Route an andere verbundene Clients senden
+    if (isConnected && !isDemoMode) {
+      sendRoute({
+        origin: newRoute.origin || '',
+        destination: newRoute.destination || ''
+      })
+    }
   }
 
   const handleResetFlight = () => {

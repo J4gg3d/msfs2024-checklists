@@ -104,6 +104,23 @@ const airportCoordinates = {
   'FAOR': { lat: -26.1392, lon: 28.2460 }, // Johannesburg
   'HECA': { lat: 30.1219, lon: 31.4056 },  // Kairo
   'GMMN': { lat: 33.3675, lon: -7.5900 },  // Casablanca
+  'GGOV': { lat: 11.8948, lon: -15.6531 }, // Bissau (Guinea-Bissau)
+  'GOOY': { lat: 14.7397, lon: -17.4902 }, // Dakar (Senegal)
+  'GABS': { lat: 13.4699, lon: -16.6522 }, // Banjul (Gambia)
+  'GULB': { lat: 11.5886, lon: -13.1386 }, // Labé (Guinea)
+  'GUCY': { lat: 10.3866, lon: -9.2617 },  // Conakry (Guinea)
+  'DXXX': { lat: 6.1657, lon: 1.2546 },    // Lomé (Togo)
+  'DGAA': { lat: 5.6052, lon: -0.1668 },   // Accra (Ghana)
+  'DBBB': { lat: 6.3573, lon: 2.3844 },    // Cotonou (Benin)
+  'DNMM': { lat: 6.5774, lon: 3.3212 },    // Lagos (Nigeria)
+  'FKKD': { lat: 4.0061, lon: 9.7194 },    // Douala (Kamerun)
+  'FCBB': { lat: -4.2517, lon: 15.2531 },  // Brazzaville (Kongo)
+  'FZAA': { lat: -4.3858, lon: 15.4446 },  // Kinshasa (DR Kongo)
+  'HKJK': { lat: -1.3192, lon: 36.9278 },  // Nairobi (Kenia)
+  'HTDA': { lat: -6.8781, lon: 39.2026 },  // Dar es Salaam (Tansania)
+  'FMEE': { lat: -20.4302, lon: 57.6836 }, // Mauritius
+  'FMMI': { lat: -18.7969, lon: 47.4789 }, // Antananarivo (Madagaskar)
+  'FACT': { lat: -33.9649, lon: 18.6017 }, // Kapstadt (Südafrika)
 };
 
 /**

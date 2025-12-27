@@ -201,6 +201,23 @@ function App() {
     })
   }, [sharedRoute])
 
+  // Route-Synchronisation: Sende aktuelle Route wenn Verbindung hergestellt wird
+  useEffect(() => {
+    if (!isConnected || isDemoMode) return
+    if (!flightRoute?.origin && !flightRoute?.destination) return
+
+    // Kurze Verzögerung um sicherzustellen dass die Verbindung stabil ist
+    const timeout = setTimeout(() => {
+      console.log('App: Sende gespeicherte Route an Bridge:', flightRoute.origin, '→', flightRoute.destination)
+      sendRoute({
+        origin: flightRoute.origin || '',
+        destination: flightRoute.destination || ''
+      })
+    }, 500)
+
+    return () => clearTimeout(timeout)
+  }, [isConnected, isDemoMode]) // Nur bei Verbindungsänderung, nicht bei Route-Änderung
+
   // Flughafen-Koordinaten vorladen wenn Origin gesetzt wird
   // Nutzt Bridge für unbekannte Flughäfen (umgeht CORS)
   useEffect(() => {

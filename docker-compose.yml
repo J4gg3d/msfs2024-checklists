@@ -7,11 +7,30 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-      # HTTPS Router
+
+      # HTTPS Router (Hauptdomain)
       - "traefik.http.routers.simchecklist.rule=Host(`simchecklist.app`)"
       - "traefik.http.routers.simchecklist.entrypoints=websecure"
       - "traefik.http.routers.simchecklist.tls=true"
       - "traefik.http.routers.simchecklist.tls.certresolver=letsencrypt"
+
+      # HTTP → HTTPS Redirect
+      - "traefik.http.routers.simchecklist-http.rule=Host(`simchecklist.app`) || Host(`www.simchecklist.app`)"
+      - "traefik.http.routers.simchecklist-http.entrypoints=web"
+      - "traefik.http.routers.simchecklist-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+
+      # www → non-www Redirect (HTTPS)
+      - "traefik.http.routers.simchecklist-www.rule=Host(`www.simchecklist.app`)"
+      - "traefik.http.routers.simchecklist-www.entrypoints=websecure"
+      - "traefik.http.routers.simchecklist-www.tls=true"
+      - "traefik.http.routers.simchecklist-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.simchecklist-www.middlewares=redirect-www-to-non-www"
+      - "traefik.http.middlewares.redirect-www-to-non-www.redirectregex.regex=^https://www\\.simchecklist\\.app/(.*)"
+      - "traefik.http.middlewares.redirect-www-to-non-www.redirectregex.replacement=https://simchecklist.app/$${1}"
+      - "traefik.http.middlewares.redirect-www-to-non-www.redirectregex.permanent=true"
+
       # Service
       - "traefik.http.services.simchecklist.loadbalancer.server.port=80"
 

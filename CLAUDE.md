@@ -1,7 +1,15 @@
 # MSFS Checklist - Projektübersicht
 
 ## Beschreibung
-Interaktive Checklisten-Webapp für Microsoft Flight Simulator 2024. Fokus auf Airbus A330-200 mit zwei Modi:
+Interaktive Checklisten-Webapp für Microsoft Flight Simulator 2024.
+
+**Live-Website**: https://simchecklist.app
+
+**Unterstützte Flugzeuge**:
+- Airbus A330-200 (Normal + Karriere)
+- Pilatus PC-12 NGX (Karriere)
+
+**Modi**:
 - **Normal-Modus**: Vollständige Checkliste für alle Flugphasen
 - **Karriere-Modus**: Optimiert für MSFS 2024 Career Mode
 
@@ -32,21 +40,30 @@ src/
 │   ├── SimStatus.jsx       # SimConnect Verbindungsstatus
 │   └── SimStatus.css
 ├── hooks/
-│   └── useSimConnect.js    # WebSocket-Hook für SimConnect Bridge
+│   ├── useSimConnect.js    # WebSocket-Hook für SimConnect Bridge
+│   └── useChecklist.js     # Checklist-Loader mit Flugzeug-Registry
 ├── utils/
 │   └── geoUtils.js         # Flughafen-Koordinaten & Distanzberechnung
 ├── data/
-│   ├── a330-checklist.json      # Normal-Modus Checkliste
-│   └── a330-career-checklist.json # Karriere-Modus Checkliste
+│   ├── de/                 # Deutsche Checklisten
+│   │   ├── a330-normal.json
+│   │   ├── a330-career.json
+│   │   └── pc12-career.json
+│   └── en/                 # Englische Checklisten
+│       ├── a330-normal.json
+│       ├── a330-career.json
+│       └── pc12-career.json
 └── main.jsx                # Entry Point
 
 public/
-└── images/                 # Bilder für Detail-Panel
+├── favicon.svg             # Turbinen-Icon
+└── images/                 # Bilder für Detail-Panel (pro Flugzeug)
 
 bridge-server/MSFSBridge/   # C# SimConnect Server (optional)
 ├── Program.cs              # Hauptprogramm mit Auto-Connect
 ├── MSFSBridge.csproj
-├── WebSocketServer.cs      # Lokaler WebSocket-Server
+├── WebSocketServer.cs      # WebSocket-Server (Port 8080)
+├── StaticFileServer.cs     # HTTP-Server für Tablets (Port 8081)
 ├── SimConnectManager.cs    # SimConnect Integration
 └── Models/SimData.cs       # Datenmodell
 ```
@@ -131,7 +148,9 @@ Die Bridge läuft als separater C# Prozess und kommuniziert über WebSocket (Por
 ### Features
 - **Auto-Connect**: Verbindet sich automatisch mit MSFS beim Start
 - **Auto-Retry**: Versucht alle 5 Sekunden erneut zu verbinden wenn MSFS nicht läuft
-- **IP-Anzeige**: Zeigt lokale IP-Adresse für Tablet-Zugriff
+- **WebSocket-Server**: Port 8080 für Flugdaten
+- **HTTP-Server**: Port 8081 serviert Website für Tablets
+- **IP-Anzeige**: Zeigt Tablet-URL in der Konsole
 - **Demo-Modus**: Simulierte Daten wenn MSFS nicht läuft
 
 ### Übertragene Daten
@@ -151,18 +170,25 @@ dotnet run
 
 Ermöglicht Zugriff auf die Checklist und Flugdaten von Tablets/iPads im gleichen WLAN.
 
-### Nutzung
+### Option A: Desktop-PC mit simchecklist.app
+1. Öffne https://simchecklist.app im Browser
+2. Starte die Bridge auf dem PC
+3. Website verbindet sich automatisch zu `ws://127.0.0.1:8080`
+4. Funktioniert in Chrome/Firefox (Localhost-Loopback-Ausnahme)
+
+### Option B: Tablet via Bridge
 1. Bridge auf dem Gaming-PC starten
-2. IP-Adresse aus der Bridge-Konsole notieren (z.B. `192.168.1.100`)
-3. Auf dem Tablet: Webseite öffnen → Menü → Tablet
-4. IP-Adresse eingeben und verbinden
+2. URL aus der Bridge-Konsole notieren (z.B. `http://192.168.1.100:8081`)
+3. URL im Tablet-Browser öffnen
+4. Bridge liefert Website + WebSocket-Daten
 
 ### Architektur
 ```
-┌─────────────────┐     WebSocket (Port 8080)     ┌───────────────┐
-│ Gaming-PC       │◀─────────────────────────────▶│ iPad/Tablet   │
-│ MSFS + Bridge   │        Lokales WLAN           │ Browser       │
-└─────────────────┘                               └───────────────┘
+Desktop-PC:
+  simchecklist.app (HTTPS) ──► ws://127.0.0.1:8080 ──► Bridge
+
+Tablet:
+  http://[PC-IP]:8081 ◄──── Bridge serviert Website + WebSocket
 ```
 
 ## Flugrouten-Tracking
@@ -180,9 +206,19 @@ Die App berechnet automatisch die geflogene Distanz basierend auf GPS-Position.
 - ~80 Flughäfen in statischer Datenbank (schneller Zugriff)
 - Alle anderen Flughäfen werden on-demand geladen
 
+## Neues Flugzeug hinzufügen
+
+1. Checklisten-JSON erstellen in `src/data/de/` und `src/data/en/`
+2. Bilder in `public/images/` ablegen (Prefix: `flugzeug_`)
+3. In `src/hooks/useChecklist.js`:
+   - Import hinzufügen
+   - In `checklists` Registry eintragen
+   - In `availableAircraft` Array hinzufügen
+
 ## Hinweise für Entwicklung
 - Sprache in UI/Daten: Deutsch (mit i18n für Englisch)
 - Monospace-Font für Cockpit-Ästhetik
 - Dunkles Theme (Cockpit-Style)
-- Bilder in `public/images/` ablegen
+- Bilder in `public/images/` ablegen (Prefix: `flugzeug_`)
 - LocalStorage für Persistenz (kein Cookie-Banner nötig)
+- READMEs und CLAUDE.md bei größeren Änderungen aktualisieren

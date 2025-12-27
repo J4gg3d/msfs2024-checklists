@@ -2,7 +2,9 @@
 
 [English](README.md) | [Deutsch](README_DE.md)
 
-Interactive checklist web app for Microsoft Flight Simulator 2024. Currently featuring the **Airbus A330-200** with more aircraft coming soon through community contributions.
+Interactive checklist web app for Microsoft Flight Simulator 2024. Currently featuring the **Airbus A330-200** and **Pilatus PC-12 NGX** with more aircraft coming soon through community contributions.
+
+**Live Website: [simchecklist.app](https://simchecklist.app)**
 
 ## Features
 
@@ -75,9 +77,10 @@ dotnet run
 ```
 
 The bridge:
-- Runs on WebSocket port 8080
+- WebSocket server on port 8080 (flight data)
+- HTTP server on port 8081 (serves website for tablets)
 - Auto-connects to MSFS on startup
-- Shows your local IP address for tablet connections
+- Shows tablet URL in console (e.g., `http://192.168.1.100:8081`)
 - Retries every 5 seconds if MSFS isn't running
 
 ## Tablet Support (Local Network)
@@ -86,11 +89,17 @@ Use the checklist on your iPad or tablet while receiving live flight data from y
 
 ### How it works
 
+**Option A: Using simchecklist.app (Desktop PC)**
+1. Open [simchecklist.app](https://simchecklist.app) in your browser
+2. Start the Bridge on your PC
+3. The website automatically connects to `ws://127.0.0.1:8080`
+4. Done! (Works in Chrome/Firefox via localhost loopback exception)
+
+**Option B: Tablet via Bridge (Local Network)**
 1. Start the Bridge on your gaming PC
-2. Note the IP address shown in the bridge console (e.g., `192.168.1.100`)
-3. On your tablet: Open the website -> Menu -> Tablet
-4. Enter the IP address and connect
-5. Done! Flight data syncs in real-time
+2. Note the URL shown in the bridge console (e.g., `http://192.168.1.100:8081`)
+3. Open this URL on your tablet browser
+4. Done! The Bridge serves both the website and flight data
 
 ### Requirements
 - PC and tablet must be on the same WiFi network
@@ -99,10 +108,11 @@ Use the checklist on your iPad or tablet while receiving live flight data from y
 ### Architecture
 
 ```
-+------------------+     WebSocket (Port 8080)     +---------------+
-|  Gaming PC       |<----------------------------->|  iPad/Tablet  |
-|  MSFS + Bridge   |         Local WiFi            |  Browser      |
-+------------------+                               +---------------+
+Desktop PC:
+  simchecklist.app (HTTPS) ──► ws://127.0.0.1:8080 ──► Bridge
+
+Tablet:
+  http://[PC-IP]:8081 ◄──── Bridge serves website + WebSocket
 ```
 
 ## Flight Route Tracking
@@ -119,6 +129,7 @@ The app automatically tracks your flight progress:
 | Aircraft | Normal Mode | Career Mode | Languages | Contributor |
 |----------|:-----------:|:-----------:|:---------:|-------------|
 | Airbus A330-200 | Yes | Yes | DE, EN | [@J4gg3d](https://github.com/J4gg3d) |
+| Pilatus PC-12 NGX | - | Yes | DE, EN | [@J4gg3d](https://github.com/J4gg3d) |
 | *Your aircraft here* | - | - | - | [Contribute!](CONTRIBUTING.md) |
 
 ## Contributing
@@ -156,6 +167,8 @@ src/
 bridge-server/MSFSBridge/    # C# SimConnect Server
 ├── Program.cs               # Main program with auto-connect
 ├── SimConnectManager.cs     # SimConnect integration
+├── WebSocketServer.cs       # WebSocket server for flight data
+├── StaticFileServer.cs      # HTTP server for tablet website
 └── Models/SimData.cs        # Data model
 ```
 

@@ -160,6 +160,8 @@ function App() {
     // Route-Synchronisation
     sharedRoute,
     sendRoute,
+    // Airport-Lookup über Bridge (umgeht CORS)
+    getAirportFromBridge,
     // Standard-Funktionen
     connect,
     disconnect,
@@ -200,16 +202,35 @@ function App() {
   }, [sharedRoute])
 
   // Flughafen-Koordinaten vorladen wenn Origin gesetzt wird
-  // Lädt unbekannte Flughäfen automatisch von der API
+  // Nutzt Bridge für unbekannte Flughäfen (umgeht CORS)
   useEffect(() => {
     if (!flightRoute?.origin) return
 
     const loadAirport = async () => {
       if (!isAirportKnown(flightRoute.origin)) {
-        console.log('App: Lade Flughafen von API:', flightRoute.origin)
+        console.log('App: Lade Flughafen:', flightRoute.origin)
+
+        // Versuche zuerst über Bridge (CORS-frei)
+        if (isConnected && !isDemoMode && getAirportFromBridge) {
+          const coords = await getAirportFromBridge(flightRoute.origin)
+          if (coords) {
+            console.log('App: Flughafen über Bridge geladen:', flightRoute.origin, coords)
+            // Speichere im lokalen Cache für geoUtils
+            try {
+              const cache = JSON.parse(localStorage.getItem('msfs-checklist-airport-cache') || '{}')
+              cache[flightRoute.origin.toUpperCase()] = coords
+              localStorage.setItem('msfs-checklist-airport-cache', JSON.stringify(cache))
+            } catch (e) {
+              console.warn('Cache-Fehler:', e)
+            }
+            return
+          }
+        }
+
+        // Fallback: Direkte API (funktioniert nur lokal, nicht auf HTTPS)
         const coords = await getAirportCoordinatesAsync(flightRoute.origin)
         if (coords) {
-          console.log('App: Flughafen geladen:', flightRoute.origin, coords)
+          console.log('App: Flughafen über API geladen:', flightRoute.origin, coords)
         } else {
           console.warn('App: Flughafen nicht gefunden:', flightRoute.origin)
         }
@@ -217,7 +238,7 @@ function App() {
     }
 
     loadAirport()
-  }, [flightRoute?.origin])
+  }, [flightRoute?.origin, isConnected, isDemoMode, getAirportFromBridge])
 
   // Automatische Berechnung der Gesamtdistanz zwischen Origin und Destination
   // Nutzt GPS-Ziel oder manuell eingegebenes Ziel
@@ -230,6 +251,24 @@ function App() {
 
     const calculateDistance = async () => {
       console.log('App: Berechne Distanz:', origin, '→', destination)
+
+      // Lade Destination-Koordinaten über Bridge wenn nötig
+      if (!isAirportKnown(destination) && isConnected && !isDemoMode && getAirportFromBridge) {
+        console.log('App: Lade Zielflughafen über Bridge:', destination)
+        const coords = await getAirportFromBridge(destination)
+        if (coords) {
+          // Im lokalen Cache speichern
+          try {
+            const cache = JSON.parse(localStorage.getItem('msfs-checklist-airport-cache') || '{}')
+            cache[destination.toUpperCase()] = coords
+            localStorage.setItem('msfs-checklist-airport-cache', JSON.stringify(cache))
+            console.log('App: Zielflughafen über Bridge geladen:', destination, coords)
+          } catch (e) {
+            console.warn('Cache-Fehler:', e)
+          }
+        }
+      }
+
       const distance = await calculateRouteDistanceAsync(origin, destination)
 
       if (distance != null && distance > 0) {
@@ -245,7 +284,7 @@ function App() {
     }
 
     calculateDistance()
-  }, [flightRoute?.origin, flightRoute?.destination, simData?.gpsApproachAirportId])
+  }, [flightRoute?.origin, flightRoute?.destination, simData?.gpsApproachAirportId, isConnected, isDemoMode, getAirportFromBridge])
 
   // Automatisches Tracking der geflogenen Distanz basierend auf GPS-Position
   // Berechnet die Distanz vom Startflughafen zur aktuellen Position

@@ -103,6 +103,9 @@ function useSimConnect() {
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [sharedRoute, setSharedRoute] = useState(null); // Synchronisierte Route von Bridge
 
+  // Pending Airport-Requests (ICAO -> resolve callbacks)
+  const airportRequestsRef = useRef(new Map());
+
   // Manuelle Bridge-IP für Tablet-Zugriff
   const [bridgeIP, setBridgeIP] = useState(() => {
     try {
@@ -297,6 +300,23 @@ function useSimConnect() {
             return;
           }
 
+          // Prüfen ob es eine Airport-Koordinaten-Antwort ist
+          if (data.type === 'airportCoords') {
+            const icao = data.icao?.toUpperCase();
+            const pending = airportRequestsRef.current.get(icao);
+            if (pending) {
+              if (data.coords) {
+                console.log('SimConnect: Airport coords received:', icao, data.coords);
+                pending.resolve({ lat: data.coords.lat, lon: data.coords.lon });
+              } else {
+                console.log('SimConnect: Airport not found:', icao);
+                pending.resolve(null);
+              }
+              airportRequestsRef.current.delete(icao);
+            }
+            return;
+          }
+
           // Debug: Zeige empfangene Daten einmalig
           if (!window._simDataLogged) {
             console.log('SimConnect received data keys:', Object.keys(data));
@@ -480,6 +500,57 @@ function useSimConnect() {
     }
   }, []);
 
+  /**
+   * Holt Flughafen-Koordinaten über die Bridge (umgeht CORS)
+   * @param {string} icao - ICAO-Code des Flughafens
+   * @returns {Promise<{lat: number, lon: number} | null>}
+   */
+  const getAirportFromBridge = useCallback((icao) => {
+    return new Promise((resolve) => {
+      if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+        console.log('SimConnect: Cannot get airport - not connected');
+        resolve(null);
+        return;
+      }
+
+      const code = icao.toUpperCase();
+
+      // Prüfen ob bereits ein Request läuft
+      if (airportRequestsRef.current.has(code)) {
+        // An existierenden Request anhängen
+        const existing = airportRequestsRef.current.get(code);
+        existing.callbacks.push(resolve);
+        return;
+      }
+
+      // Neuen Request starten
+      airportRequestsRef.current.set(code, {
+        resolve: (result) => {
+          // Alle Callbacks aufrufen
+          resolve(result);
+        },
+        callbacks: [resolve]
+      });
+
+      // Request an Bridge senden
+      const message = JSON.stringify({
+        type: 'getAirport',
+        data: code
+      });
+      console.log('SimConnect: Requesting airport:', code);
+      wsRef.current.send(message);
+
+      // Timeout nach 10 Sekunden
+      setTimeout(() => {
+        if (airportRequestsRef.current.has(code)) {
+          console.log('SimConnect: Airport request timeout:', code);
+          airportRequestsRef.current.get(code).resolve(null);
+          airportRequestsRef.current.delete(code);
+        }
+      }, 10000);
+    });
+  }, []);
+
   // Automatisch mit gespeicherter Bridge-IP verbinden
   useEffect(() => {
     const savedIP = bridgeIP;
@@ -504,6 +575,8 @@ function useSimConnect() {
     // Route-Synchronisation
     sharedRoute,
     sendRoute,
+    // Airport-Lookup über Bridge
+    getAirportFromBridge,
     // Standard-Funktionen
     connect,
     disconnect,

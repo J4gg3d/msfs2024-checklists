@@ -2,6 +2,7 @@ using Fleck;
 using MSFSBridge.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Net.Http;
 
 namespace MSFSBridge;
 
@@ -17,6 +18,10 @@ public class BridgeWebSocketServer : IDisposable
 
     // Gespeicherte Route für Synchronisation zwischen Clients
     private RouteData? _currentRoute = null;
+
+    // Airport-Koordinaten Cache und HTTP-Client für API
+    private readonly Dictionary<string, AirportCoords> _airportCache = new();
+    private readonly HttpClient _httpClient = new();
 
     private readonly JsonSerializerSettings _jsonSettings = new()
     {
@@ -205,6 +210,10 @@ public class BridgeWebSocketServer : IDisposable
                     case "route":
                         HandleRouteMessage(socket, command);
                         break;
+
+                    case "getAirport":
+                        _ = HandleAirportRequest(socket, command);
+                        break;
                 }
             }
         }
@@ -241,12 +250,99 @@ public class BridgeWebSocketServer : IDisposable
         }
     }
 
+    /// <summary>
+    /// Verarbeitet Airport-Anfragen und holt Koordinaten von der API
+    /// </summary>
+    private async Task HandleAirportRequest(IWebSocketConnection socket, ClientCommand command)
+    {
+        try
+        {
+            var icao = command.Data?.ToString()?.Trim().ToUpper();
+            if (string.IsNullOrEmpty(icao) || icao.Length < 3 || icao.Length > 4)
+            {
+                return;
+            }
+
+            // Aus Cache holen wenn vorhanden
+            if (_airportCache.TryGetValue(icao, out var cached))
+            {
+                var cacheResponse = JsonConvert.SerializeObject(new
+                {
+                    type = "airportCoords",
+                    icao = icao,
+                    coords = cached
+                }, _jsonSettings);
+                socket.Send(cacheResponse);
+                return;
+            }
+
+            // Von API laden
+            OnLog?.Invoke($"Lade Flughafen von API: {icao}");
+            var url = $"https://airport-data.com/api/ap_info.json?icao={icao}";
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                OnLog?.Invoke($"Airport API Fehler für {icao}: {response.StatusCode}");
+                socket.Send(JsonConvert.SerializeObject(new
+                {
+                    type = "airportCoords",
+                    icao = icao,
+                    coords = (object?)null,
+                    error = "not_found"
+                }, _jsonSettings));
+                return;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<dynamic>(json);
+
+            if (data?.latitude != null && data?.longitude != null)
+            {
+                var coords = new AirportCoords
+                {
+                    Lat = (double)data.latitude,
+                    Lon = (double)data.longitude
+                };
+
+                // Im Cache speichern
+                _airportCache[icao] = coords;
+                OnLog?.Invoke($"Flughafen geladen: {icao} ({coords.Lat:F4}, {coords.Lon:F4})");
+
+                // An Client senden
+                var successResponse = JsonConvert.SerializeObject(new
+                {
+                    type = "airportCoords",
+                    icao = icao,
+                    coords = coords
+                }, _jsonSettings);
+                socket.Send(successResponse);
+            }
+            else
+            {
+                OnLog?.Invoke($"Flughafen nicht gefunden: {icao}");
+                socket.Send(JsonConvert.SerializeObject(new
+                {
+                    type = "airportCoords",
+                    icao = icao,
+                    coords = (object?)null,
+                    error = "not_found"
+                }, _jsonSettings));
+            }
+        }
+        catch (Exception ex)
+        {
+            OnLog?.Invoke($"Airport-API Fehler: {ex.Message}");
+        }
+    }
+
     public void Dispose()
     {
         if (_disposed) return;
         _disposed = true;
 
         Stop();
+        _httpClient.Dispose();
         GC.SuppressFinalize(this);
     }
 }
@@ -267,4 +363,13 @@ public class RouteData
 {
     public string? Origin { get; set; }
     public string? Destination { get; set; }
+}
+
+/// <summary>
+/// Datenmodell für Flughafen-Koordinaten
+/// </summary>
+public class AirportCoords
+{
+    public double Lat { get; set; }
+    public double Lon { get; set; }
 }

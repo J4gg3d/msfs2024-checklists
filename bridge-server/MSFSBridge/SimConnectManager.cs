@@ -114,6 +114,14 @@ public class SimConnectManager : IDisposable
         // public double HydraulicPump1;
         // public double HydraulicPump2;
 
+        // GPS Flugplan (numerische Werte)
+        public double GpsIsActiveFlightPlan;
+        public double GpsFlightPlanWpCount;
+        public double GpsFlightPlanWpIndex;
+        public double GpsWpDistance;  // in meters
+        public double GpsWpEte;       // in seconds
+        public double GpsEte;         // in seconds
+
         // Strings am Ende (müssen am Ende stehen wegen Marshalling)
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
         public string AircraftTitle;
@@ -125,6 +133,14 @@ public class SimConnectManager : IDisposable
         public string AtcAirline;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
         public string AtcFlightNumber;
+
+        // GPS Waypoint Strings
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public string GpsWpNextId;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public string GpsWpPrevId;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
+        public string GpsApproachAirportId;
     }
 
     // Events
@@ -266,6 +282,14 @@ public class SimConnectManager : IDisposable
             // _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "HYDRAULIC SWITCH:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             // _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "HYDRAULIC SWITCH:2", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
+            // GPS Flugplan (numerische Werte)
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS IS ACTIVE FLIGHT PLAN", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS FLIGHT PLAN WP COUNT", "number", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS FLIGHT PLAN WP INDEX", "number", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS WP DISTANCE", "meters", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS WP ETE", "seconds", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS ETE", "seconds", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+
             // Strings am Ende
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "TITLE", null, SIMCONNECT_DATATYPE.STRING256, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
@@ -273,6 +297,11 @@ public class SimConnectManager : IDisposable
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "ATC ID", null, SIMCONNECT_DATATYPE.STRING64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "ATC AIRLINE", null, SIMCONNECT_DATATYPE.STRING64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "ATC FLIGHT NUMBER", null, SIMCONNECT_DATATYPE.STRING8, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+
+            // GPS Waypoint Strings
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS WP NEXT ID", null, SIMCONNECT_DATATYPE.STRING32, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS WP PREV ID", null, SIMCONNECT_DATATYPE.STRING32, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GPS APPROACH AIRPORT ID", null, SIMCONNECT_DATATYPE.STRING8, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
             // Struct registrieren
             _simConnect.RegisterDataDefineStruct<SimDataStruct>(DEFINITIONS.SimData);
@@ -482,7 +511,20 @@ public class SimConnectManager : IDisposable
                     // ATC-Daten für Flugnummer
                     AtcId = IsValidString(simData.AtcId) ? simData.AtcId?.Trim() : null,
                     AtcAirline = IsValidString(simData.AtcAirline) ? simData.AtcAirline?.Trim() : null,
-                    AtcFlightNumber = IsValidString(simData.AtcFlightNumber) ? simData.AtcFlightNumber?.Trim() : null
+                    AtcFlightNumber = IsValidString(simData.AtcFlightNumber) ? simData.AtcFlightNumber?.Trim() : null,
+
+                    // GPS Flugplan
+                    GpsIsActiveFlightPlan = simData.GpsIsActiveFlightPlan > 0,
+                    GpsFlightPlanWpCount = (int)simData.GpsFlightPlanWpCount,
+                    GpsFlightPlanWpIndex = (int)simData.GpsFlightPlanWpIndex,
+                    GpsWpDistance = Math.Round(simData.GpsWpDistance / 1852.0, 1),  // Meter zu NM
+                    GpsWpEte = Math.Round(simData.GpsWpEte, 0),
+                    GpsEte = Math.Round(simData.GpsEte, 0),
+
+                    // GPS Waypoints
+                    GpsWpNextId = IsValidString(simData.GpsWpNextId) ? simData.GpsWpNextId?.Trim() : null,
+                    GpsWpPrevId = IsValidString(simData.GpsWpPrevId) ? simData.GpsWpPrevId?.Trim() : null,
+                    GpsApproachAirportId = IsValidIcao(simData.GpsApproachAirportId) ? simData.GpsApproachAirportId?.Trim().ToUpper() : null
                 };
 
                 OnDataReceived?.Invoke(result);

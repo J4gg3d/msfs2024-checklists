@@ -491,7 +491,7 @@ function useSimConnect() {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       const message = JSON.stringify({
         type: 'route',
-        route: route
+        data: route  // Bridge erwartet 'data', nicht 'route'
       });
       console.log('SimConnect: Sending route:', route);
       wsRef.current.send(message);

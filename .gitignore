@@ -32,5 +32,8 @@ dist-ssr
 bridge-server/**/bin/
 bridge-server/**/obj/
 
+# Claude Code local settings
+.claude/settings.local.json
+
 # Misc
 nul

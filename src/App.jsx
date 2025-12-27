@@ -203,24 +203,11 @@ function App() {
 
   // Route-Synchronisation: Sende aktuelle Route wenn Verbindung hergestellt wird
   useEffect(() => {
-    console.log('App: Route-Sync Check - isConnected:', isConnected, 'isDemoMode:', isDemoMode, 'route:', flightRoute?.origin, '→', flightRoute?.destination)
-
-    if (!isConnected) {
-      console.log('App: Nicht verbunden - Route wird nicht gesendet')
-      return
-    }
-    if (isDemoMode) {
-      console.log('App: Demo-Modus - Route wird nicht gesendet')
-      return
-    }
-    if (!flightRoute?.origin && !flightRoute?.destination) {
-      console.log('App: Keine Route vorhanden')
-      return
-    }
+    if (!isConnected || isDemoMode) return
+    if (!flightRoute?.origin && !flightRoute?.destination) return
 
     // Kurze Verzögerung um sicherzustellen dass die Verbindung stabil ist
     const timeout = setTimeout(() => {
-      console.log('App: SENDE Route an Bridge:', flightRoute.origin, '→', flightRoute.destination)
       sendRoute({
         origin: flightRoute.origin || '',
         destination: flightRoute.destination || ''

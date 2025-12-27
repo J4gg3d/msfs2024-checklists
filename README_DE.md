@@ -65,6 +65,7 @@ http://localhost:8080
 
 Die SimConnect Bridge liefert Live-Flugdaten aus dem Simulator:
 - Flugdaten: Altitude, Ground Speed, Heading, GPS-Position
+- GPS-Daten: Flugplan, Waypoints, ETE, Zielflughafen
 - ATC-Daten: Callsign, Airline, Flugnummer
 - Flugzeugsysteme: Lichter, Elektrik, APU, Anti-Ice, etc.
 
@@ -79,9 +80,16 @@ dotnet run
 Die Bridge:
 - WebSocket-Server auf Port 8080 (Flugdaten)
 - HTTP-Server auf Port 8081 (Website für Tablets)
+- Route-Sync zwischen PC und Tablet (automatisch)
+- Flughafen-API (umgeht CORS-Einschränkungen)
 - Verbindet sich automatisch mit MSFS beim Start
 - Zeigt Tablet-URL in der Konsole (z.B. `http://192.168.1.100:8081`)
 - Versucht alle 5 Sekunden erneut zu verbinden wenn MSFS nicht läuft
+
+**Wichtig**: Nach dem Frontend-Build die Dist-Dateien zur Bridge kopieren:
+```bash
+cp -r dist/* bridge-server/MSFSBridge/bin/Debug/net7.0/www/
+```
 
 ## Tablet-Unterstützung (Lokales Netzwerk)
 
@@ -101,6 +109,12 @@ Nutze die Checkliste auf deinem iPad oder Tablet mit Live-Flugdaten von deinem G
 3. Öffne diese URL im Tablet-Browser
 4. Fertig! Die Bridge liefert Website und Flugdaten
 
+### Route-Synchronisation
+- Flugroute wird automatisch zwischen PC und Tablet synchronisiert
+- Auf dem PC eingegebene Route erscheint sofort auf dem Tablet
+- Neue Clients erhalten beim Verbinden die aktuelle Route
+- Funktioniert bidirektional (PC ↔ Tablet)
+
 ### Voraussetzungen
 - PC und Tablet müssen im gleichen WLAN sein
 - Bridge muss auf dem PC laufen
@@ -113,6 +127,9 @@ Desktop-PC:
 
 Tablet:
   http://[PC-IP]:8081 ◄──── Bridge liefert Website + WebSocket
+
+Route-Sync:
+  PC sendet Route ──► Bridge speichert ──► Broadcast an alle Clients
 ```
 
 ## Flugrouten-Tracking
@@ -120,9 +137,12 @@ Tablet:
 Die App verfolgt automatisch deinen Flugfortschritt:
 
 - **GPS-basiert**: Distanz wird aus aktueller Position zum Startflughafen berechnet
-- **Weltweite Flughäfen**: Unbekannte ICAO-Codes werden automatisch via API nachgeschlagen
+- **Weltweite Flughäfen**: Unbekannte ICAO-Codes werden automatisch nachgeschlagen
 - **Caching**: Flughäfen werden lokal gecacht für schnelleren Zugriff
 - **Bridge-Neustart sicher**: Distanz wird korrekt aus GPS-Position rekonstruiert
+- **Route-Sync**: Route wird zwischen PC und Tablet synchronisiert
+
+Flughafen-Daten werden über die Bridge geladen (umgeht CORS) oder lokal direkt via API.
 
 ## Verfügbare Flugzeuge
 

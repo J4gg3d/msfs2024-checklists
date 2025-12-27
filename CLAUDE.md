@@ -150,20 +150,47 @@ Die Bridge läuft als separater C# Prozess und kommuniziert über WebSocket (Por
 - **Auto-Retry**: Versucht alle 5 Sekunden erneut zu verbinden wenn MSFS nicht läuft
 - **WebSocket-Server**: Port 8080 für Flugdaten
 - **HTTP-Server**: Port 8081 serviert Website für Tablets
+- **Route-Sync**: Synchronisiert Flugroute zwischen PC und Tablet
+- **Airport-API**: Lädt Flughafen-Koordinaten (umgeht CORS)
 - **IP-Anzeige**: Zeigt Tablet-URL in der Konsole
 - **Demo-Modus**: Simulierte Daten wenn MSFS nicht läuft
 
 ### Übertragene Daten
 - Flugdaten: Altitude, Ground Speed, Heading, Latitude, Longitude
 - ATC-Daten: Callsign, Airline, Flugnummer
+- GPS-Daten: Flugplan, Waypoints, ETE, Zielflughafen
 - Flugzeugstatus: On Ground, Engines Running, Gear, Flaps
 - Systeme: Lichter, Elektrik, APU, Anti-Ice, Transponder
+
+### WebSocket-Nachrichten (Client → Bridge)
+```json
+{ "type": "route", "data": { "origin": "EDDF", "destination": "KJFK" } }
+{ "type": "getAirport", "data": "EDDF" }
+{ "type": "ping" }
+```
+
+### WebSocket-Nachrichten (Bridge → Client)
+```json
+{ "type": "route", "route": { "origin": "EDDF", "destination": "KJFK" } }
+{ "type": "airportCoords", "icao": "EDDF", "coords": { "lat": 50.0379, "lon": 8.5622 } }
+{ "type": "pong" }
+// SimData wird direkt als JSON gesendet (ohne type-Wrapper)
+```
 
 ### Start
 ```bash
 cd bridge-server/MSFSBridge
+dotnet build
 dotnet run
 # Oder: start-bridge.bat doppelklicken
+```
+
+### Nach Frontend-Build: Dist-Dateien kopieren
+```bash
+# Windows PowerShell
+cp -r dist/* bridge-server/MSFSBridge/bin/Debug/net7.0/www/
+
+# Oder manuell: dist/ Inhalt nach www/ kopieren
 ```
 
 ## Tablet-Zugriff (Lokales Netzwerk)
@@ -182,6 +209,12 @@ Ermöglicht Zugriff auf die Checklist und Flugdaten von Tablets/iPads im gleiche
 3. URL im Tablet-Browser öffnen
 4. Bridge liefert Website + WebSocket-Daten
 
+### Route-Synchronisation
+- Route wird automatisch zwischen PC und Tablet synchronisiert
+- Auf dem PC eingegebene Route erscheint sofort auf dem Tablet
+- Neue Clients erhalten beim Verbinden die aktuelle Route
+- Funktioniert bidirektional (PC↔Tablet)
+
 ### Architektur
 ```
 Desktop-PC:
@@ -189,6 +222,9 @@ Desktop-PC:
 
 Tablet:
   http://[PC-IP]:8081 ◄──── Bridge serviert Website + WebSocket
+
+Route-Sync:
+  PC sendet Route ──► Bridge speichert ──► Broadcast an alle Clients
 ```
 
 ## Flugrouten-Tracking
@@ -197,14 +233,16 @@ Die App berechnet automatisch die geflogene Distanz basierend auf GPS-Position.
 
 ### Features
 - **GPS-basiert**: Distanz wird aus aktueller Position zum Startflughafen berechnet
-- **Weltweite Flughäfen**: Unbekannte ICAO-Codes werden automatisch via API nachgeschlagen
+- **Weltweite Flughäfen**: Unbekannte ICAO-Codes werden automatisch nachgeschlagen
 - **Caching**: Einmal geladene Flughäfen werden im LocalStorage gespeichert
 - **Bridge-Restart sicher**: Distanz wird korrekt aus Position rekonstruiert
+- **Route-Sync**: Route wird zwischen PC und Tablet synchronisiert
 
 ### Flughafen-API
 - Verwendet: `airport-data.com` (kostenlos, kein API-Key nötig)
-- ~80 Flughäfen in statischer Datenbank (schneller Zugriff)
-- Alle anderen Flughäfen werden on-demand geladen
+- ~100 Flughäfen in statischer Datenbank (`geoUtils.js`)
+- Unbekannte Flughäfen werden über Bridge geladen (umgeht CORS)
+- Fallback: Direkte API-Anfrage (nur lokal, nicht auf HTTPS)
 
 ## Neues Flugzeug hinzufügen
 

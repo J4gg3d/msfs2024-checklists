@@ -65,6 +65,7 @@ http://localhost:8080
 
 The SimConnect Bridge provides live flight data from the simulator including:
 - Flight data: Altitude, Ground Speed, Heading, GPS Position
+- GPS data: Flight plan, waypoints, ETE, destination airport
 - ATC data: Callsign, Airline, Flight Number
 - Aircraft systems: Lights, Electrical, APU, Anti-Ice, etc.
 
@@ -79,9 +80,16 @@ dotnet run
 The bridge:
 - WebSocket server on port 8080 (flight data)
 - HTTP server on port 8081 (serves website for tablets)
+- Route sync between PC and tablet (automatic)
+- Airport lookup API (bypasses CORS restrictions)
 - Auto-connects to MSFS on startup
 - Shows tablet URL in console (e.g., `http://192.168.1.100:8081`)
 - Retries every 5 seconds if MSFS isn't running
+
+**Important**: After building the frontend, copy dist files to Bridge:
+```bash
+cp -r dist/* bridge-server/MSFSBridge/bin/Debug/net7.0/www/
+```
 
 ## Tablet Support (Local Network)
 
@@ -101,6 +109,12 @@ Use the checklist on your iPad or tablet while receiving live flight data from y
 3. Open this URL on your tablet browser
 4. Done! The Bridge serves both the website and flight data
 
+### Route Synchronization
+- Flight route is automatically synced between PC and tablet
+- Route entered on PC appears instantly on tablet
+- New clients receive the current route when connecting
+- Works bidirectionally (PC ↔ Tablet)
+
 ### Requirements
 - PC and tablet must be on the same WiFi network
 - Bridge must be running on the PC
@@ -113,6 +127,9 @@ Desktop PC:
 
 Tablet:
   http://[PC-IP]:8081 ◄──── Bridge serves website + WebSocket
+
+Route Sync:
+  PC sends route ──► Bridge stores ──► Broadcasts to all clients
 ```
 
 ## Flight Route Tracking
@@ -120,9 +137,12 @@ Tablet:
 The app automatically tracks your flight progress:
 
 - **GPS-based**: Distance calculated from current position to departure airport
-- **Worldwide airports**: Unknown ICAO codes are automatically looked up via API
+- **Worldwide airports**: Unknown ICAO codes are automatically looked up
 - **Caching**: Airports are cached locally for faster access
 - **Bridge restart safe**: Distance is correctly reconstructed from GPS position
+- **Route sync**: Route is synchronized between PC and tablet
+
+Airport data is loaded via the Bridge (bypasses CORS) or falls back to direct API calls locally.
 
 ## Available Aircraft
 

@@ -48,6 +48,15 @@ Console.WriteLine("╚═══════════════════�
 Console.WriteLine();
 
 const int WEBSOCKET_PORT = 8080;
+const int HTTP_PORT = 8081;
+
+// WWW-Ordner für statische Dateien (Website)
+var wwwRoot = Path.Combine(AppContext.BaseDirectory, "www");
+
+// Statischen Webserver starten (für Tablets)
+using var staticServer = new StaticFileServer(wwwRoot);
+staticServer.OnLog += (message) => Console.WriteLine($"[HTTP] {message}");
+staticServer.Start(HTTP_PORT);
 string? sessionCode = null;
 
 // WebSocket-Server erstellen und starten
@@ -125,17 +134,23 @@ else
     Console.WriteLine("║                                                              ║");
     if (localIPs.Count > 0)
     {
-        Console.WriteLine("║  Gib diese IP-Adresse auf deinem Tablet ein:                 ║");
+        Console.WriteLine("║  Oeffne diese Adresse im Browser deines Tablets:             ║");
         Console.WriteLine("║                                                              ║");
         foreach (var ip in localIPs)
         {
-            var ipDisplay = ip.PadRight(15);
-            Console.WriteLine($"║     IP:   {ipDisplay}    Port: {WEBSOCKET_PORT}                 ║");
+            var urlDisplay = $"http://{ip}:{HTTP_PORT}".PadRight(30);
+            Console.WriteLine($"║     {urlDisplay}                   ║");
         }
+        Console.WriteLine("║                                                              ║");
+        Console.WriteLine("║  Oder auf diesem PC:                                         ║");
+        Console.WriteLine($"║     http://localhost:{HTTP_PORT}                                    ║");
     }
     else
     {
         Console.WriteLine("║  Keine Netzwerk-Verbindung gefunden.                         ║");
+        Console.WriteLine("║                                                              ║");
+        Console.WriteLine("║  Lokaler Zugriff:                                            ║");
+        Console.WriteLine($"║     http://localhost:{HTTP_PORT}                                    ║");
     }
     Console.WriteLine("║                                                              ║");
     Console.WriteLine("║  Tablet und PC muessen im gleichen WLAN sein!                ║");
@@ -167,7 +182,8 @@ simConnect.OnDataReceived += async (data) =>
 };
 
 Console.WriteLine();
-Console.WriteLine($"WebSocket-Server läuft auf: ws://localhost:{WEBSOCKET_PORT}");
+Console.WriteLine($"WebSocket-Server: ws://localhost:{WEBSOCKET_PORT}");
+Console.WriteLine($"HTTP-Server:      http://localhost:{HTTP_PORT}");
 Console.WriteLine();
 Console.WriteLine("Befehle:");
 Console.WriteLine("  [C] Verbinden mit MSFS (manuell)");
@@ -276,6 +292,7 @@ while (running)
                 Console.WriteLine($"  SimConnect: {(simConnect.IsConnected ? "Verbunden" : "Nicht verbunden")}");
                 Console.WriteLine($"  Auto-Retry: {(autoRetryEnabled ? "Aktiv" : "Deaktiviert")}");
                 Console.WriteLine($"  WebSocket Clients: {webSocketServer.ClientCount}");
+                Console.WriteLine($"  HTTP-Server: Port {HTTP_PORT}");
                 Console.WriteLine($"  Remote Session: {(supabaseSession.IsConnected ? $"Aktiv ({supabaseSession.SessionCode})" : "Nicht aktiv")}");
                 Console.WriteLine("==============");
                 break;

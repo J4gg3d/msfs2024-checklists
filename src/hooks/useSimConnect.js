@@ -2,9 +2,18 @@ import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 
 // WebSocket-URL dynamisch basierend auf aktuellem Host oder manueller IP
 const getWebSocketUrl = (manualIP = null) => {
+  // Manuelle IP (Tablet-Modus)
   if (manualIP) {
     return `ws://${manualIP}:8080`;
   }
+
+  // Wenn auf HTTPS (z.B. simchecklist.app) → verwende localhost/127.0.0.1
+  // Browser erlauben ws://localhost von HTTPS (Loopback-Ausnahme)
+  if (window.location.protocol === 'https:') {
+    return 'ws://127.0.0.1:8080';
+  }
+
+  // Lokale Entwicklung oder Bridge-gehostete Website
   const hostname = window.location.hostname || 'localhost';
   return `ws://${hostname}:8080`;
 };
@@ -96,7 +105,16 @@ function useSimConnect() {
   // Manuelle Bridge-IP für Tablet-Zugriff
   const [bridgeIP, setBridgeIP] = useState(() => {
     try {
-      return localStorage.getItem(BRIDGE_IP_KEY) || '';
+      const saved = localStorage.getItem(BRIDGE_IP_KEY);
+      // Sicherstellen, dass es ein gültiger String ist (kein JSON-Objekt)
+      if (saved && typeof saved === 'string' && !saved.startsWith('{')) {
+        return saved;
+      }
+      // Falls ein ungültiger Wert gespeichert war, entfernen
+      if (saved) {
+        localStorage.removeItem(BRIDGE_IP_KEY);
+      }
+      return '';
     } catch {
       return '';
     }
@@ -439,7 +457,8 @@ function useSimConnect() {
   // Automatisch mit gespeicherter Bridge-IP verbinden
   useEffect(() => {
     const savedIP = bridgeIP;
-    if (savedIP) {
+    // Sicherstellen, dass die IP ein gültiger String ist (keine Objekte oder leere Werte)
+    if (savedIP && typeof savedIP === 'string' && savedIP.trim()) {
       console.log('SimConnect: Verbinde mit gespeicherter Bridge-IP:', savedIP);
       connect(savedIP);
     }

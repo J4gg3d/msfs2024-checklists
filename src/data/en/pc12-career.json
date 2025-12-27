@@ -1,0 +1,689 @@
+{
+  "aircraft": "Pilatus PC-12 NGX",
+  "mode": "career",
+  "version": "1.0",
+  "sections": [
+    {
+      "id": "career-before-start",
+      "title": "BEFORE START",
+      "color": "#7b68ee",
+      "items": [
+        {
+          "id": "bs-battery",
+          "item": "BATTERY",
+          "action": "ON",
+          "details": {
+            "description": "Turn on main battery. Powers avionics and systems.",
+            "location": "Overhead Panel - Electrical",
+            "image": "/images/pc-12_battery.png"
+          }
+        },
+        {
+          "id": "bs-avionics",
+          "item": "AVIONICS MASTER",
+          "action": "ON",
+          "details": {
+            "description": "Turn on avionics master switch. Activates G3000/Apex displays and systems.",
+            "location": "Center Pedestal",
+            "image": "/images/pc-12_avionics_master.png"
+          }
+        },
+        {
+          "id": "bs-stby-battery",
+          "item": "STANDBY BATTERY",
+          "action": "ON",
+          "details": {
+            "description": "Turn on standby battery. Serves as emergency power backup in case of main battery failure.",
+            "location": "Overhead Panel - Electrical",
+            "image": "/images/pc-12_standby_battery.png"
+          }
+        },
+        {
+          "id": "bs-fuel-qty",
+          "item": "FUEL QUANTITY",
+          "action": "CHECK",
+          "details": {
+            "description": "Check fuel quantity on displays. Sufficient fuel for the flight?",
+            "location": "MFD - Engine Page"
+          }
+        },
+        {
+          "id": "bs-beacon",
+          "item": "BEACON",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightBeacon", "expectedValue": true },
+          "details": {
+            "description": "Turn on red beacon before engine start. Warns ground personnel.",
+            "location": "Overhead Panel - Lights"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-engine-start",
+      "title": "ENGINE START",
+      "color": "#9370db",
+      "items": [
+        {
+          "id": "es-eng-run",
+          "item": "ENGINE RUN",
+          "action": "ON",
+          "details": {
+            "description": "Set Engine Run switch to ON. Activates engine control.",
+            "location": "Overhead Panel",
+            "image": "/images/pc-12_eng_run.png"
+          }
+        },
+        {
+          "id": "es-starter",
+          "item": "STARTER",
+          "action": "ON",
+          "details": {
+            "description": "Turn starter switch ON. Motor begins to turn, Ng increases.",
+            "location": "Overhead Panel",
+            "image": "/images/pc-12_eng_starter.png"
+          }
+        },
+        {
+          "id": "es-ifr-request",
+          "item": "IFR CLEARANCE",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request IFR clearance from ATC. Note squawk code, SID and clearance limit.",
+            "location": "ATC / Clearance Delivery"
+          }
+        },
+        {
+          "id": "es-ifr-confirm",
+          "item": "IFR CLEARANCE",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Read back IFR clearance. Confirm squawk code, route and altitude.",
+            "location": "ATC / Clearance Delivery"
+          }
+        },
+        {
+          "id": "es-generators",
+          "item": "GENERATOR 1 + 2",
+          "action": "ON",
+          "details": {
+            "description": "Turn on both generators. Powers electrical systems and charges battery.",
+            "location": "Overhead Panel - Electrical",
+            "image": "/images/pc-12_gen1_2.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-taxi",
+      "title": "TAXI",
+      "color": "#20b2aa",
+      "items": [
+        {
+          "id": "tx-taxi-request",
+          "item": "TAXI CLEARANCE",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request taxi clearance from Ground.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "tx-taxi-confirm",
+          "item": "TAXI CLEARANCE",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Read back taxi clearance. Confirm runway and taxiway.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "tx-parking-brake",
+          "item": "PARKING BRAKE",
+          "action": "RELEASE",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": false },
+          "details": {
+            "description": "Release parking brake for taxi.",
+            "location": "Center Pedestal"
+          }
+        },
+        {
+          "id": "tx-taxi-light",
+          "item": "TAXI LIGHT",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Turn on taxi light.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/pc-12_taxi.lt.png"
+          }
+        },
+        {
+          "id": "tx-flaps",
+          "item": "FLAPS",
+          "action": "STAGE 1 / 33%",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 1, "comparison": "gte" },
+          "details": {
+            "description": "Set flaps to stage 1 (33%) for taxi and takeoff.",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "tx-nav-lights",
+          "item": "NAV LIGHTS",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightNav", "expectedValue": true },
+          "details": {
+            "description": "Turn on position lights (red/green/white).",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/pc-12_nav.lt.png"
+          }
+        },
+        {
+          "id": "tx-strobe",
+          "item": "STROBE",
+          "action": "AUTO/ON",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": true },
+          "details": {
+            "description": "Set strobe lights to AUTO or ON.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/pc-12_strobe.lt.png"
+          }
+        },
+        {
+          "id": "tx-flight-controls",
+          "item": "FLIGHT CONTROLS",
+          "action": "CHECK",
+          "details": {
+            "description": "Check controls: Ailerons, elevator, rudder - free and correct.",
+            "location": "Yoke / Rudder Pedals"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-before-takeoff",
+      "title": "BEFORE TAKEOFF",
+      "color": "#32cd32",
+      "items": [
+        {
+          "id": "bt-trim",
+          "item": "TRIM",
+          "action": "SET T/O",
+          "details": {
+            "description": "Set trim to takeoff position. Green range on trim indicator.",
+            "location": "Trim Wheel / Panel",
+            "image": "/images/pc-12_inert_sep.png"
+          }
+        },
+        {
+          "id": "bt-transponder",
+          "item": "TRANSPONDER",
+          "action": "ALT",
+          "autoCheck": { "simVar": "transponderState", "expectedValue": 4, "comparison": "gte" },
+          "details": {
+            "description": "Set transponder to ALT mode for altitude reporting.",
+            "location": "MFD - Transponder"
+          }
+        },
+        {
+          "id": "bt-anti-ice",
+          "item": "ANTI-ICE",
+          "action": "AS RQRD",
+          "details": {
+            "description": "Turn on anti-ice system as required. When temp < 10°C with visible moisture.",
+            "location": "Overhead Panel - Ice Protection"
+          }
+        },
+        {
+          "id": "bt-takeoff-clearance",
+          "item": "TAKEOFF CLEARANCE",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request takeoff clearance from Tower.",
+            "location": "ATC / Tower"
+          }
+        },
+        {
+          "id": "bt-takeoff-confirm",
+          "item": "TAKEOFF CLEARANCE",
+          "action": "CONFIRM",
+          "details": {
+            "description": "Read back takeoff clearance. Confirm runway.",
+            "location": "ATC / Tower"
+          }
+        },
+        {
+          "id": "bt-landing-light",
+          "item": "LANDING LIGHT",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
+          "details": {
+            "description": "Turn on landing light for takeoff.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/pc-12_landing.lt.png"
+          }
+        },
+        {
+          "id": "bt-taxi-light-off",
+          "item": "TAXI LT",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": false },
+          "details": {
+            "description": "Turn off taxi light before takeoff.",
+            "location": "Overhead Panel - Lights"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-takeoff",
+      "title": "TAKE OFF",
+      "color": "#00e676",
+      "items": [
+        {
+          "id": "to-power",
+          "item": "POWER LEVER",
+          "action": "MAX",
+          "details": {
+            "description": "Advance power lever to maximum. Monitor ITT and Torque.",
+            "location": "Power Quadrant"
+          }
+        },
+        {
+          "id": "to-rotate",
+          "item": "ROTATE",
+          "action": "85 KIAS",
+          "details": {
+            "description": "Rotate gently at approximately 85 KIAS. Pitch 7-10°.",
+            "location": "PFD - Airspeed"
+          }
+        },
+        {
+          "id": "to-gear-up",
+          "item": "LANDING GEAR",
+          "action": "UP",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": false },
+          "details": {
+            "description": "Retract landing gear after positive climb.",
+            "location": "Gear Lever"
+          }
+        },
+        {
+          "id": "to-flaps-0",
+          "item": "FLAPS",
+          "action": "0°",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 0 },
+          "details": {
+            "description": "Retract flaps when sufficient speed (110+ KIAS).",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "to-power-cruise",
+          "item": "POWER",
+          "action": "CRUISE CLIMB",
+          "details": {
+            "description": "Reduce power to cruise climb. Approximately 90-95% Torque.",
+            "location": "Power Quadrant"
+          }
+        },
+        {
+          "id": "to-autopilot",
+          "item": "AUTOPILOT",
+          "action": "ENGAGE",
+          "autoCheck": { "simVar": "autopilotMaster", "expectedValue": true },
+          "details": {
+            "description": "Engage autopilot. Select NAV or HDG mode.",
+            "location": "Autopilot Panel / GFC 700"
+          }
+        },
+        {
+          "id": "to-yaw-damper",
+          "item": "YAW DAMPER",
+          "action": "ON",
+          "details": {
+            "description": "Turn on yaw damper for smoother flight.",
+            "location": "Autopilot Panel"
+          }
+        },
+        {
+          "id": "to-landing-light-off",
+          "item": "LANDING LIGHT",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": false },
+          "details": {
+            "description": "Turn off landing light above 10,000ft.",
+            "location": "Overhead Panel - Lights"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-cruise",
+      "title": "CRUISE",
+      "color": "#4fc3f7",
+      "items": [
+        {
+          "id": "cr-altitude",
+          "item": "ALTITUDE",
+          "action": "CHECK",
+          "details": {
+            "description": "Cruise altitude reached? Set altimeter to STD above transition altitude.",
+            "location": "PFD"
+          }
+        },
+        {
+          "id": "cr-power",
+          "item": "POWER",
+          "action": "CRUISE SET",
+          "details": {
+            "description": "Set power to cruise. Approximately 70-85% Torque depending on altitude.",
+            "location": "Power Quadrant"
+          }
+        },
+        {
+          "id": "cr-condition",
+          "item": "CONDITION LEVER",
+          "action": "CRUISE",
+          "details": {
+            "description": "Set condition lever to cruise position for optimal fuel consumption.",
+            "location": "Power Quadrant"
+          }
+        },
+        {
+          "id": "cr-fuel-flow",
+          "item": "FUEL FLOW",
+          "action": "MONITOR",
+          "details": {
+            "description": "Monitor fuel consumption. Calculate range.",
+            "location": "MFD - Engine Page"
+          }
+        },
+        {
+          "id": "cr-pressurization",
+          "item": "CABIN PRESSURE",
+          "action": "CHECK",
+          "details": {
+            "description": "Check cabin pressure and differential pressure. Max 5.75 PSI.",
+            "location": "MFD - Systems Page"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-descent",
+      "title": "DESCENT",
+      "color": "#ba68c8",
+      "items": [
+        {
+          "id": "ds-atis",
+          "item": "ATIS",
+          "action": "LISTEN",
+          "details": {
+            "description": "Listen to destination ATIS. Note weather, runway, QNH.",
+            "location": "COM Radio / ATC"
+          }
+        },
+        {
+          "id": "ds-altimeter",
+          "item": "ALTIMETER",
+          "action": "QNH SET",
+          "details": {
+            "description": "Set altimeter to local QNH below transition level.",
+            "location": "PFD - Baro Knob"
+          }
+        },
+        {
+          "id": "ds-approach-brief",
+          "item": "APPROACH",
+          "action": "BRIEF",
+          "details": {
+            "description": "Brief the approach: Runway, approach type, minima, missed approach.",
+            "location": "MFD - Approach Plate"
+          }
+        },
+        {
+          "id": "ds-nav-source",
+          "item": "NAV SOURCE",
+          "action": "SET",
+          "details": {
+            "description": "Set navigation source for approach (GPS/LOC/VOR).",
+            "location": "PFD - CDI Softkey"
+          }
+        },
+        {
+          "id": "ds-seatbelt",
+          "item": "SEAT BELT SIGN",
+          "action": "ON",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true },
+          "details": {
+            "description": "Turn on seatbelt sign.",
+            "location": "Overhead Panel"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-approach",
+      "title": "APPROACH",
+      "color": "#ffa726",
+      "items": [
+        {
+          "id": "ap-landing-light",
+          "item": "LANDING LIGHT",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
+          "details": {
+            "description": "Turn on landing light below 10,000ft.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "ap-flaps-15",
+          "item": "FLAPS",
+          "action": "15°",
+          "details": {
+            "description": "Set flaps to 15° as first stage on approach.",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "ap-speed",
+          "item": "SPEED",
+          "action": "120 KIAS",
+          "details": {
+            "description": "Reduce speed to approximately 120 KIAS on approach.",
+            "location": "PFD - Airspeed"
+          }
+        },
+        {
+          "id": "ap-gear-down",
+          "item": "LANDING GEAR",
+          "action": "DOWN",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": true },
+          "details": {
+            "description": "Extend landing gear. Check three green lights.",
+            "location": "Gear Lever"
+          }
+        },
+        {
+          "id": "ap-flaps-full",
+          "item": "FLAPS",
+          "action": "30°/40°",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 2, "comparison": "gte" },
+          "details": {
+            "description": "Set flaps to full landing configuration (30° or 40°).",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "ap-final-speed",
+          "item": "SPEED",
+          "action": "Vref",
+          "details": {
+            "description": "Final approach speed (Vref) approximately 85-95 KIAS depending on weight.",
+            "location": "PFD - Airspeed"
+          }
+        },
+        {
+          "id": "ap-prop-full",
+          "item": "PROPELLER",
+          "action": "FULL FORWARD",
+          "details": {
+            "description": "Set propeller to full RPM for go-around readiness.",
+            "location": "Power Quadrant"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-after-landing",
+      "title": "AFTER LANDING",
+      "color": "#ef5350",
+      "items": [
+        {
+          "id": "al-flaps-0",
+          "item": "FLAPS",
+          "action": "0°",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 0 },
+          "details": {
+            "description": "Retract flaps after exiting the runway.",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "al-landing-light",
+          "item": "LANDING LIGHT",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": false },
+          "details": {
+            "description": "Turn off landing light.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "al-strobe",
+          "item": "STROBE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": false },
+          "details": {
+            "description": "Turn off strobe lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "al-transponder",
+          "item": "TRANSPONDER",
+          "action": "STBY",
+          "details": {
+            "description": "Set transponder to standby.",
+            "location": "MFD - Transponder"
+          }
+        },
+        {
+          "id": "al-taxi-light",
+          "item": "TAXI LIGHT",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Turn on taxi light.",
+            "location": "Overhead Panel - Lights"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-shutdown",
+      "title": "SHUTDOWN",
+      "color": "#78909c",
+      "items": [
+        {
+          "id": "sd-parking-brake",
+          "item": "PARKING BRAKE",
+          "action": "SET",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": true },
+          "details": {
+            "description": "Set parking brake at parking position.",
+            "location": "Center Pedestal"
+          }
+        },
+        {
+          "id": "sd-power-idle",
+          "item": "POWER LEVER",
+          "action": "IDLE",
+          "details": {
+            "description": "Set power lever to idle for cool-down phase.",
+            "location": "Power Quadrant"
+          }
+        },
+        {
+          "id": "sd-cool-down",
+          "item": "ENGINE COOL DOWN",
+          "action": "2 MIN",
+          "details": {
+            "description": "Let engine cool down at idle for 2 minutes. Protects the turbine.",
+            "location": "Timer"
+          }
+        },
+        {
+          "id": "sd-condition-cutoff",
+          "item": "CONDITION LEVER",
+          "action": "FUEL CUTOFF",
+          "details": {
+            "description": "Move condition lever to FUEL CUTOFF - engine shuts down.",
+            "location": "Power Quadrant"
+          }
+        },
+        {
+          "id": "sd-beacon-off",
+          "item": "BEACON",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightBeacon", "expectedValue": false },
+          "details": {
+            "description": "Turn off beacon - engine is off.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "sd-nav-lights",
+          "item": "NAV LIGHTS",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightNav", "expectedValue": false },
+          "details": {
+            "description": "Turn off position lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "sd-taxi-light",
+          "item": "TAXI LIGHT",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": false },
+          "details": {
+            "description": "Turn off taxi light.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "sd-avionics",
+          "item": "AVIONICS MASTER",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off avionics master switch.",
+            "location": "Center Pedestal"
+          }
+        },
+        {
+          "id": "sd-battery",
+          "item": "BATTERY",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off main battery. Aircraft is now completely shut down.",
+            "location": "Overhead Panel - Electrical"
+          }
+        }
+      ]
+    }
+  ]
+}

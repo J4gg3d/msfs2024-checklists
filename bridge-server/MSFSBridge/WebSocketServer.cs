@@ -352,7 +352,10 @@ public class BridgeWebSocketServer : IDisposable
 /// </summary>
 public class ClientCommand
 {
+    [JsonProperty("type")]
     public string? Type { get; set; }
+
+    [JsonProperty("data")]
     public object? Data { get; set; }
 }
 
@@ -361,7 +364,10 @@ public class ClientCommand
 /// </summary>
 public class RouteData
 {
+    [JsonProperty("origin")]
     public string? Origin { get; set; }
+
+    [JsonProperty("destination")]
     public string? Destination { get; set; }
 }
 

@@ -33,7 +33,53 @@ body {
   flex-shrink: 0;
 }
 
-@media (max-width: 1000px) {
+/* Tablet: FlightInfo above checklist, DetailPanel as modal */
+@media (max-width: 1024px) and (min-width: 481px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .checklist-container {
+    width: 100%;
+  }
+
+  /* Default: FlightInfo visible above checklist */
+  .detail-container {
+    order: -1;
+    width: 100%;
+    position: static;
+    display: block;
+  }
+
+  /* Hide DetailPanel when empty on tablets (placeholder not needed) */
+  .detail-container .detail-panel.empty {
+    display: none;
+  }
+
+  /* When item is selected: DetailPanel becomes modal overlay */
+  .detail-container:has(.detail-panel:not(.empty)) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  /* Hide FlightInfo inside the modal */
+  .detail-container:has(.detail-panel:not(.empty)) .flight-info {
+    display: none;
+  }
+}
+
+/* Mobile: Stack layout */
+@media (max-width: 480px) {
   .app-layout {
     flex-direction: column;
   }
@@ -973,4 +1019,70 @@ body {
   letter-spacing: 6px;
   color: #66bb6a;
   text-shadow: 0 0 20px rgba(102, 187, 106, 0.3);
+}
+
+/* Aircraft Selector Modal */
+.aircraft-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aircraft-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.aircraft-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(79, 195, 247, 0.3);
+}
+
+.aircraft-option.selected {
+  background: rgba(79, 195, 247, 0.1);
+  border-color: #4fc3f7;
+}
+
+.aircraft-option-name {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+.aircraft-option.selected .aircraft-option-name {
+  color: #4fc3f7;
+}
+
+.aircraft-option-modes {
+  display: flex;
+  gap: 8px;
+}
+
+.mode-badge {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mode-badge.normal {
+  background: rgba(129, 199, 132, 0.2);
+  color: #81c784;
+}
+
+.mode-badge.career {
+  background: rgba(186, 104, 200, 0.2);
+  color: #ba68c8;
 }

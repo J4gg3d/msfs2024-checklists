@@ -117,6 +117,25 @@
   background: #ffa726;
 }
 
+/* Disabled mode toggle */
+.mode-toggle-container.disabled {
+  opacity: 0.5;
+}
+
+.mode-toggle-container.disabled .mode-toggle {
+  cursor: not-allowed;
+}
+
+.mode-toggle-container.disabled .mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.mode-label.unavailable {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
 .checklist-subtitle {
   margin: 0;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;

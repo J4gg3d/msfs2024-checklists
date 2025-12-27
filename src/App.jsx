@@ -5,13 +5,14 @@ import SimStatus from './components/SimStatus'
 import DetailPanel from './components/DetailPanel'
 import FlightInfo from './components/FlightInfo'
 import useSimConnect from './hooks/useSimConnect'
-import { useChecklist } from './hooks/useChecklist'
+import { useChecklist, availableAircraft } from './hooks/useChecklist'
 import { calculateFlownDistance, isAirportKnown, getAirportCoordinatesAsync } from './utils/geoUtils'
 import './App.css'
 
 // LocalStorage Keys
 const STORAGE_KEYS = {
   MODE: 'msfs-checklist-mode',
+  AIRCRAFT: 'msfs-checklist-aircraft',
   CHECKED_NORMAL: 'msfs-checklist-checked-normal',
   CHECKED_CAREER: 'msfs-checklist-checked-career',
   COLLAPSED_NORMAL: 'msfs-checklist-collapsed-normal',
@@ -44,17 +45,39 @@ const saveToStorage = (key, set) => {
 function App() {
   const { t, i18n } = useTranslation()
 
+  // Lade ausgewähltes Flugzeug aus Storage
+  const [selectedAircraft, setSelectedAircraft] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.AIRCRAFT)
+      // Prüfen ob das gespeicherte Flugzeug noch existiert
+      if (saved && availableAircraft.find(a => a.id === saved)) {
+        return saved
+      }
+    } catch {
+      // Fallback
+    }
+    return 'a330'
+  })
+
+  // Hole das aktuelle Flugzeug-Objekt
+  const currentAircraft = availableAircraft.find(a => a.id === selectedAircraft) || availableAircraft[0]
+
   // Lade initialen Modus aus Storage
   const [isCareerMode, setIsCareerMode] = useState(() => {
     try {
-      return localStorage.getItem(STORAGE_KEYS.MODE) === 'career'
+      const savedMode = localStorage.getItem(STORAGE_KEYS.MODE) === 'career'
+      // Wenn Flugzeug nur Career hat, immer Career
+      if (currentAircraft && !currentAircraft.hasNormal) {
+        return true
+      }
+      return savedMode
     } catch {
       return false
     }
   })
 
   // Sprachabhängige Checklisten-Daten
-  const checklistData = useChecklist('a330', isCareerMode)
+  const checklistData = useChecklist(selectedAircraft, isCareerMode)
 
   // Lade checked items basierend auf Modus
   const [checkedItems, setCheckedItems] = useState(() => {
@@ -85,6 +108,11 @@ function App() {
     }
     return { origin: '', destination: '' }
   })
+
+  // Speichere ausgewähltes Flugzeug bei Änderung
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.AIRCRAFT, selectedAircraft)
+  }, [selectedAircraft])
 
   // Speichere Modus bei Änderung
   useEffect(() => {
@@ -235,6 +263,10 @@ function App() {
   }
 
   const handleCareerModeToggle = () => {
+    // Prüfen ob das aktuelle Flugzeug den anderen Modus unterstützt
+    if (!isCareerMode && !currentAircraft.hasCareer) return
+    if (isCareerMode && !currentAircraft.hasNormal) return
+
     const newMode = !isCareerMode
     setIsCareerMode(newMode)
     // Lade gespeicherte Items für den neuen Modus
@@ -243,6 +275,22 @@ function App() {
     setCheckedItems(loadFromStorage(checkedKey, new Set()))
     setCollapsedSections(loadFromStorage(collapsedKey, new Set()))
     setSelectedItem(null)
+  }
+
+  const handleAircraftSelect = (aircraftId) => {
+    const aircraft = availableAircraft.find(a => a.id === aircraftId)
+    if (!aircraft) return
+
+    setSelectedAircraft(aircraftId)
+    setShowAircraftModal(false)
+    setSelectedItem(null)
+
+    // Wenn das neue Flugzeug den aktuellen Modus nicht unterstützt, wechseln
+    if (isCareerMode && !aircraft.hasCareer) {
+      setIsCareerMode(false)
+    } else if (!isCareerMode && !aircraft.hasNormal) {
+      setIsCareerMode(true)
+    }
   }
 
   const handleMenuItemClick = (modal) => {
@@ -781,6 +829,7 @@ function App() {
             onAircraftChange={handleAircraftChange}
             isCareerMode={isCareerMode}
             onCareerModeToggle={handleCareerModeToggle}
+            canToggleMode={currentAircraft.hasNormal && currentAircraft.hasCareer}
             checkAutoStatus={checkAutoStatus}
             isSimConnected={isConnected}
             simStatusComponent={
@@ -797,7 +846,15 @@ function App() {
             <div className="loading-checklist">{t('common.loading', 'Loading...')}</div>
           )}
         </div>
-        <div className="detail-container">
+        <div
+          className="detail-container"
+          onClick={(e) => {
+            // Close detail panel when clicking on the overlay background (tablet modal)
+            if (e.target.classList.contains('detail-container') && selectedItem) {
+              setSelectedItem(null)
+            }
+          }}
+        >
           <FlightInfo
             simData={simData}
             isConnected={isConnected}
@@ -813,13 +870,33 @@ function App() {
 
       {showAircraftModal && (
         <div className="modal-overlay" onClick={() => setShowAircraftModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-icon">✈</div>
-            <h2 className="modal-title">{t('modals.aircraft.title')}</h2>
-            <p className="modal-text">{t('modals.aircraft.text')}</p>
-            <button className="modal-close" onClick={() => setShowAircraftModal(false)}>
-              {t('common.ok')}
-            </button>
+          <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{t('modals.aircraft.title', 'Flugzeug wählen')}</h2>
+              <button className="modal-close-btn" onClick={() => setShowAircraftModal(false)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <div className="aircraft-list">
+                {availableAircraft.map((aircraft) => (
+                  <button
+                    key={aircraft.id}
+                    className={`aircraft-option ${selectedAircraft === aircraft.id ? 'selected' : ''}`}
+                    onClick={() => handleAircraftSelect(aircraft.id)}
+                  >
+                    <span className="aircraft-option-name">{aircraft.name}</span>
+                    <span className="aircraft-option-modes">
+                      {aircraft.hasNormal && <span className="mode-badge normal">Normal</span>}
+                      {aircraft.hasCareer && <span className="mode-badge career">Karriere</span>}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <div className="info-section" style={{ marginTop: '20px' }}>
+                <p style={{ fontSize: '12px', color: '#888', textAlign: 'center' }}>
+                  {t('modals.aircraft.contribute', 'Weitere Flugzeuge können über GitHub beigetragen werden.')}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -140,24 +140,6 @@ function App() {
     }
   }, [flightRoute])
 
-  // Route-Synchronisation: Empfange Route von anderen Clients
-  useEffect(() => {
-    if (!sharedRoute) return
-
-    setFlightRoute(prev => {
-      // Nur aktualisieren wenn sich die Route tatsächlich geändert hat
-      if (sharedRoute.origin !== prev.origin || sharedRoute.destination !== prev.destination) {
-        console.log('App: Route von Bridge empfangen:', sharedRoute)
-        return {
-          ...prev,
-          origin: sharedRoute.origin || prev.origin,
-          destination: sharedRoute.destination || prev.destination
-        }
-      }
-      return prev
-    })
-  }, [sharedRoute])
-
   // Sprachwechsel-Funktion
   const toggleLanguage = () => {
     const newLang = i18n.language === 'de' ? 'en' : 'de'
@@ -198,6 +180,24 @@ function App() {
       connect()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Route-Synchronisation: Empfange Route von anderen Clients
+  useEffect(() => {
+    if (!sharedRoute) return
+
+    setFlightRoute(prev => {
+      // Nur aktualisieren wenn sich die Route tatsächlich geändert hat
+      if (sharedRoute.origin !== prev.origin || sharedRoute.destination !== prev.destination) {
+        console.log('App: Route von Bridge empfangen:', sharedRoute)
+        return {
+          ...prev,
+          origin: sharedRoute.origin || prev.origin,
+          destination: sharedRoute.destination || prev.destination
+        }
+      }
+      return prev
+    })
+  }, [sharedRoute])
 
   // Flughafen-Koordinaten vorladen wenn Origin gesetzt wird
   // Lädt unbekannte Flughäfen automatisch von der API

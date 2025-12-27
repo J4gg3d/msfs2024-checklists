@@ -144,16 +144,19 @@ function App() {
   useEffect(() => {
     if (!sharedRoute) return
 
-    // Nur aktualisieren wenn sich die Route tatsächlich geändert hat
-    if (sharedRoute.origin !== flightRoute.origin || sharedRoute.destination !== flightRoute.destination) {
-      console.log('App: Route von Bridge empfangen:', sharedRoute)
-      setFlightRoute(prev => ({
-        ...prev,
-        origin: sharedRoute.origin || prev.origin,
-        destination: sharedRoute.destination || prev.destination
-      }))
-    }
-  }, [sharedRoute]) // eslint-disable-line react-hooks/exhaustive-deps
+    setFlightRoute(prev => {
+      // Nur aktualisieren wenn sich die Route tatsächlich geändert hat
+      if (sharedRoute.origin !== prev.origin || sharedRoute.destination !== prev.destination) {
+        console.log('App: Route von Bridge empfangen:', sharedRoute)
+        return {
+          ...prev,
+          origin: sharedRoute.origin || prev.origin,
+          destination: sharedRoute.destination || prev.destination
+        }
+      }
+      return prev
+    })
+  }, [sharedRoute])
 
   // Sprachwechsel-Funktion
   const toggleLanguage = () => {

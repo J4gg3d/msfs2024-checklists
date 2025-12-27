@@ -175,7 +175,7 @@ export async function getAirportCoordinatesAsync(icao) {
 
   // 3. API abfragen
   try {
-    const response = await fetch(`https://www.airport-data.com/api/ap_info.json?icao=${code}`);
+    const response = await fetch(`https://airport-data.com/api/ap_info.json?icao=${code}`);
     if (!response.ok) {
       console.warn(`Airport API Fehler für ${code}:`, response.status);
       return null;

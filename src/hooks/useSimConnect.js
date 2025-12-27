@@ -2,9 +2,9 @@ import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 
 // WebSocket-URL dynamisch basierend auf aktuellem Host oder manueller IP
 const getWebSocketUrl = (manualIP = null) => {
-  // Manuelle IP (Tablet-Modus)
-  if (manualIP) {
-    return `ws://${manualIP}:8080`;
+  // Manuelle IP (Tablet-Modus) - nur wenn gültiger String
+  if (manualIP && typeof manualIP === 'string' && manualIP.trim() && !manualIP.startsWith('{')) {
+    return `ws://${manualIP.trim()}:8080`;
   }
 
   // Wenn auf HTTPS (z.B. simchecklist.app) → verwende localhost/127.0.0.1

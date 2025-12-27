@@ -218,6 +218,43 @@ export function calculateFlownDistance(originIcao, currentLat, currentLon) {
 }
 
 /**
+ * Berechnet die Distanz zwischen zwei Flughäfen (synchron, nur aus Cache/statischer DB)
+ * @param {string} originIcao - ICAO-Code des Startflughafens
+ * @param {string} destIcao - ICAO-Code des Zielflughafens
+ * @returns {number | null} Distanz in NM oder null wenn nicht berechenbar
+ */
+export function calculateRouteDistance(originIcao, destIcao) {
+  const origin = getAirportCoordinates(originIcao);
+  const dest = getAirportCoordinates(destIcao);
+  if (!origin || !dest) {
+    return null;
+  }
+  return Math.round(calculateDistance(origin.lat, origin.lon, dest.lat, dest.lon));
+}
+
+/**
+ * Berechnet die Distanz zwischen zwei Flughäfen (async, mit API-Fallback)
+ * @param {string} originIcao - ICAO-Code des Startflughafens
+ * @param {string} destIcao - ICAO-Code des Zielflughafens
+ * @returns {Promise<number | null>} Distanz in NM oder null wenn nicht berechenbar
+ */
+export async function calculateRouteDistanceAsync(originIcao, destIcao) {
+  if (!originIcao || !destIcao) return null;
+
+  // Beide Flughäfen laden (parallel)
+  const [origin, dest] = await Promise.all([
+    getAirportCoordinatesAsync(originIcao),
+    getAirportCoordinatesAsync(destIcao)
+  ]);
+
+  if (!origin || !dest) {
+    return null;
+  }
+
+  return Math.round(calculateDistance(origin.lat, origin.lon, dest.lat, dest.lon));
+}
+
+/**
  * Prüft ob ein Flughafen in der Datenbank oder im Cache vorhanden ist
  * @param {string} icao - ICAO-Code
  * @returns {boolean}

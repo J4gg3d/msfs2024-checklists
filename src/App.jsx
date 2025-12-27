@@ -6,7 +6,7 @@ import DetailPanel from './components/DetailPanel'
 import FlightInfo from './components/FlightInfo'
 import useSimConnect from './hooks/useSimConnect'
 import { useChecklist, availableAircraft } from './hooks/useChecklist'
-import { calculateFlownDistance, isAirportKnown, getAirportCoordinatesAsync } from './utils/geoUtils'
+import { calculateFlownDistance, isAirportKnown, getAirportCoordinatesAsync, calculateRouteDistanceAsync } from './utils/geoUtils'
 import './App.css'
 
 // LocalStorage Keys
@@ -218,6 +218,34 @@ function App() {
 
     loadAirport()
   }, [flightRoute?.origin])
+
+  // Automatische Berechnung der Gesamtdistanz zwischen Origin und Destination
+  // Nutzt GPS-Ziel oder manuell eingegebenes Ziel
+  useEffect(() => {
+    const origin = flightRoute?.origin
+    // Destination: GPS-Ziel hat Vorrang, dann manuelle Eingabe
+    const destination = simData?.gpsApproachAirportId || flightRoute?.destination
+
+    if (!origin || !destination) return
+
+    const calculateDistance = async () => {
+      console.log('App: Berechne Distanz:', origin, '→', destination)
+      const distance = await calculateRouteDistanceAsync(origin, destination)
+
+      if (distance != null && distance > 0) {
+        setFlightRoute(prev => {
+          // Nur aktualisieren wenn sich die Distanz geändert hat
+          if (prev.totalDistance !== distance) {
+            console.log('App: Gesamtdistanz berechnet:', distance, 'NM')
+            return { ...prev, totalDistance: distance }
+          }
+          return prev
+        })
+      }
+    }
+
+    calculateDistance()
+  }, [flightRoute?.origin, flightRoute?.destination, simData?.gpsApproachAirportId])
 
   // Automatisches Tracking der geflogenen Distanz basierend auf GPS-Position
   // Berechnet die Distanz vom Startflughafen zur aktuellen Position

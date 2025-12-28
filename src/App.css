@@ -359,6 +359,27 @@ body {
   margin: 8px 0;
 }
 
+.menu-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  margin-top: auto;
+}
+
+.menu-footer-greeting {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  color: #7b68ee;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.menu-footer-author {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #888;
+}
+
 /* Large Modal Variant */
 .modal-large {
   max-width: 500px;

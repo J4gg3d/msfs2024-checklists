@@ -509,6 +509,10 @@ function App() {
                 <span className="menu-item-text">{t('menu.resetChecklist')}</span>
               </button>
             </div>
+            <div className="menu-footer">
+              <div className="menu-footer-greeting">Fly Safe!</div>
+              <div className="menu-footer-author">Florian (J4gg3d)</div>
+            </div>
           </div>
         </div>
       )}

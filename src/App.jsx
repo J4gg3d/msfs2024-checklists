@@ -817,13 +817,35 @@ function App() {
                 <p className="hint-text">💡 {t('modals.bridge.sdkNote')}</p>
               </div>
 
+              {/* Bridge herunterladen */}
+              <div className="info-section bridge-steps">
+                <h3>📥 {t('modals.bridge.downloadTitle')}</h3>
+                <p>{t('modals.bridge.downloadText')}</p>
+                <ol>
+                  <li>{t('modals.bridge.downloadStep1')}</li>
+                  <li>{t('modals.bridge.downloadStep2')}<br/>
+                    <code className="code-box-inline">git clone https://github.com/J4gg3d/msfs2024-checklists.git</code>
+                  </li>
+                  <li>{t('modals.bridge.downloadStep3')}</li>
+                </ol>
+                <a
+                  href="https://github.com/J4gg3d/msfs2024-checklists"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="github-link-btn"
+                  style={{marginTop: '12px', display: 'inline-block'}}
+                >
+                  🔗 {t('modals.bridge.downloadButton')}
+                </a>
+              </div>
+
               {/* Bridge Installation */}
               <div className="info-section bridge-steps">
                 <h3>🔧 {t('modals.bridge.installation')}</h3>
                 <ol>
                   <li>{t('modals.bridge.installStep1')}</li>
                   <li>{t('modals.bridge.installStep2')}<br/>
-                    <code className="code-box-inline">cd SimConnectBridge</code>
+                    <code className="code-box-inline">cd bridge-server/MSFSBridge</code>
                   </li>
                   <li>{t('modals.bridge.installStep3')}<br/>
                     <code className="code-box-inline">dotnet build</code>

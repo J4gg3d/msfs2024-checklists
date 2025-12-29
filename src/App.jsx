@@ -482,6 +482,10 @@ function App() {
                 <span className="menu-item-icon">⌨</span>
                 <span className="menu-item-text">{t('menu.github')}</span>
               </button>
+              <button className="menu-item" onClick={() => handleMenuItemClick('feedback')}>
+                <span className="menu-item-icon">💬</span>
+                <span className="menu-item-text">{t('menu.feedback')}</span>
+              </button>
               <div className="menu-divider"></div>
               <div className="language-toggle-container">
                 <button
@@ -925,6 +929,67 @@ function App() {
                 >
                   {t('modals.github.buttonText')}
                 </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Feedback Modal */}
+      {activeModal === 'feedback' && (
+        <div className="modal-overlay" onClick={() => setActiveModal(null)}>
+          <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>💬 {t('modals.feedback.title')}</h2>
+              <button className="modal-close-btn" onClick={() => setActiveModal(null)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <div className="info-section">
+                <p>{t('modals.feedback.intro')}</p>
+              </div>
+
+              <div className="feedback-options">
+                <div className="feedback-option">
+                  <div className="feedback-option-icon">🐛</div>
+                  <h3>{t('modals.feedback.githubTitle')}</h3>
+                  <p>{t('modals.feedback.githubDesc')}</p>
+                  <div className="feedback-benefits">
+                    <strong>{t('modals.feedback.githubBenefits')}</strong>
+                    <ul>
+                      <li>{t('modals.feedback.githubBenefit1')}</li>
+                      <li>{t('modals.feedback.githubBenefit2')}</li>
+                      <li>{t('modals.feedback.githubBenefit3')}</li>
+                    </ul>
+                  </div>
+                  <a
+                    href="https://github.com/J4gg3d/msfs2024-checklists/issues"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="feedback-button github"
+                  >
+                    {t('modals.feedback.githubButton')}
+                  </a>
+                </div>
+
+                <div className="feedback-option">
+                  <div className="feedback-option-icon">✉️</div>
+                  <h3>{t('modals.feedback.emailTitle')}</h3>
+                  <p>{t('modals.feedback.emailDesc')}</p>
+                  <div className="feedback-benefits">
+                    <strong>{t('modals.feedback.emailBenefits')}</strong>
+                    <ul>
+                      <li>{t('modals.feedback.emailBenefit1')}</li>
+                      <li>{t('modals.feedback.emailBenefit2')}</li>
+                      <li>{t('modals.feedback.emailBenefit3')}</li>
+                    </ul>
+                  </div>
+                  <a
+                    href="mailto:florian@eiche-digital.de?subject=MSFS%20Checklists%20Feedback"
+                    className="feedback-button email"
+                  >
+                    {t('modals.feedback.emailButton')}
+                  </a>
+                </div>
               </div>
             </div>
           </div>

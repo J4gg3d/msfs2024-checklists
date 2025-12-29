@@ -16,6 +16,7 @@
     "bridge": "SimConnect Bridge",
     "tablet": "Tablet verbinden",
     "github": "GitHub / Open Source",
+    "feedback": "Feedback & Bugs",
     "newFlight": "Neuer Flug (Reset Distanz)",
     "resetChecklist": "Checkliste zuruecksetzen",
     "language": "Sprache"
@@ -180,6 +181,24 @@
     "aircraft": {
       "title": "COMING SOON",
       "text": "Weitere Flugzeuge werden bald verfuegbar sein."
+    },
+    "feedback": {
+      "title": "Feedback & Bugs",
+      "intro": "Dein Feedback hilft mir, diese App zu verbessern! Waehle den passenden Weg:",
+      "githubTitle": "Bugs & Feature-Requests",
+      "githubDesc": "Fuer technische Probleme, Fehlerberichte oder Feature-Wuensche nutze bitte GitHub Issues. Dort koennen Probleme transparent verfolgt und diskutiert werden.",
+      "githubBenefits": "Vorteile:",
+      "githubBenefit1": "Transparente Nachverfolgung",
+      "githubBenefit2": "Community kann mitdiskutieren",
+      "githubBenefit3": "Fortschritt sichtbar",
+      "githubButton": "GitHub Issues oeffnen",
+      "emailTitle": "Allgemeines Feedback & Ideen",
+      "emailDesc": "Fuer allgemeines Feedback, Verbesserungsvorschlaege oder wenn du keinen GitHub-Account hast, schreib mir gerne eine E-Mail.",
+      "emailBenefits": "Geeignet fuer:",
+      "emailBenefit1": "Ideen und Anregungen",
+      "emailBenefit2": "Lob und Kritik",
+      "emailBenefit3": "Fragen zur App",
+      "emailButton": "E-Mail schreiben"
     }
   },
   "confirm": {

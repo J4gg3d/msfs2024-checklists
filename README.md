@@ -2,7 +2,7 @@
 
 [English](README.md) | [Deutsch](README_DE.md)
 
-Interactive checklist web app for Microsoft Flight Simulator 2024. Currently featuring the **Airbus A330-200** and **Pilatus PC-12 NGX** with more aircraft coming soon through community contributions.
+Interactive checklist web app for Microsoft Flight Simulator 2024. Currently featuring the **Airbus A330-200**, **Pilatus PC-12 NGX**, and **Boeing 737 MAX 8** with more aircraft coming soon through community contributions.
 
 **Live Website: [simchecklist.app](https://simchecklist.app)**
 
@@ -150,6 +150,7 @@ Airport data is loaded via the Bridge (bypasses CORS) or falls back to direct AP
 |----------|:-----------:|:-----------:|:---------:|-------------|
 | Airbus A330-200 | Yes | Yes | DE, EN | [@J4gg3d](https://github.com/J4gg3d) |
 | Pilatus PC-12 NGX | - | Yes | DE, EN | [@J4gg3d](https://github.com/J4gg3d) |
+| Boeing 737 MAX 8 | - | Yes | DE, EN | [@J4gg3d](https://github.com/J4gg3d) |
 | *Your aircraft here* | - | - | - | [Contribute!](CONTRIBUTING.md) |
 
 ## Contributing

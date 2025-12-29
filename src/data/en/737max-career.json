@@ -1,0 +1,1456 @@
+{
+  "aircraft": "Boeing 737 MAX 8",
+  "mode": "career",
+  "version": "1.0",
+  "sections": [
+    {
+      "id": "career-preflight",
+      "title": "PREFLIGHT",
+      "color": "#7b68ee",
+      "items": [
+        {
+          "id": "pf-funk",
+          "item": "RADIO",
+          "action": "ONBOARDING START",
+          "details": {
+            "description": "Request onboarding from ATC.",
+            "location": "ATC Menu"
+          }
+        },
+        {
+          "id": "pf-gepaeck",
+          "item": "BAGGAGE LOADING",
+          "action": "START",
+          "details": {
+            "description": "Start baggage loading via ground services.",
+            "location": "Ground Services Menu"
+          }
+        },
+        {
+          "id": "pf-catering",
+          "item": "CATERING",
+          "action": "START",
+          "details": {
+            "description": "Request catering service.",
+            "location": "Ground Services Menu"
+          }
+        },
+        {
+          "id": "pf-ifr-request",
+          "item": "IFR CLEARANCE",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request IFR clearance from Clearance Delivery.",
+            "location": "ATC / Clearance Delivery"
+          }
+        },
+        {
+          "id": "pf-ifr-confirm",
+          "item": "IFR CLEARANCE",
+          "action": "CONFIRMED",
+          "details": {
+            "description": "Read back and confirm IFR clearance.",
+            "location": "ATC / Clearance Delivery"
+          }
+        },
+        {
+          "id": "pf-panel-light",
+          "item": "PANEL LIGHT",
+          "action": "SET",
+          "details": {
+            "description": "Set panel lighting.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/737max_panel_light.png"
+          }
+        },
+        {
+          "id": "pf-ext-power",
+          "item": "EXTERNAL POWER",
+          "action": "ON",
+          "details": {
+            "description": "Connect and turn on external power.",
+            "location": "Overhead Panel - Electrical",
+            "image": "/images/737max_externer_strom.png"
+          }
+        },
+        {
+          "id": "pf-irs",
+          "item": "IRS L+R",
+          "action": "NAV",
+          "details": {
+            "description": "Set both IRS switches to NAV. Alignment takes about 10 minutes.",
+            "location": "Overhead Panel - IRS",
+            "image": "/images/737max_irs.png"
+          }
+        },
+        {
+          "id": "pf-cab-util",
+          "item": "CAB/UTIL",
+          "action": "ON",
+          "details": {
+            "description": "Turn on Cabin Utility Power.",
+            "location": "Overhead Panel - Electrical",
+            "image": "/images/737max_cab_util.png"
+          }
+        },
+        {
+          "id": "pf-ife-pass",
+          "item": "IFE/PASS SEAT",
+          "action": "ON",
+          "details": {
+            "description": "Activate In-Flight Entertainment and passenger seats.",
+            "location": "Overhead Panel",
+            "image": "/images/737max_ife_pass_seat.png"
+          }
+        },
+        {
+          "id": "pf-emer-exit",
+          "item": "EMER EXIT LIGHTS",
+          "action": "ARMED",
+          "details": {
+            "description": "Set emergency exit lighting to ARMED.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/737max_emer_exit_lights.png"
+          }
+        },
+        {
+          "id": "pf-windowheat",
+          "item": "WINDOW HEAT",
+          "action": "TEMP <5° ON",
+          "details": {
+            "description": "Turn on window heat if temperature is below 5°C.",
+            "location": "Overhead Panel - Anti-Ice",
+            "image": "/images/737max_window_heat.png"
+          }
+        },
+        {
+          "id": "pf-probe",
+          "item": "PROBE HEAT",
+          "action": "TEMP <5° ON",
+          "details": {
+            "description": "Turn on Pitot/Static Probe Heat if temperature is below 5°C.",
+            "location": "Overhead Panel - Anti-Ice",
+            "image": "/images/737max_probe_heat.png"
+          }
+        },
+        {
+          "id": "pf-anti-ice",
+          "item": "ANTI-ICE",
+          "action": "TEMP <5° ON",
+          "details": {
+            "description": "Activate Anti-Ice system if temperature is below 5°C.",
+            "location": "Overhead Panel - Anti-Ice",
+            "image": "/images/737max_anti_ice.png"
+          }
+        },
+        {
+          "id": "pf-hyd-eng",
+          "item": "HYD PUMPS ENG 1+2",
+          "action": "ON",
+          "details": {
+            "description": "Turn on engine-driven hydraulic pumps 1 and 2.",
+            "location": "Overhead Panel - Hydraulics",
+            "image": "/images/737max_hyd_pumps_eng.png"
+          }
+        },
+        {
+          "id": "pf-hyd-elec-off",
+          "item": "HYD PUMPS ELEC 1+2",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off electric hydraulic pumps 1 and 2.",
+            "location": "Overhead Panel - Hydraulics",
+            "image": "/images/737max_hyd_pumps_elec.png"
+          }
+        },
+        {
+          "id": "pf-fuel-pumps-off",
+          "item": "FUEL PUMPS",
+          "action": "OFF",
+          "details": {
+            "description": "Keep fuel pumps off for now.",
+            "location": "Overhead Panel - Fuel",
+            "image": "/images/737max_fuel_pumps.png"
+          }
+        },
+        {
+          "id": "pf-bleed-off",
+          "item": "BLEED 1+2",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off Engine Bleed 1 and 2 for now.",
+            "location": "Overhead Panel - Bleed Air",
+            "image": "/images/737max_bleed.png"
+          }
+        },
+        {
+          "id": "pf-fuel-loaded",
+          "item": "FUEL",
+          "action": "LOADED",
+          "details": {
+            "description": "Verify fuel is loaded. Use keyboard shortcut to refuel if needed.",
+            "location": "ECAM / Fuel Panel",
+            "image": "/images/737max_fuel.png"
+          }
+        },
+        {
+          "id": "pf-flt-alt",
+          "item": "FLT ALT",
+          "action": "SET",
+          "details": {
+            "description": "Set flight altitude in pressurization panel.",
+            "location": "Overhead Panel - Pressurization",
+            "image": "/images/737max_flt_alt.png"
+          }
+        },
+        {
+          "id": "pf-land-alt",
+          "item": "LAND ALT",
+          "action": "SET",
+          "details": {
+            "description": "Set landing altitude in pressurization panel.",
+            "location": "Overhead Panel - Pressurization",
+            "image": "/images/737max_land_alt.png"
+          }
+        },
+        {
+          "id": "pf-fasten-belts",
+          "item": "FASTEN BELTS",
+          "action": "AUTO",
+          "details": {
+            "description": "Set seatbelt sign to AUTO.",
+            "location": "Overhead Panel",
+            "image": "/images/737max_fasten_belts.png"
+          }
+        },
+        {
+          "id": "pf-fuel-pump-laft",
+          "item": "FUEL PUMP L AFT",
+          "action": "ON",
+          "details": {
+            "description": "Turn on left aft fuel pump for APU start.",
+            "location": "Overhead Panel - Fuel",
+            "image": "/images/737max_fuel_pump_l_aft.png"
+          }
+        },
+        {
+          "id": "pf-apu-start",
+          "item": "APU",
+          "action": "START",
+          "details": {
+            "description": "Start the APU.",
+            "location": "Overhead Panel - APU",
+            "image": "/images/737max_apu.png"
+          }
+        },
+        {
+          "id": "pf-apu-gen",
+          "item": "APU GEN",
+          "action": "ON",
+          "details": {
+            "description": "Wait until 'APU GEN OFF BUS' illuminates, then turn on APU Generator.",
+            "location": "Overhead Panel - Electrical",
+            "image": "/images/737max_apu_gen.png"
+          }
+        },
+        {
+          "id": "pf-bleed-apu",
+          "item": "BLEED APU",
+          "action": "ON",
+          "details": {
+            "description": "Turn on APU Bleed Air.",
+            "location": "Overhead Panel - Bleed Air",
+            "image": "/images/737max_bleed_apu.png"
+          }
+        },
+        {
+          "id": "pf-master-caution",
+          "item": "MASTER CAUTION",
+          "action": "RESET",
+          "details": {
+            "description": "Reset Master Caution.",
+            "location": "Glareshield",
+            "image": "/images/737max_master_caution.png"
+          }
+        },
+        {
+          "id": "pf-fd",
+          "item": "F/D L+R",
+          "action": "ON",
+          "details": {
+            "description": "Turn on Flight Director left and right.",
+            "location": "MCP (Mode Control Panel)",
+            "image": "/images/737max_fd.png"
+          }
+        },
+        {
+          "id": "pf-baro",
+          "item": "BARO",
+          "action": "SET",
+          "details": {
+            "description": "Set barometer to current QNH.",
+            "location": "PFD / EFIS Control Panel",
+            "image": "/images/737max_baro.png"
+          }
+        },
+        {
+          "id": "pf-minima",
+          "item": "MINIMA",
+          "action": "RADIO",
+          "details": {
+            "description": "Set minimums to RADIO.",
+            "location": "EFIS Control Panel"
+          }
+        },
+        {
+          "id": "pf-at-arm-off",
+          "item": "A/T ARM",
+          "action": "OFF",
+          "details": {
+            "description": "Don't arm autothrottle yet.",
+            "location": "MCP",
+            "image": "/images/737max_at_arm.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-fmc",
+      "title": "FMC SETUP",
+      "color": "#9370db",
+      "items": [
+        {
+          "id": "fmc-legs",
+          "item": "LEGS",
+          "action": "CHECK + EXEC",
+          "details": {
+            "description": "Review flight route with LEGS and NEXT PAGE. For errors/discontinuities: press DEL, select line and confirm with EXEC.",
+            "location": "CDU - LEGS",
+            "image": "/images/737max_fmc_legs.png",
+            "image2": "/images/737max_fmc_legs_2.png"
+          }
+        },
+        {
+          "id": "fmc-zfw",
+          "item": "ZFW",
+          "action": "SET",
+          "details": {
+            "description": "Enter Zero Fuel Weight. ZFW can be read from your tablet (image 2).",
+            "location": "CDU - PERF INIT",
+            "image": "/images/737max_fmc_zfw.png",
+            "image2": "/images/737max_fmc_zfw_2.png"
+          }
+        },
+        {
+          "id": "fmc-reserves",
+          "item": "RESERVES",
+          "action": "SET",
+          "details": {
+            "description": "Enter reserve fuel.",
+            "location": "CDU - PERF INIT"
+          }
+        },
+        {
+          "id": "fmc-cost-index",
+          "item": "COST INDEX",
+          "action": "SET",
+          "details": {
+            "description": "Set cost index (typically 25-100).",
+            "location": "CDU - PERF INIT"
+          }
+        },
+        {
+          "id": "fmc-crz-alt",
+          "item": "CRZ ALT",
+          "action": "SET",
+          "details": {
+            "description": "Enter cruise altitude.",
+            "location": "CDU - PERF INIT"
+          }
+        },
+        {
+          "id": "fmc-trans-alt",
+          "item": "TRANS ALT",
+          "action": "SET",
+          "details": {
+            "description": "Enter transition altitude.",
+            "location": "CDU - PERF INIT"
+          }
+        },
+        {
+          "id": "fmc-n1-limit",
+          "item": "N1 LIMIT SEL",
+          "action": "SET",
+          "details": {
+            "description": "Select N1 Limit for takeoff (TO, TO-1, TO-2).",
+            "location": "CDU - N1 LIMIT"
+          }
+        },
+        {
+          "id": "fmc-to-flaps",
+          "item": "TAKEOFF FLAPS",
+          "action": "SET",
+          "details": {
+            "description": "Enter takeoff flaps setting (typically 5 or 15).",
+            "location": "CDU - TAKEOFF REF",
+            "image": "/images/737max_fmc_takeoff_flaps.png"
+          }
+        },
+        {
+          "id": "fmc-to-cg",
+          "item": "TAKEOFF CG",
+          "action": "SET",
+          "details": {
+            "description": "Enter CG for takeoff. Click button 2x to calculate value automatically.",
+            "location": "CDU - TAKEOFF REF",
+            "image": "/images/737max_fmc_takeoff_cg.png"
+          }
+        },
+        {
+          "id": "fmc-tow",
+          "item": "TOW",
+          "action": "SET",
+          "details": {
+            "description": "Enter takeoff weight. TOW can be read from your tablet (image 2) like ZFW.",
+            "location": "CDU - TAKEOFF REF",
+            "image": "/images/737max_fmc_tow.png",
+            "image2": "/images/737max_fmc_tow_2.png"
+          }
+        },
+        {
+          "id": "fmc-v1",
+          "item": "V1",
+          "action": "SET",
+          "details": {
+            "description": "Enter or calculate V1 speed.",
+            "location": "CDU - TAKEOFF REF",
+            "image": "/images/737max_fmc_vspeeds.png"
+          }
+        },
+        {
+          "id": "fmc-vr",
+          "item": "VR",
+          "action": "SET",
+          "details": {
+            "description": "Enter or calculate VR (Rotation Speed).",
+            "location": "CDU - TAKEOFF REF",
+            "image": "/images/737max_fmc_vspeeds.png"
+          }
+        },
+        {
+          "id": "fmc-v2",
+          "item": "V2",
+          "action": "SET",
+          "details": {
+            "description": "Enter or calculate V2 (Takeoff Safety Speed).",
+            "location": "CDU - TAKEOFF REF",
+            "image": "/images/737max_fmc_vspeeds.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-preflight-2",
+      "title": "PREFLIGHT 2",
+      "color": "#8b7ed8",
+      "items": [
+        {
+          "id": "pf1-ias",
+          "item": "IAS",
+          "action": "V2+15",
+          "details": {
+            "description": "Set IAS to V2+15.",
+            "location": "MCP",
+            "image": "/images/737max_ias.png"
+          }
+        },
+        {
+          "id": "pf1-altitude",
+          "item": "ALTITUDE",
+          "action": "SET",
+          "details": {
+            "description": "Set initial altitude in MCP.",
+            "location": "MCP",
+            "image": "/images/737max_altitude.png"
+          }
+        },
+        {
+          "id": "pf1-heading",
+          "item": "HEADING",
+          "action": "SET",
+          "details": {
+            "description": "Set heading bug.",
+            "location": "MCP",
+            "image": "/images/737max_heading.png"
+          }
+        },
+        {
+          "id": "pf1-course",
+          "item": "COURSE L+R",
+          "action": "SET",
+          "details": {
+            "description": "Set course for both NAV receivers.",
+            "location": "MCP / EFIS",
+            "image": "/images/737max_course.png"
+          }
+        },
+        {
+          "id": "pf1-vnav",
+          "item": "VNAV",
+          "action": "ON",
+          "details": {
+            "description": "Activate VNAV mode.",
+            "location": "MCP",
+            "image": "/images/737max_vnav.png"
+          }
+        },
+        {
+          "id": "pf1-lnav",
+          "item": "LNAV",
+          "action": "ON",
+          "details": {
+            "description": "Activate LNAV mode.",
+            "location": "MCP",
+            "image": "/images/737max_lnav.png"
+          }
+        },
+        {
+          "id": "pf1-fuel-flow",
+          "item": "FUEL FLOW",
+          "action": "RESET",
+          "details": {
+            "description": "Reset Fuel Flow Counter.",
+            "location": "EICAS / FMC",
+            "image": "/images/737max_fuel_flow.png"
+          }
+        },
+        {
+          "id": "pf1-gear-down",
+          "item": "LANDING GEAR",
+          "action": "DOWN",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": true },
+          "details": {
+            "description": "Verify landing gear is down and locked.",
+            "location": "Gear Lever",
+            "image": "/images/737max_landing_gear.png"
+          }
+        },
+        {
+          "id": "pf1-speedbrake",
+          "item": "SPEED BRAKE",
+          "action": "DOWN",
+          "details": {
+            "description": "Verify speed brake is retracted.",
+            "location": "Throttle Quadrant",
+            "image": "/images/737max_speed_brake.png"
+          }
+        },
+        {
+          "id": "pf1-throttles",
+          "item": "THROTTLES",
+          "action": "0%",
+          "details": {
+            "description": "Set thrust levers to idle.",
+            "location": "Throttle Quadrant",
+            "image": "/images/737max_throttles.png"
+          }
+        },
+        {
+          "id": "pf1-parking-brake-off",
+          "item": "PARKING BRAKE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": false },
+          "details": {
+            "description": "Release parking brake (chocks are set).",
+            "location": "Center Pedestal",
+            "image": "/images/737max_parking_brake.png"
+          }
+        },
+        {
+          "id": "pf1-yaw-damper",
+          "item": "YAW DAMPER",
+          "action": "ON",
+          "details": {
+            "description": "Turn on Yaw Damper.",
+            "location": "MCP",
+            "image": "/images/737max_yaw_damper.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-pushback",
+      "title": "PUSHBACK",
+      "color": "#20b2aa",
+      "items": [
+        {
+          "id": "pb-onboarding-finish",
+          "item": "ONBOARDING",
+          "action": "FINISH",
+          "details": {
+            "description": "Complete boarding, close doors.",
+            "location": "Ground Services Menu"
+          }
+        },
+        {
+          "id": "pb-funk",
+          "item": "PUSHBACK",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request pushback from ground.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "pb-start",
+          "item": "PUSHBACK",
+          "action": "START",
+          "details": {
+            "description": "Start pushback.",
+            "location": "Ground Services Menu"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-engine-start",
+      "title": "ENGINE START",
+      "color": "#32cd32",
+      "items": [
+        {
+          "id": "es-hyd-elec1",
+          "item": "HYD PUMP ELEC 1",
+          "action": "ON",
+          "details": {
+            "description": "Turn on electric hydraulic pump 1.",
+            "location": "Overhead Panel - Hydraulics",
+            "image": "/images/737max_hyd_pump_elec1.png"
+          }
+        },
+        {
+          "id": "es-fuel-pumps",
+          "item": "FUEL PUMPS ALL",
+          "action": "ON",
+          "details": {
+            "description": "Turn on all fuel pumps.",
+            "location": "Overhead Panel - Fuel",
+            "image": "/images/737max_fuel_pumps_all.png"
+          }
+        },
+        {
+          "id": "es-ext-power-off",
+          "item": "EXTERNAL POWER",
+          "action": "OFF",
+          "details": {
+            "description": "Disconnect external power.",
+            "location": "Overhead Panel - Electrical",
+            "image": "/images/737max_externer_strom_off.png"
+          }
+        },
+        {
+          "id": "es-anti-coll",
+          "item": "ANTI COLLISION",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightBeacon", "expectedValue": true },
+          "details": {
+            "description": "Turn on Anti-Collision Lights - signals engine start.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/737max_anti_collision.png"
+          }
+        },
+        {
+          "id": "es-position",
+          "item": "POSITION LIGHTS",
+          "action": "STEADY",
+          "autoCheck": { "simVar": "lightNav", "expectedValue": true },
+          "details": {
+            "description": "Set position lights to STEADY.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/737max_position_lights.png"
+          }
+        },
+        {
+          "id": "es-pack-off",
+          "item": "PACK L+R",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off both packs for engine start.",
+            "location": "Overhead Panel - Air Conditioning",
+            "image": "/images/737max_pack.png"
+          }
+        },
+        {
+          "id": "es-eng-start-ign-r",
+          "item": "ENGINE START",
+          "action": "IGN R",
+          "details": {
+            "description": "Set Engine Start Selector to IGN R (Ignition Right).",
+            "location": "Overhead Panel - Engine Start",
+            "image": "/images/737max_engine_start.png"
+          }
+        },
+        {
+          "id": "es-eng2-grd",
+          "item": "ENGINE 2 START",
+          "action": "GRD",
+          "details": {
+            "description": "Set Engine 2 Start Lever to GRD - Engine 2 starts.",
+            "location": "Overhead Panel - Engine Start",
+            "image": "/images/737max_engine2_start.png"
+          }
+        },
+        {
+          "id": "es-eng2-idle",
+          "item": "ENGINE 2",
+          "action": ">25% IDLE",
+          "details": {
+            "description": "Wait until N2 above 25%, then set fuel lever to IDLE.",
+            "location": "EICAS / Throttle Quadrant",
+            "image": "/images/737max_engine2_idle.png"
+          }
+        },
+        {
+          "id": "es-eng-start-ign-l",
+          "item": "ENGINE START",
+          "action": "IGN L",
+          "details": {
+            "description": "Set Engine Start Selector to IGN L (Ignition Left).",
+            "location": "Overhead Panel - Engine Start"
+          }
+        },
+        {
+          "id": "es-eng1-grd",
+          "item": "ENGINE 1 START",
+          "action": "GRD",
+          "details": {
+            "description": "Set Engine 1 Start Lever to GRD - Engine 1 starts.",
+            "location": "Overhead Panel - Engine Start"
+          }
+        },
+        {
+          "id": "es-eng1-idle",
+          "item": "ENGINE 1",
+          "action": ">25% IDLE",
+          "details": {
+            "description": "Wait until N2 above 25%, then set fuel lever to IDLE.",
+            "location": "EICAS / Throttle Quadrant"
+          }
+        },
+        {
+          "id": "es-gen",
+          "item": "GEN 1+2",
+          "action": "ON",
+          "details": {
+            "description": "Turn on both generators.",
+            "location": "Overhead Panel - Electrical"
+          }
+        },
+        {
+          "id": "es-hyd-elec2",
+          "item": "HYD PUMP ELEC 2",
+          "action": "ON",
+          "details": {
+            "description": "Turn on electric hydraulic pump 2.",
+            "location": "Overhead Panel - Hydraulics",
+            "image": "/images/737max_hyd_pump_elec2.png"
+          }
+        },
+        {
+          "id": "es-probe-on",
+          "item": "PROBE HEAT",
+          "action": "ON",
+          "details": {
+            "description": "Turn on Probe Heat.",
+            "location": "Overhead Panel - Anti-Ice",
+            "image": "/images/737max_probe_heat_on.png"
+          }
+        },
+        {
+          "id": "es-pack-auto",
+          "item": "PACK L+R",
+          "action": "AUTO",
+          "details": {
+            "description": "Set both packs to AUTO.",
+            "location": "Overhead Panel - Air Conditioning",
+            "image": "/images/737max_pack.png"
+          }
+        },
+        {
+          "id": "es-bleed-on",
+          "item": "BLEED 1+2",
+          "action": "ON",
+          "details": {
+            "description": "Turn on Engine Bleed 1 and 2.",
+            "location": "Overhead Panel - Bleed Air",
+            "image": "/images/737max_bleed.png"
+          }
+        },
+        {
+          "id": "es-bleed-apu-off",
+          "item": "BLEED APU",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off APU Bleed.",
+            "location": "Overhead Panel - Bleed Air",
+            "image": "/images/737max_bleed_apu.png"
+          }
+        },
+        {
+          "id": "es-apu-off",
+          "item": "APU",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off APU.",
+            "location": "Overhead Panel - APU",
+            "image": "/images/737max_apu.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-before-taxi",
+      "title": "BEFORE TAXI",
+      "color": "#00e676",
+      "items": [
+        {
+          "id": "bt-taxi-light",
+          "item": "TAXI LIGHT",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Set taxi lights to AUTO or ON.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "bt-flaps",
+          "item": "FLAPS",
+          "action": "SET",
+          "details": {
+            "description": "Set flaps to takeoff position (1, 5, or 15).",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "bt-rwy-turnoff",
+          "item": "RUNWAY TURNOFF",
+          "action": "ON",
+          "details": {
+            "description": "Turn on runway turnoff lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "bt-at-arm",
+          "item": "A/T ARM",
+          "action": "ON",
+          "details": {
+            "description": "Arm autothrottle.",
+            "location": "MCP"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-taxi",
+      "title": "TAXI",
+      "color": "#4fc3f7",
+      "items": [
+        {
+          "id": "tx-funk-request",
+          "item": "TAXI CLEARANCE",
+          "action": "REQUEST",
+          "details": {
+            "description": "Request taxi clearance from ground.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "tx-funk-confirm",
+          "item": "TAXI CLEARANCE",
+          "action": "CONFIRMED",
+          "details": {
+            "description": "Read back and confirm taxi clearance.",
+            "location": "ATC / Ground"
+          }
+        },
+        {
+          "id": "tx-parking-brake",
+          "item": "PARKING BRAKE",
+          "action": "RELEASE",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": false },
+          "details": {
+            "description": "Release parking brake for taxi.",
+            "location": "Center Pedestal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-before-takeoff",
+      "title": "BEFORE TAKEOFF",
+      "color": "#ffa726",
+      "items": [
+        {
+          "id": "bto-eng1-cont",
+          "item": "ENGINE 1 START",
+          "action": "CONT",
+          "details": {
+            "description": "Set Engine 1 Start to CONT (Continuous Ignition).",
+            "location": "Overhead Panel - Engine Start",
+            "image": "/images/737max_engine2_start.png"
+          }
+        },
+        {
+          "id": "bto-eng2-cont",
+          "item": "ENGINE 2 START",
+          "action": "CONT",
+          "details": {
+            "description": "Set Engine 2 Start to CONT (Continuous Ignition).",
+            "location": "Overhead Panel - Engine Start",
+            "image": "/images/737max_engine2_start.png"
+          }
+        },
+        {
+          "id": "bto-autobrake",
+          "item": "AUTO BRAKE",
+          "action": "RTO",
+          "details": {
+            "description": "Set autobrake to RTO (Rejected Takeoff).",
+            "location": "Center Pedestal",
+            "image": "/images/737max_autobrake.png"
+          }
+        },
+        {
+          "id": "bto-rwy-turnoff-off",
+          "item": "RUNWAY TURNOFF",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off runway turnoff lights.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/737max_runway_turnoff.png"
+          }
+        },
+        {
+          "id": "bto-position",
+          "item": "POSITION LIGHTS",
+          "action": "STROBE & STEADY",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": true },
+          "details": {
+            "description": "Set position lights to STROBE & STEADY.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/737max_position_lights.png"
+          }
+        },
+        {
+          "id": "bto-landing-flash",
+          "item": "LANDING LIGHTS L+R",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
+          "details": {
+            "description": "Turn on landing lights.",
+            "location": "Overhead Panel - Lights",
+            "image": "/images/737max_landing_lights.png"
+          }
+        },
+        {
+          "id": "bto-xpdr-set",
+          "item": "TRANSPONDER",
+          "action": "SET",
+          "details": {
+            "description": "Enter transponder code.",
+            "location": "Pedestal - Transponder",
+            "image": "/images/737max_transponder.png"
+          }
+        },
+        {
+          "id": "bto-xpdr-mode",
+          "item": "TRANSPONDER MODE",
+          "action": "ON",
+          "autoCheck": { "simVar": "transponderState", "expectedValue": 4, "comparison": "gte" },
+          "details": {
+            "description": "Set transponder to ON/ALT.",
+            "location": "Pedestal - Transponder",
+            "image": "/images/737max_transponder.png"
+          }
+        },
+        {
+          "id": "bto-tcas",
+          "item": "TCAS",
+          "action": "TA/RA",
+          "details": {
+            "description": "Set TCAS to TA/RA mode.",
+            "location": "Pedestal - Transponder",
+            "image": "/images/737max_transponder.png"
+          }
+        },
+        {
+          "id": "bto-clock",
+          "item": "CLOCK",
+          "action": "START",
+          "details": {
+            "description": "Start chronometer.",
+            "location": "Clock / EICAS"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-takeoff",
+      "title": "TAKEOFF",
+      "color": "#00e676",
+      "items": [
+        {
+          "id": "to-gear-up",
+          "item": "LANDING GEAR",
+          "action": "UP",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": false },
+          "details": {
+            "description": "Retract landing gear after positive climb.",
+            "location": "Gear Lever"
+          }
+        },
+        {
+          "id": "to-cmd",
+          "item": "CMD",
+          "action": "ON",
+          "autoCheck": { "simVar": "autopilotMaster", "expectedValue": true },
+          "details": {
+            "description": "Engage autopilot CMD.",
+            "location": "MCP"
+          }
+        },
+        {
+          "id": "to-autobrake-off",
+          "item": "AUTO BRAKE",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off autobrake.",
+            "location": "Center Pedestal"
+          }
+        },
+        {
+          "id": "to-flaps-up",
+          "item": "FLAPS",
+          "action": "UP",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 0 },
+          "details": {
+            "description": "Retract flaps incrementally.",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "to-taxi-off",
+          "item": "TAXI LIGHT",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": false },
+          "details": {
+            "description": "Turn off taxi lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "to-landing-off",
+          "item": "LANDING LIGHTS",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": false },
+          "details": {
+            "description": "Turn off landing lights above 10,000ft.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "to-eng1-off",
+          "item": "ENGINE 1 START",
+          "action": "OFF",
+          "details": {
+            "description": "Set Engine 1 Start to OFF (Normal Ignition).",
+            "location": "Overhead Panel - Engine Start"
+          }
+        },
+        {
+          "id": "to-eng2-off",
+          "item": "ENGINE 2 START",
+          "action": "OFF",
+          "details": {
+            "description": "Set Engine 2 Start to OFF (Normal Ignition).",
+            "location": "Overhead Panel - Engine Start"
+          }
+        },
+        {
+          "id": "to-baro-std",
+          "item": "BARO",
+          "action": "STD",
+          "details": {
+            "description": "Set barometer to STD (1013.25 hPa) above transition altitude.",
+            "location": "EFIS Control Panel"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-before-landing",
+      "title": "BEFORE LANDING",
+      "color": "#ba68c8",
+      "items": [
+        {
+          "id": "bl-altitude",
+          "item": "ALTITUDE",
+          "action": "SET",
+          "details": {
+            "description": "Set target altitude in MCP.",
+            "location": "MCP"
+          }
+        },
+        {
+          "id": "bl-course",
+          "item": "COURSE L+R",
+          "action": "SET",
+          "details": {
+            "description": "Set ILS course for both NAV receivers.",
+            "location": "MCP / EFIS"
+          }
+        },
+        {
+          "id": "bl-heading",
+          "item": "HEADING",
+          "action": "SET",
+          "details": {
+            "description": "Set heading bug to runway heading.",
+            "location": "MCP"
+          }
+        },
+        {
+          "id": "bl-mins",
+          "item": "MINIMUMS",
+          "action": "SET",
+          "details": {
+            "description": "Set decision height / minimums.",
+            "location": "EFIS Control Panel"
+          }
+        },
+        {
+          "id": "bl-nav-freq",
+          "item": "NAV ILS FREQ",
+          "action": "SET",
+          "details": {
+            "description": "Enter ILS frequency in NAV radio.",
+            "location": "CDU / Radio Panel",
+            "image": "/images/737max_nav_ils_freq.png"
+          }
+        },
+        {
+          "id": "bl-nav-act",
+          "item": "NAV ILS FREQ",
+          "action": "ACTIVATE",
+          "details": {
+            "description": "Activate ILS frequency.",
+            "location": "CDU / Radio Panel",
+            "image": "/images/737max_nav_ils_freq.png"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-descent",
+      "title": "DESCENT",
+      "color": "#ffa726",
+      "items": [
+        {
+          "id": "ds-eng-cont",
+          "item": "ENGINE START 1+2",
+          "action": "CONT",
+          "details": {
+            "description": "Set Engine Start to CONT for approach.",
+            "location": "Overhead Panel - Engine Start"
+          }
+        },
+        {
+          "id": "ds-baro",
+          "item": "BARO",
+          "action": "SET",
+          "details": {
+            "description": "Set barometer to local QNH below transition level.",
+            "location": "EFIS Control Panel"
+          }
+        },
+        {
+          "id": "ds-speedbrake",
+          "item": "SPEED BRAKE",
+          "action": "AS RQRD",
+          "details": {
+            "description": "Use speed brake as required.",
+            "location": "Throttle Quadrant"
+          }
+        },
+        {
+          "id": "ds-autobrake",
+          "item": "AUTO BRAKE",
+          "action": "SET",
+          "details": {
+            "description": "Set autobrake to desired level (1, 2, 3, or MAX).",
+            "location": "Center Pedestal"
+          }
+        },
+        {
+          "id": "ds-landing-on",
+          "item": "LANDING LIGHTS",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
+          "details": {
+            "description": "Turn on landing lights below 10,000ft.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "ds-fasten-belts",
+          "item": "FASTEN BELTS",
+          "action": "ON",
+          "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true },
+          "details": {
+            "description": "Turn on seatbelt sign.",
+            "location": "Overhead Panel"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-landing",
+      "title": "LANDING",
+      "color": "#ef5350",
+      "items": [
+        {
+          "id": "ld-flaps",
+          "item": "FLAPS",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 1, "comparison": "gte" },
+          "details": {
+            "description": "Extend flaps incrementally (1, 5, 15, 25, 30, or 40).",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "ld-app",
+          "item": "APP",
+          "action": "ON",
+          "details": {
+            "description": "Activate approach mode.",
+            "location": "MCP"
+          }
+        },
+        {
+          "id": "ld-gear-down",
+          "item": "LANDING GEAR",
+          "action": "DOWN",
+          "autoCheck": { "simVar": "gearDown", "expectedValue": true },
+          "details": {
+            "description": "Extend landing gear - verify three green lights.",
+            "location": "Gear Lever"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-after-landing",
+      "title": "AFTER LANDING",
+      "color": "#78909c",
+      "items": [
+        {
+          "id": "al-speedbrake",
+          "item": "SPEED BRAKE",
+          "action": "DOWN",
+          "details": {
+            "description": "Retract speed brake.",
+            "location": "Throttle Quadrant"
+          }
+        },
+        {
+          "id": "al-flaps",
+          "item": "FLAPS",
+          "action": "UP",
+          "autoCheck": { "simVar": "flapsPosition", "expectedValue": 0 },
+          "details": {
+            "description": "Retract flaps.",
+            "location": "Flap Lever"
+          }
+        },
+        {
+          "id": "al-landing-off",
+          "item": "LANDING LIGHTS",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightLanding", "expectedValue": false },
+          "details": {
+            "description": "Turn off landing lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "al-strobe-off",
+          "item": "STROBE",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightStrobe", "expectedValue": false },
+          "details": {
+            "description": "Turn off strobe lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "al-taxi-on",
+          "item": "TAXI LIGHT",
+          "action": "ON",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": true },
+          "details": {
+            "description": "Turn on taxi lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "al-rwy-turnoff",
+          "item": "RUNWAY TURNOFF",
+          "action": "ON",
+          "details": {
+            "description": "Turn on runway turnoff lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "al-transponder",
+          "item": "TRANSPONDER",
+          "action": "STBY",
+          "details": {
+            "description": "Set transponder to standby.",
+            "location": "Pedestal - Transponder"
+          }
+        },
+        {
+          "id": "al-eng-start-off",
+          "item": "ENGINE START 1+2",
+          "action": "OFF",
+          "details": {
+            "description": "Set Engine Start to OFF.",
+            "location": "Overhead Panel - Engine Start"
+          }
+        },
+        {
+          "id": "al-autobrake-off",
+          "item": "AUTO BRAKE",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off autobrake.",
+            "location": "Center Pedestal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-shutdown",
+      "title": "SHUTDOWN",
+      "color": "#607d8b",
+      "items": [
+        {
+          "id": "sd-parking-brake",
+          "item": "PARKING BRAKE",
+          "action": "SET",
+          "autoCheck": { "simVar": "parkingBrake", "expectedValue": true },
+          "details": {
+            "description": "Set parking brake.",
+            "location": "Center Pedestal"
+          }
+        },
+        {
+          "id": "sd-taxi-off",
+          "item": "TAXI LIGHT",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightTaxi", "expectedValue": false },
+          "details": {
+            "description": "Turn off taxi lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "sd-rwy-turnoff-off",
+          "item": "RUNWAY TURNOFF",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off runway turnoff lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "sd-fuel-lever",
+          "item": "FUEL LEVER 1+2",
+          "action": "CUTOFF",
+          "details": {
+            "description": "Set fuel levers to CUTOFF - engines shut down.",
+            "location": "Throttle Quadrant"
+          }
+        },
+        {
+          "id": "sd-fasten-off",
+          "item": "FASTEN BELTS",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off seatbelt sign.",
+            "location": "Overhead Panel"
+          }
+        },
+        {
+          "id": "sd-beacon-off",
+          "item": "ANTI COLLISION",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightBeacon", "expectedValue": false },
+          "details": {
+            "description": "Turn off anti-collision lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "sd-nav-off",
+          "item": "POSITION LIGHTS",
+          "action": "OFF",
+          "autoCheck": { "simVar": "lightNav", "expectedValue": false },
+          "details": {
+            "description": "Turn off position lights.",
+            "location": "Overhead Panel - Lights"
+          }
+        },
+        {
+          "id": "sd-fuel-pumps-off",
+          "item": "FUEL PUMPS",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off all fuel pumps.",
+            "location": "Overhead Panel - Fuel"
+          }
+        },
+        {
+          "id": "sd-hyd-off",
+          "item": "HYD PUMPS ELEC",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off electric hydraulic pumps.",
+            "location": "Overhead Panel - Hydraulics"
+          }
+        },
+        {
+          "id": "sd-irs-off",
+          "item": "IRS L+R",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off both IRS.",
+            "location": "Overhead Panel - IRS"
+          }
+        },
+        {
+          "id": "sd-battery-off",
+          "item": "BATTERY",
+          "action": "OFF",
+          "details": {
+            "description": "Turn off battery master.",
+            "location": "Overhead Panel - Electrical"
+          }
+        }
+      ]
+    }
+  ]
+}

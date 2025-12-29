@@ -10,25 +10,31 @@ import enA330Career from '../data/en/a330-career.json'
 // PC-12 NGX
 import dePC12Career from '../data/de/pc12-career.json'
 import enPC12Career from '../data/en/pc12-career.json'
+// 737 MAX 8
+import de737MaxCareer from '../data/de/737max-career.json'
+import en737MaxCareer from '../data/en/737max-career.json'
 
 // Checklist registry - easy to extend with new aircraft
 const checklists = {
   de: {
     'a330-normal': deA330Normal,
     'a330-career': deA330Career,
-    'pc12-career': dePC12Career
+    'pc12-career': dePC12Career,
+    '737max-career': de737MaxCareer
   },
   en: {
     'a330-normal': enA330Normal,
     'a330-career': enA330Career,
-    'pc12-career': enPC12Career
+    'pc12-career': enPC12Career,
+    '737max-career': en737MaxCareer
   }
 }
 
 // Available aircraft for UI
 export const availableAircraft = [
   { id: 'a330', name: 'Airbus A330-200', hasNormal: true, hasCareer: true },
-  { id: 'pc12', name: 'Pilatus PC-12 NGX', hasNormal: false, hasCareer: true }
+  { id: 'pc12', name: 'Pilatus PC-12 NGX', hasNormal: false, hasCareer: true },
+  { id: '737max', name: 'Boeing 737 MAX 8', hasNormal: false, hasCareer: true }
 ]
 
 /**

@@ -62,14 +62,23 @@ function DetailPanel({ item, onClose }) {
             </div>
           )}
 
-          {details.image && (
+          {(details.image || details.image2) && (
             <div className="detail-section">
-              <h3 className="detail-section-title">Bild</h3>
-              <img
-                src={details.image}
-                alt={itemName}
-                className="detail-image"
-              />
+              <h3 className="detail-section-title">{details.image2 ? 'Bilder' : 'Bild'}</h3>
+              {details.image && (
+                <img
+                  src={details.image}
+                  alt={itemName}
+                  className="detail-image"
+                />
+              )}
+              {details.image2 && (
+                <img
+                  src={details.image2}
+                  alt={`${itemName} (2)`}
+                  className="detail-image"
+                />
+              )}
             </div>
           )}
         </div>

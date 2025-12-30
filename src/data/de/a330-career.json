@@ -740,12 +740,12 @@
       ]
     },
     {
-      "id": "career-approach",
-      "title": "APPROACH",
+      "id": "career-before-descent",
+      "title": "BEFORE DESCENT",
       "color": "#ffa726",
       "items": [
         {
-          "id": "ap-altitude",
+          "id": "bd-altitude",
           "item": "ALTITUDE",
           "action": "SET",
           "details": {
@@ -754,7 +754,7 @@
           }
         },
         {
-          "id": "ap-autobrake",
+          "id": "bd-autobrake",
           "item": "AUTO BRAKE",
           "action": "SET",
           "details": {
@@ -763,7 +763,7 @@
           }
         },
         {
-          "id": "ap-fmc-qnh",
+          "id": "bd-fmc-qnh",
           "item": "FMC PERF APPR - QNH",
           "action": "SET",
           "details": {
@@ -772,7 +772,7 @@
           }
         },
         {
-          "id": "ap-fmc-temp",
+          "id": "bd-fmc-temp",
           "item": "FMC PERF APPR - TEMP",
           "action": "SET",
           "details": {
@@ -781,7 +781,7 @@
           }
         },
         {
-          "id": "ap-fmc-wind",
+          "id": "bd-fmc-wind",
           "item": "FMC PERF APPR - MAG WIND",
           "action": "SET",
           "details": {
@@ -790,7 +790,63 @@
           }
         },
         {
-          "id": "ap-baro",
+          "id": "bd-rad-nav-ils",
+          "item": "RAD NAV - ILS FREQ",
+          "action": "CHECK/SET",
+          "details": {
+            "description": "ILS-Frequenz der Ziel-Runway prüfen und ggf. manuell eingeben. Ermöglicht Präzisionsanflug.",
+            "location": "Pedestal - MCDU/FMC - RAD NAV"
+          }
+        }
+      ]
+    },
+    {
+      "id": "career-descent",
+      "title": "DESCENT",
+      "color": "#7e57c2",
+      "items": [
+        {
+          "id": "de-start-descent",
+          "item": "START DESCENT",
+          "action": "INITIATE",
+          "details": {
+            "description": "Sinkflug einleiten. Altitude am FCU auf freigegebene Höhe einstellen und mit Pull den Sinkflug starten. Der Autopilot leitet den Descent ein.",
+            "location": "Glareshield - FCU",
+            "image": "/images/a330_start_descent.png"
+          }
+        },
+        {
+          "id": "de-anti-ice-eng1",
+          "item": "ANTI ICE ENG 1",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceEng1", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Triebwerk 1 Enteisungssystem bei Bedarf einschalten. Erforderlich bei Temperaturen unter 10°C und sichtbarer Feuchtigkeit (Regen, Nebel, Schnee, Wolken).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "de-anti-ice-eng2",
+          "item": "ANTI ICE ENG 2",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceEng2", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Triebwerk 2 Enteisungssystem bei Bedarf einschalten. Erforderlich bei Temperaturen unter 10°C und sichtbarer Feuchtigkeit (Regen, Nebel, Schnee, Wolken).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "de-anti-ice-wing",
+          "item": "ANTI ICE WING",
+          "action": "AS RQRD",
+          "autoCheck": { "simVar": "antiIceStructural", "expectedValue": true, "optional": true },
+          "details": {
+            "description": "Tragflächen-Enteisungssystem bei Bedarf einschalten. Erforderlich bei Temperaturen unter 10°C und sichtbarer Feuchtigkeit (Regen, Nebel, Schnee, Wolken).",
+            "location": "Overhead Panel - ANTI ICE"
+          }
+        },
+        {
+          "id": "de-baro",
           "item": "BARO",
           "action": "SET",
           "details": {
@@ -799,16 +855,7 @@
           }
         },
         {
-          "id": "ap-rad-nav-ils",
-          "item": "RAD NAV - ILS FREQ",
-          "action": "CHECK/SET",
-          "details": {
-            "description": "ILS-Frequenz der Ziel-Runway prüfen und ggf. manuell eingeben. Ermöglicht Präzisionsanflug.",
-            "location": "Pedestal - MCDU/FMC - RAD NAV"
-          }
-        },
-        {
-          "id": "ap-seatbelt-on",
+          "id": "de-seatbelt-on",
           "item": "SEAT BELT SIGN",
           "action": "ON",
           "autoCheck": { "simVar": "seatbeltSign", "expectedValue": true },
@@ -818,7 +865,7 @@
           }
         },
         {
-          "id": "ap-land-on",
+          "id": "de-land-on",
           "item": "LAND",
           "action": "ON",
           "autoCheck": { "simVar": "lightLanding", "expectedValue": true },
@@ -828,7 +875,7 @@
           }
         },
         {
-          "id": "ap-speed-brake-arm",
+          "id": "de-speed-brake-arm",
           "item": "SPEED BRAKE",
           "action": "ARM",
           "autoCheck": { "simVar": "spoilersArmed", "expectedValue": true },
@@ -838,7 +885,7 @@
           }
         },
         {
-          "id": "ap-gear-down",
+          "id": "de-gear-down",
           "item": "LANDING GEAR",
           "action": "DOWN",
           "autoCheck": { "simVar": "gearDown", "expectedValue": true },
@@ -848,7 +895,7 @@
           }
         },
         {
-          "id": "ap-flaps-full",
+          "id": "de-flaps-full",
           "item": "FLAPS",
           "action": "FULL",
           "autoCheck": { "simVar": "flapsPosition", "expectedValue": 4, "comparison": "gte" },

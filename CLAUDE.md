@@ -37,6 +37,8 @@ src/
 │   ├── FlightInfo.css
 │   ├── DetailPanel.jsx     # Seitenpanel mit Item-Details
 │   ├── DetailPanel.css
+│   ├── LandingRating.jsx   # Landing-Rating Modal + Panel
+│   ├── LandingRating.css
 │   ├── SimStatus.jsx       # SimConnect Verbindungsstatus
 │   └── SimStatus.css
 ├── hooks/
@@ -64,8 +66,10 @@ bridge-server/MSFSBridge/   # C# SimConnect Server (optional)
 ├── MSFSBridge.csproj
 ├── WebSocketServer.cs      # WebSocket-Server (Port 8080)
 ├── StaticFileServer.cs     # HTTP-Server für Tablets (Port 8081)
-├── SimConnectManager.cs    # SimConnect Integration
-└── Models/SimData.cs       # Datenmodell
+├── SimConnectManager.cs    # SimConnect Integration + Landing Detection
+└── Models/
+    ├── SimData.cs          # Flugdaten-Modell
+    └── LandingInfo.cs      # Landing-Rating Datenmodell
 ```
 
 ## Wichtige Befehle
@@ -152,15 +156,17 @@ Die Bridge läuft als separater C# Prozess und kommuniziert über WebSocket (Por
 - **HTTP-Server**: Port 8081 serviert Website für Tablets
 - **Route-Sync**: Synchronisiert Flugroute zwischen PC und Tablet
 - **Airport-API**: Lädt Flughafen-Koordinaten (umgeht CORS)
+- **Landing-Rating**: Automatische Erkennung und Bewertung von Landungen
 - **IP-Anzeige**: Zeigt Tablet-URL in der Konsole
 - **Demo-Modus**: Simulierte Daten wenn MSFS nicht läuft
 
 ### Übertragene Daten
-- Flugdaten: Altitude, Ground Speed, Heading, Latitude, Longitude
+- Flugdaten: Altitude, Ground Speed, Heading, Latitude, Longitude, Vertical Speed, G-Force
 - ATC-Daten: Callsign, Airline, Flugnummer
 - GPS-Daten: Flugplan, Waypoints, ETE, Zielflughafen
 - Flugzeugstatus: On Ground, Engines Running, Gear, Flaps
 - Systeme: Lichter, Elektrik, APU, Anti-Ice, Transponder
+- Landing-Events: Automatische Erkennung mit Rating (1-5 Sterne)
 
 ### WebSocket-Nachrichten (Client → Bridge)
 ```json
@@ -173,9 +179,21 @@ Die Bridge läuft als separater C# Prozess und kommuniziert über WebSocket (Por
 ```json
 { "type": "route", "route": { "origin": "EDDF", "destination": "KJFK" } }
 { "type": "airportCoords", "icao": "EDDF", "coords": { "lat": 50.0379, "lon": 8.5622 } }
+{ "type": "landing", "landing": { "verticalSpeed": -150, "gForce": 1.2, "rating": "Good", "ratingScore": 4 } }
 { "type": "pong" }
 // SimData wird direkt als JSON gesendet (ohne type-Wrapper)
 ```
+
+### Landing-Rating System
+Die Bridge erkennt automatisch Landungen (Übergang von Luft zu Boden) und bewertet sie:
+
+| Rating | Vertical Speed | Score |
+|--------|----------------|-------|
+| Perfect | < 100 ft/min | 5/5 ★★★★★ |
+| Good | 100-200 ft/min | 4/5 ★★★★☆ |
+| Acceptable | 200-300 ft/min | 3/5 ★★★☆☆ |
+| Hard | 300-500 ft/min | 2/5 ★★☆☆☆ |
+| Very Hard | > 500 ft/min | 1/5 ★☆☆☆☆ |
 
 ### Start
 ```bash

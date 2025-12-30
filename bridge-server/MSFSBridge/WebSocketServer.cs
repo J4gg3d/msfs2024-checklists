@@ -145,6 +145,20 @@ public class BridgeWebSocketServer : IDisposable
     }
 
     /// <summary>
+    /// Sendet Landing-Info an alle verbundenen Clients
+    /// </summary>
+    public void BroadcastLanding(LandingInfo landing)
+    {
+        var message = new
+        {
+            type = "landing",
+            landing = landing
+        };
+        var json = JsonConvert.SerializeObject(message, _jsonSettings);
+        Broadcast(json);
+    }
+
+    /// <summary>
     /// Sendet Sim-Daten an einen einzelnen Client
     /// </summary>
     public void SendToClient(IWebSocketConnection client, SimData data)

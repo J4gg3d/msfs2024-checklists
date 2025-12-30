@@ -1,0 +1,246 @@
+/* Landing Modal */
+.landing-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.landing-modal-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.landing-modal {
+  background: #1a1a2e;
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 300px;
+  max-width: 400px;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+  border: 1px solid #333;
+}
+
+.landing-modal-overlay.visible .landing-modal {
+  transform: scale(1);
+}
+
+.landing-modal-header {
+  border-bottom: 3px solid;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+/* Star Rating */
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.star {
+  font-size: 32px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.star.filled {
+  text-shadow: 0 0 10px currentColor;
+}
+
+.star.empty {
+  opacity: 0.4;
+}
+
+.landing-modal-header h2 {
+  font-size: 32px;
+  margin: 0;
+  font-family: 'Roboto Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.landing-modal-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.landing-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #0d0d1a;
+  border-radius: 6px;
+}
+
+.landing-stat-label {
+  color: #888;
+  font-size: 13px;
+}
+
+.landing-stat-value {
+  color: #fff;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 16px;
+}
+
+.landing-airport {
+  color: #4fc3f7;
+  font-size: 14px;
+  margin-bottom: 16px;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.landing-modal-close {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.landing-modal-close:hover {
+  background: #444;
+}
+
+/* Landing Panel */
+.landing-panel {
+  background: #1a1a2e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin: 8px 0;
+  overflow: hidden;
+}
+
+.landing-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.landing-panel-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.landing-panel-icon {
+  font-size: 11px;
+  color: #888;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 1px;
+}
+
+.landing-panel-latest {
+  flex: 1;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 13px;
+}
+
+.landing-panel-toggle {
+  color: #666;
+  font-size: 18px;
+  font-weight: bold;
+  width: 20px;
+  text-align: center;
+}
+
+.landing-panel-history {
+  border-top: 1px solid #333;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.landing-history-item {
+  display: grid;
+  grid-template-columns: 50px 80px 80px 50px auto;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  border-bottom: 1px solid #222;
+  align-items: center;
+}
+
+.landing-history-item:last-child {
+  border-bottom: none;
+}
+
+.landing-history-time {
+  color: #666;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.landing-history-rating {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 500;
+}
+
+.landing-history-vs {
+  color: #aaa;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.landing-history-g {
+  color: #888;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.landing-history-airport {
+  color: #4fc3f7;
+  font-family: 'Roboto Mono', monospace;
+  text-align: right;
+}
+
+/* Scrollbar für Historie */
+.landing-panel-history::-webkit-scrollbar {
+  width: 6px;
+}
+
+.landing-panel-history::-webkit-scrollbar-track {
+  background: #0d0d1a;
+}
+
+.landing-panel-history::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+.landing-panel-history::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* Mobile Anpassungen */
+@media (max-width: 480px) {
+  .landing-modal {
+    min-width: 280px;
+    padding: 20px;
+  }
+
+  .landing-history-item {
+    grid-template-columns: 45px 70px 70px 45px;
+    font-size: 11px;
+  }
+
+  .landing-history-airport {
+    display: none;
+  }
+}

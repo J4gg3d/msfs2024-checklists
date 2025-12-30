@@ -17,6 +17,13 @@ public class SimConnectManager : IDisposable
     private bool _isPaused = false;  // Wird durch System-Event gesetzt
     private bool _atcDebugLogged = false;
 
+    // Landing Detection
+    private bool _wasOnGround = true;
+    private double _lastVerticalSpeed = 0;
+    private double _lastGForce = 1.0;
+    private double _lastGroundSpeed = 0;
+    private DateTime _lastLandingTime = DateTime.MinValue;
+
     // Windows Message für SimConnect
     private const int WM_USER_SIMCONNECT = 0x0402;
 
@@ -50,6 +57,8 @@ public class SimConnectManager : IDisposable
         public double Heading;
         public double Latitude;
         public double Longitude;
+        public double VerticalSpeed;  // ft/min
+        public double GForce;
         public double EngCombustion1;
         public double FlapsPosition;
         public double GearPosition;
@@ -145,6 +154,7 @@ public class SimConnectManager : IDisposable
 
     // Events
     public event Action<SimData>? OnDataReceived;
+    public event Action<LandingInfo>? OnLandingDetected;
     public event Action<string>? OnStatusChanged;
     public event Action<string>? OnError;
 
@@ -218,6 +228,8 @@ public class SimConnectManager : IDisposable
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "PLANE HEADING DEGREES TRUE", "degrees", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "PLANE LATITUDE", "degrees", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "PLANE LONGITUDE", "degrees", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "VERTICAL SPEED", "feet per minute", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+            _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "G FORCE", "GForce", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GENERAL ENG COMBUSTION:1", "bool", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "FLAPS HANDLE PERCENT", "percent", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
             _simConnect.AddToDataDefinition(DEFINITIONS.SimData, "GEAR TOTAL PCT EXTENDED", "percent", SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);  // Ersetzt GEAR HANDLE POSITION
@@ -430,17 +442,55 @@ public class SimConnectManager : IDisposable
             {
                 var simData = (SimDataStruct)data.dwData[0];
 
+                bool currentOnGround = simData.SimOnGround > 0;
+                double currentVerticalSpeed = Math.Round(simData.VerticalSpeed, 0);
+                double currentGForce = Math.Round(simData.GForce, 2);
+                double currentGroundSpeed = Math.Round(simData.GroundSpeed, 0);
+
+                // Landing Detection: War in der Luft, jetzt am Boden
+                if (!_wasOnGround && currentOnGround)
+                {
+                    // Verhindere mehrfache Landungen in kurzer Zeit (z.B. Bouncing)
+                    if ((DateTime.Now - _lastLandingTime).TotalSeconds > 5)
+                    {
+                        var (rating, score) = LandingInfo.CalculateRating(_lastVerticalSpeed);
+                        var landingInfo = new LandingInfo
+                        {
+                            Timestamp = DateTime.Now,
+                            VerticalSpeed = _lastVerticalSpeed,
+                            GForce = _lastGForce,
+                            GroundSpeed = _lastGroundSpeed,
+                            Rating = rating,
+                            RatingScore = score,
+                            AircraftTitle = simData.AircraftTitle,
+                            Airport = IsValidIcao(simData.GpsApproachAirportId) ? simData.GpsApproachAirportId?.Trim().ToUpper() : null
+                        };
+
+                        Console.WriteLine($"[LANDING] {rating} ({score}/5) - VS: {_lastVerticalSpeed:F0} ft/min, G: {_lastGForce:F2}");
+                        OnLandingDetected?.Invoke(landingInfo);
+                        _lastLandingTime = DateTime.Now;
+                    }
+                }
+
+                // State für nächsten Durchlauf speichern
+                _wasOnGround = currentOnGround;
+                _lastVerticalSpeed = currentVerticalSpeed;
+                _lastGForce = currentGForce;
+                _lastGroundSpeed = currentGroundSpeed;
+
                 var result = new SimData
                 {
                     Connected = true,
                     SimRate = Math.Round(simData.SimulationRate, 1),
                     Paused = _isPaused,
-                    OnGround = simData.SimOnGround > 0,
+                    OnGround = currentOnGround,
                     Altitude = Math.Round(simData.Altitude, 0),
-                    GroundSpeed = Math.Round(simData.GroundSpeed, 0),
+                    GroundSpeed = currentGroundSpeed,
                     Heading = Math.Round(simData.Heading, 0),
                     Latitude = simData.Latitude,
                     Longitude = simData.Longitude,
+                    VerticalSpeed = currentVerticalSpeed,
+                    GForce = currentGForce,
                     EnginesRunning = simData.EngCombustion1 > 0 || simData.EngCombustion2 > 0,
                     FlapsPosition = (int)Math.Round(simData.FlapsPosition),
                     GearDown = simData.GearPosition > 0,

@@ -13,6 +13,7 @@ Interactive checklist web app for Microsoft Flight Simulator 2024. Currently fea
 - **Progress Tracking**: Your checked items are saved locally
 - **Detail Panel**: Tap any item to see descriptions, cockpit locations, and images
 - **Flight Info**: Route tracking with distance flown, ETE, and flight number display
+- **Landing Rating**: Automatic landing quality assessment with star rating (1-5 stars based on vertical speed and G-force)
 - **Collapsible Sections**: Organize your workflow by flight phase
 - **Dark Cockpit Theme**: Easy on the eyes during night flights
 - **SimConnect Bridge** (optional): Live flight data from the simulator

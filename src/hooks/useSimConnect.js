@@ -102,6 +102,8 @@ function useSimConnect() {
   const [error, setError] = useState(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [sharedRoute, setSharedRoute] = useState(null); // Synchronisierte Route von Bridge
+  const [lastLanding, setLastLanding] = useState(null); // Letzte Landung für Modal
+  const [landingHistory, setLandingHistory] = useState([]); // Historie für Panel
 
   // Pending Airport-Requests (ICAO -> resolve callbacks)
   const airportRequestsRef = useRef(new Map());
@@ -314,6 +316,14 @@ function useSimConnect() {
               }
               airportRequestsRef.current.delete(icao);
             }
+            return;
+          }
+
+          // Prüfen ob es eine Landing-Nachricht ist
+          if (data.type === 'landing') {
+            console.log('SimConnect: Landing received:', data.landing);
+            setLastLanding(data.landing);
+            setLandingHistory(prev => [data.landing, ...prev].slice(0, 10)); // Max 10 Landungen speichern
             return;
           }
 
@@ -561,6 +571,11 @@ function useSimConnect() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Landing-Modal schließen
+  const clearLastLanding = useCallback(() => {
+    setLastLanding(null);
+  }, []);
+
   return {
     isConnected,
     simData,
@@ -577,6 +592,10 @@ function useSimConnect() {
     sendRoute,
     // Airport-Lookup über Bridge
     getAirportFromBridge,
+    // Landing-Rating
+    lastLanding,
+    landingHistory,
+    clearLastLanding,
     // Standard-Funktionen
     connect,
     disconnect,

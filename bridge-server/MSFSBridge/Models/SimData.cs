@@ -18,6 +18,8 @@ public class SimData
     public double? Heading { get; set; }
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
+    public double? VerticalSpeed { get; set; }  // ft/min
+    public double? GForce { get; set; }
     public string? AircraftTitle { get; set; }
 
     // Flugphase

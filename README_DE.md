@@ -13,6 +13,7 @@ Interaktive Checklisten-Webapp für Microsoft Flight Simulator 2024. Aktuell mit
 - **Fortschrittsspeicherung**: Abgehakte Items werden lokal gespeichert
 - **Detail-Panel**: Tippe auf ein Item für Beschreibung, Cockpit-Position und Bilder
 - **Fluginfo**: Routenverfolgung mit geflogener Distanz, ETE und Flugnummer
+- **Landing-Rating**: Automatische Landebewertung mit Sterne-Rating (1-5 Sterne basierend auf Sinkrate und G-Kräften)
 - **Einklappbare Sektionen**: Organisiere deinen Workflow nach Flugphasen
 - **Dunkles Cockpit-Theme**: Augenschonend bei Nachtflügen
 - **SimConnect Bridge** (optional): Live-Flugdaten aus dem Simulator

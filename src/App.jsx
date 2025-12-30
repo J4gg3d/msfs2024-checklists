@@ -4,6 +4,7 @@ import Checklist from './components/Checklist'
 import SimStatus from './components/SimStatus'
 import DetailPanel from './components/DetailPanel'
 import FlightInfo from './components/FlightInfo'
+import { LandingModal, LandingPanel } from './components/LandingRating'
 import useSimConnect from './hooks/useSimConnect'
 import { useChecklist, availableAircraft } from './hooks/useChecklist'
 import { calculateFlownDistance, isAirportKnown, getAirportCoordinatesAsync, calculateRouteDistanceAsync } from './utils/geoUtils'
@@ -162,11 +163,18 @@ function App() {
     sendRoute,
     // Airport-Lookup über Bridge (umgeht CORS)
     getAirportFromBridge,
+    // Landing-Rating
+    lastLanding,
+    landingHistory,
+    clearLastLanding,
     // Standard-Funktionen
     connect,
     disconnect,
     checkAutoStatus
   } = useSimConnect()
+
+  // Landing-Panel State
+  const [isLandingPanelExpanded, setIsLandingPanelExpanded] = useState(false)
 
   // Bridge-IP Eingabe State (für lokales Netzwerk)
   const [bridgeIPInput, setBridgeIPInput] = useState('')
@@ -1064,6 +1072,11 @@ function App() {
             flightRoute={flightRoute}
             onFlightRouteChange={handleFlightRouteChange}
           />
+          <LandingPanel
+            history={landingHistory}
+            isExpanded={isLandingPanelExpanded}
+            onToggle={() => setIsLandingPanelExpanded(!isLandingPanelExpanded)}
+          />
           <DetailPanel
             item={selectedItem}
             onClose={() => setSelectedItem(null)}
@@ -1103,6 +1116,9 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Landing Rating Modal */}
+      <LandingModal landing={lastLanding} onClose={clearLastLanding} />
     </>
   )
 }

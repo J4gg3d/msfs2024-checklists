@@ -163,6 +163,11 @@ using var simConnect = new SimConnectManager();
 
 simConnect.OnStatusChanged += (status) => Console.WriteLine($"[SIM] {status}");
 simConnect.OnError += (error) => Console.WriteLine($"[SIM FEHLER] {error}");
+simConnect.OnLandingDetected += (landing) =>
+{
+    // Landing an alle Clients broadcasten
+    webSocketServer.BroadcastLanding(landing);
+};
 simConnect.OnDataReceived += async (data) =>
 {
     // Session-Code hinzufügen wenn aktiv

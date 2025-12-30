@@ -24,6 +24,12 @@ public class SimConnectManager : IDisposable
     private double _lastGroundSpeed = 0;
     private DateTime _lastLandingTime = DateTime.MinValue;
 
+    // Flight Validation (verhindert falsche Landungen beim Mission-Start)
+    private DateTime _takeoffTime = DateTime.MinValue;  // Wann abgehoben
+    private double _maxAltitudeAGL = 0;  // Maximale erreichte Höhe
+    private const double MIN_FLIGHT_SECONDS = 10;  // Mindestens 10 Sekunden in der Luft
+    private const double MIN_ALTITUDE_AGL = 50;  // Mindestens 50 ft AGL erreicht
+
     // Windows Message für SimConnect
     private const int WM_USER_SIMCONNECT = 0x0402;
 
@@ -446,12 +452,35 @@ public class SimConnectManager : IDisposable
                 double currentVerticalSpeed = Math.Round(simData.VerticalSpeed, 0);
                 double currentGForce = Math.Round(simData.GForce, 2);
                 double currentGroundSpeed = Math.Round(simData.GroundSpeed, 0);
+                double currentAltitude = simData.Altitude;
+
+                // Takeoff Detection: War am Boden, jetzt in der Luft
+                if (_wasOnGround && !currentOnGround)
+                {
+                    _takeoffTime = DateTime.Now;
+                    _maxAltitudeAGL = 0;
+                    Console.WriteLine("[FLIGHT] Takeoff detected - starting flight tracking");
+                }
+
+                // Track max altitude while airborne
+                if (!currentOnGround && currentAltitude > _maxAltitudeAGL)
+                {
+                    _maxAltitudeAGL = currentAltitude;
+                }
 
                 // Landing Detection: War in der Luft, jetzt am Boden
                 if (!_wasOnGround && currentOnGround)
                 {
+                    // Berechne Flugzeit
+                    double flightSeconds = (DateTime.Now - _takeoffTime).TotalSeconds;
+
+                    // Validiere: War es ein echter Flug?
+                    bool validFlight = flightSeconds >= MIN_FLIGHT_SECONDS && _maxAltitudeAGL >= MIN_ALTITUDE_AGL;
+
                     // Verhindere mehrfache Landungen in kurzer Zeit (z.B. Bouncing)
-                    if ((DateTime.Now - _lastLandingTime).TotalSeconds > 5)
+                    bool notBouncing = (DateTime.Now - _lastLandingTime).TotalSeconds > 5;
+
+                    if (validFlight && notBouncing)
                     {
                         var (rating, score) = LandingInfo.CalculateRating(_lastVerticalSpeed);
                         var landingInfo = new LandingInfo
@@ -466,10 +495,17 @@ public class SimConnectManager : IDisposable
                             Airport = IsValidIcao(simData.GpsApproachAirportId) ? simData.GpsApproachAirportId?.Trim().ToUpper() : null
                         };
 
-                        Console.WriteLine($"[LANDING] {rating} ({score}/5) - VS: {_lastVerticalSpeed:F0} ft/min, G: {_lastGForce:F2}");
+                        Console.WriteLine($"[LANDING] {rating} ({score}/5) - VS: {_lastVerticalSpeed:F0} ft/min, G: {_lastGForce:F2}, Flight: {flightSeconds:F0}s, MaxAlt: {_maxAltitudeAGL:F0}ft");
                         OnLandingDetected?.Invoke(landingInfo);
                         _lastLandingTime = DateTime.Now;
                     }
+                    else if (!validFlight)
+                    {
+                        Console.WriteLine($"[FLIGHT] Ignored landing - not a valid flight (Time: {flightSeconds:F0}s < {MIN_FLIGHT_SECONDS}s or Alt: {_maxAltitudeAGL:F0}ft < {MIN_ALTITUDE_AGL}ft)");
+                    }
+
+                    // Reset flight tracking
+                    _maxAltitudeAGL = 0;
                 }
 
                 // State für nächsten Durchlauf speichern

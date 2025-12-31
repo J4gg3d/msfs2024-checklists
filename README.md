@@ -2,37 +2,183 @@
 
 [English](README.md) | [Deutsch](README_DE.md)
 
-Interactive checklist web app for Microsoft Flight Simulator 2024. Currently featuring the **Airbus A330-200**, **Pilatus PC-12 NGX**, and **Boeing 737 MAX 8** with more aircraft coming soon through community contributions.
+Interactive checklist web app for Microsoft Flight Simulator 2024.
 
-**Live Website: [simchecklist.app](https://simchecklist.app)**
+## Use the App - It's Free!
+
+**Just open [simchecklist.app](https://simchecklist.app) in your browser and start flying!**
+
+No installation required. The website works on any device - PC, tablet, or phone.
+
+---
 
 ## Features
 
-- **Two Modes**: Normal mode (full procedures) and Career mode (optimized for MSFS 2024 Career)
-- **Bilingual**: Full support for German and English (UI + checklists)
-- **Progress Tracking**: Your checked items are saved locally
-- **Detail Panel**: Tap any item to see descriptions, cockpit locations, and images
-- **Flight Info**: Route tracking with distance flown, ETE, and flight number display
-- **Landing Rating**: Automatic landing quality assessment with star rating (1-5 stars based on vertical speed and G-force)
-- **Collapsible Sections**: Organize your workflow by flight phase
+- **Interactive Checklists** for Airbus A330-200, Pilatus PC-12 NGX, Boeing 737 MAX 8
+- **Two Modes**: Normal (full procedures) and Career (optimized for MSFS 2024 Career Mode)
+- **Bilingual**: German and English
+- **Progress Saving**: Your checked items are saved locally
+- **Detail Panel**: Tap any item for explanations, cockpit locations, and images
+- **Landing Rating**: Automatic landing quality assessment (requires SimConnect Bridge)
 - **Dark Cockpit Theme**: Easy on the eyes during night flights
-- **SimConnect Bridge** (optional): Live flight data from the simulator
-- **Tablet Support** (optional): Use on iPad/tablet via local network
-- **Docker Support**: Easy deployment with Docker
 
-## Screenshots
+---
 
-*Coming soon*
+## Optional: SimConnect Bridge for Live Data
 
-## Quick Start
+Want to see live flight data from your simulator? The **SimConnect Bridge** connects MSFS 2024 with the website and provides:
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher)
+- Real-time flight data (altitude, speed, heading, position)
+- Automatic landing quality rating with star display
+- Live system status indicators on checklist items
+- Tablet support via local network
 
-### Installation
+### How It Works
+
+```
+Your PC:
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   MSFS 2024     │────►│ SimConnect      │────►│ simchecklist.app│
+│   (Simulator)   │     │ Bridge          │     │ (in Browser)    │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+The Bridge runs locally on your PC, reads data from MSFS, and sends it to your browser.
+
+---
+
+## Bridge Installation (Step by Step)
+
+### Step 1: Install Prerequisites
+
+You need two things installed on your PC:
+
+#### 1.1 MSFS 2024 SDK
+The SDK is required for the Bridge to communicate with the simulator.
+
+1. Start **MSFS 2024**
+2. Go to **Options** → **General** → **Developers**
+3. Enable **Developer Mode**
+4. In the Developer menu at the top, click **Help** → **SDK Installer**
+5. Run the installer and install the SDK
+6. **Important**: Note the installation path (default: `C:\MSFS SDK`)
+
+#### 1.2 .NET 7.0 Runtime
+The Bridge is written in C# and needs the .NET runtime.
+
+1. Download from [dotnet.microsoft.com/download/dotnet/7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
+2. Choose **.NET Runtime 7.0** (not SDK, unless you want to compile yourself)
+3. Download and install the **Windows x64** version
+
+### Step 2: Download the Bridge
+
+You have two options:
+
+#### Option A: Download ZIP (Easiest)
+1. Go to [github.com/J4gg3d/msfs2024-checklists/releases](https://github.com/J4gg3d/msfs2024-checklists/releases)
+2. Download the latest `MSFSBridge.zip`
+3. Extract to any folder (e.g., `C:\MSFSBridge`)
+
+#### Option B: Clone Repository (For Developers)
+```bash
+git clone https://github.com/J4gg3d/msfs2024-checklists.git
+cd msfs2024-checklists/bridge-server/MSFSBridge
+dotnet build
+```
+
+### Step 3: Start the Bridge
+
+1. **Start MSFS 2024** first (or start it later - the Bridge will wait)
+2. Navigate to the Bridge folder
+3. Double-click `MSFSBridge.exe` (or run `dotnet run` if you cloned the repo)
+
+You should see:
+```
+╔══════════════════════════════════════════════════════════════╗
+║           MSFS Checklist - Bridge Server                     ║
+╚══════════════════════════════════════════════════════════════╝
+
+[AUTO] Trying to connect to MSFS...
+[AUTO] Successfully connected to MSFS!
+[SIM] Connected: Microsoft Flight Simulator
+```
+
+### Step 4: Open the Website
+
+1. Open [simchecklist.app](https://simchecklist.app) in your browser
+2. The website automatically connects to the Bridge on your PC
+3. You should see a green **"Connected"** status
+
+**That's it!** You now have live flight data in your checklist.
+
+---
+
+## Tablet Support
+
+Use the checklist on your iPad or tablet while flying on your PC.
+
+### Option A: Tablet in Same Network (Recommended)
+
+1. Start the Bridge on your gaming PC
+2. The Bridge shows your local IP in the console:
+   ```
+   ╔══════════════════════════════════════════════════════════════╗
+   ║  Open this address on your tablet:                           ║
+   ║     http://192.168.1.100:8081                                ║
+   ╚══════════════════════════════════════════════════════════════╝
+   ```
+3. Open this URL on your tablet browser
+4. Done! The tablet receives live data from your PC
+
+### Option B: Connect Tablet to PC Bridge
+
+If your tablet is on a different network, you can enter the PC's IP address manually:
+
+1. On the tablet, open [simchecklist.app](https://simchecklist.app)
+2. Go to **Menu** → **Tablet Access**
+3. Enter your PC's local IP address
+4. Click **Connect**
+
+**Requirements:**
+- PC and tablet must be on the same WiFi network
+- The Bridge must be running on the PC
+
+---
+
+## Troubleshooting
+
+### Bridge doesn't connect to MSFS
+
+- Make sure MSFS 2024 is running (not just the launcher)
+- Check if the SDK is installed (Developer Mode → Help → SDK Installer)
+- The SimConnect.dll must be in the same folder as the Bridge, or the SDK path must be set
+
+### Website shows "Not Connected"
+
+- Make sure the Bridge is running (check the console window)
+- The Bridge must show "Successfully connected to MSFS"
+- Try refreshing the website (F5)
+
+### Landing Rating doesn't work
+
+- Make sure you have a valid flight (takeoff → fly → landing)
+- Very short flights (< 10 seconds) or low altitude (< 100 ft) are ignored
+- The Bridge must be connected to MSFS
+
+### Tablet can't connect
+
+- PC and tablet must be on the same WiFi network
+- Check your firewall settings (allow port 8080 and 8081)
+- Make sure you're using the correct IP address
+
+---
+
+## For Developers
+
+If you want to contribute or run a local development version:
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/J4gg3d/msfs2024-checklists.git
 cd msfs2024-checklists
 
@@ -43,172 +189,25 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding new aircraft checklists.
 
-### Production Build
-
-```bash
-npm run build
-npm run preview
-```
-
-### Docker
-
-```bash
-# Build and start container
-docker compose up -d
-
-# App available at
-http://localhost:8080
-```
-
-## SimConnect Bridge (Optional)
-
-The SimConnect Bridge provides live flight data from the simulator including:
-- Flight data: Altitude, Ground Speed, Heading, GPS Position
-- GPS data: Flight plan, waypoints, ETE, destination airport
-- ATC data: Callsign, Airline, Flight Number
-- Aircraft systems: Lights, Electrical, APU, Anti-Ice, etc.
-
-Requires MSFS 2024 SDK.
-
-```bash
-cd bridge-server/MSFSBridge
-dotnet build
-dotnet run
-```
-
-The bridge:
-- WebSocket server on port 8080 (flight data)
-- HTTP server on port 8081 (serves website for tablets)
-- Route sync between PC and tablet (automatic)
-- Airport lookup API (bypasses CORS restrictions)
-- Auto-connects to MSFS on startup
-- Shows tablet URL in console (e.g., `http://192.168.1.100:8081`)
-- Retries every 5 seconds if MSFS isn't running
-
-**Important**: After building the frontend, copy dist files to Bridge:
-```bash
-cp -r dist/* bridge-server/MSFSBridge/bin/Debug/net7.0/www/
-```
-
-## Tablet Support (Local Network)
-
-Use the checklist on your iPad or tablet while receiving live flight data from your gaming PC.
-
-### How it works
-
-**Option A: Using simchecklist.app (Desktop PC)**
-1. Open [simchecklist.app](https://simchecklist.app) in your browser
-2. Start the Bridge on your PC
-3. The website automatically connects to `ws://127.0.0.1:8080`
-4. Done! (Works in Chrome/Firefox via localhost loopback exception)
-
-**Option B: Tablet via Bridge (Local Network)**
-1. Start the Bridge on your gaming PC
-2. Note the URL shown in the bridge console (e.g., `http://192.168.1.100:8081`)
-3. Open this URL on your tablet browser
-4. Done! The Bridge serves both the website and flight data
-
-### Route Synchronization
-- Flight route is automatically synced between PC and tablet
-- Route entered on PC appears instantly on tablet
-- New clients receive the current route when connecting
-- Works bidirectionally (PC ↔ Tablet)
-
-### Requirements
-- PC and tablet must be on the same WiFi network
-- Bridge must be running on the PC
-
-### Architecture
-
-```
-Desktop PC:
-  simchecklist.app (HTTPS) ──► ws://127.0.0.1:8080 ──► Bridge
-
-Tablet:
-  http://[PC-IP]:8081 ◄──── Bridge serves website + WebSocket
-
-Route Sync:
-  PC sends route ──► Bridge stores ──► Broadcasts to all clients
-```
-
-## Flight Route Tracking
-
-The app automatically tracks your flight progress:
-
-- **GPS-based**: Distance calculated from current position to departure airport
-- **Worldwide airports**: Unknown ICAO codes are automatically looked up
-- **Caching**: Airports are cached locally for faster access
-- **Bridge restart safe**: Distance is correctly reconstructed from GPS position
-- **Route sync**: Route is synchronized between PC and tablet
-
-Airport data is loaded via the Bridge (bypasses CORS) or falls back to direct API calls locally.
+---
 
 ## Available Aircraft
 
-| Aircraft | Normal Mode | Career Mode | Languages | Contributor |
-|----------|:-----------:|:-----------:|:---------:|-------------|
-| Airbus A330-200 | Yes | Yes | DE, EN | [@J4gg3d](https://github.com/J4gg3d) |
-| Pilatus PC-12 NGX | - | Yes | DE, EN | [@J4gg3d](https://github.com/J4gg3d) |
-| Boeing 737 MAX 8 | - | Yes | DE, EN | [@J4gg3d](https://github.com/J4gg3d) |
-| *Your aircraft here* | - | - | - | [Contribute!](CONTRIBUTING.md) |
+| Aircraft | Normal Mode | Career Mode | Languages |
+|----------|:-----------:|:-----------:|:---------:|
+| Airbus A330-200 | Yes | Yes | DE, EN |
+| Pilatus PC-12 NGX | - | Yes | DE, EN |
+| Boeing 737 MAX 8 | - | Yes | DE, EN |
 
-## Contributing
+Want to add your favorite aircraft? [Contribute!](CONTRIBUTING.md)
 
-We welcome contributions! Whether it's new aircraft checklists, bug fixes, or translations.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to add new checklists.
-
-## Tech Stack
-
-- **Frontend**: React 18 + Vite
-- **Styling**: Plain CSS (no frameworks)
-- **i18n**: react-i18next for translations
-- **Data**: JSON files for checklists (per language)
-- **Persistence**: LocalStorage
-- **Bridge**: C# with SimConnect SDK
-- **Airport Data**: airport-data.com API (free, no key required)
-- **Deployment**: Docker + nginx
-
-## Project Structure
-
-```
-src/
-├── i18n/                    # Internationalization
-│   └── locales/
-│       ├── de/translation.json
-│       └── en/translation.json
-├── data/                    # Checklist data
-│   ├── de/                  # German checklists
-│   └── en/                  # English checklists
-├── components/              # React components
-├── hooks/                   # Custom hooks
-└── utils/                   # Utility functions (geo calculations)
-
-bridge-server/MSFSBridge/    # C# SimConnect Server
-├── Program.cs               # Main program with auto-connect
-├── SimConnectManager.cs     # SimConnect integration
-├── WebSocketServer.cs       # WebSocket server for flight data
-├── StaticFileServer.cs      # HTTP server for tablet website
-└── Models/SimData.cs        # Data model
-```
+---
 
 ## License
 
-This project is licensed under the **GPL-3.0 License** - see the [LICENSE](LICENSE) file for details.
-
-This means:
-- You can use, modify, and distribute this project
-- You must keep it open source
-- You must credit the original authors
-- You cannot use it in closed-source commercial products
-
-## Acknowledgments
-
-- The MSFS community for feedback and testing
-- Contributors who add new aircraft checklists
-- [airport-data.com](https://www.airport-data.com/) for the free airport API
+GPL-3.0 License - This project is open source and free to use.
 
 ---
 

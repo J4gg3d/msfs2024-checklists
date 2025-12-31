@@ -308,7 +308,7 @@ public class BridgeWebSocketServer : IDisposable
                     icao = icao,
                     coords = cached
                 }, _jsonSettings);
-                socket.Send(cacheResponse);
+                await socket.Send(cacheResponse);
                 return;
             }
 
@@ -320,7 +320,7 @@ public class BridgeWebSocketServer : IDisposable
             if (!response.IsSuccessStatusCode)
             {
                 OnLog?.Invoke($"Airport API Fehler für {icao}: {response.StatusCode}");
-                socket.Send(JsonConvert.SerializeObject(new
+                await socket.Send(JsonConvert.SerializeObject(new
                 {
                     type = "airportCoords",
                     icao = icao,
@@ -333,13 +333,15 @@ public class BridgeWebSocketServer : IDisposable
             var json = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<dynamic>(json);
 
-            if (data?.latitude != null && data?.longitude != null)
+#pragma warning disable CS8602 // Dereference of a possibly null reference - checked via dynamic
+            if (data != null && data.latitude != null && data.longitude != null)
             {
                 var coords = new AirportCoords
                 {
                     Lat = (double)data.latitude,
                     Lon = (double)data.longitude
                 };
+#pragma warning restore CS8602
 
                 // Im Cache speichern
                 _airportCache[icao] = coords;
@@ -352,12 +354,12 @@ public class BridgeWebSocketServer : IDisposable
                     icao = icao,
                     coords = coords
                 }, _jsonSettings);
-                socket.Send(successResponse);
+                await socket.Send(successResponse);
             }
             else
             {
                 OnLog?.Invoke($"Flughafen nicht gefunden: {icao}");
-                socket.Send(JsonConvert.SerializeObject(new
+                await socket.Send(JsonConvert.SerializeObject(new
                 {
                     type = "airportCoords",
                     icao = icao,

@@ -15,7 +15,6 @@ public class SimConnectManager : IDisposable
     private Thread? _messageThread;
     private bool _running = false;
     private bool _isPaused = false;  // Wird durch System-Event gesetzt
-    private bool _atcDebugLogged = false;
 
     // Landing Detection
     private bool _wasOnGround = true;

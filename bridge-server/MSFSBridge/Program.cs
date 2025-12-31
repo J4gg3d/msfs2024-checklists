@@ -161,12 +161,36 @@ else
 // SimConnect-Manager erstellen
 using var simConnect = new SimConnectManager();
 
+// Supabase Client für Flight-Logging erstellen
+using var supabaseClient = new SupabaseClient();
+supabaseClient.OnLog += (message) => Console.WriteLine($"[FLIGHT-LOG] {message}");
+supabaseClient.OnError += (error) => Console.WriteLine($"[FLIGHT-LOG FEHLER] {error}");
+
+if (supabaseClient.IsConfigured)
+{
+    Console.WriteLine("[FLIGHT-LOG] Supabase konfiguriert - Flüge werden gespeichert");
+}
+
+// Session-Code für Flight-Logging setzen (für anonyme Flüge)
+if (!string.IsNullOrEmpty(activeSessionCode))
+{
+    simConnect.SetSessionCode(activeSessionCode);
+}
+
 simConnect.OnStatusChanged += (status) => Console.WriteLine($"[SIM] {status}");
 simConnect.OnError += (error) => Console.WriteLine($"[SIM FEHLER] {error}");
 simConnect.OnLandingDetected += (landing) =>
 {
     // Landing an alle Clients broadcasten
     webSocketServer.BroadcastLanding(landing);
+};
+simConnect.OnFlightCompleted += async (flight) =>
+{
+    // Flug in Supabase speichern
+    if (supabaseClient.IsConfigured)
+    {
+        await supabaseClient.SaveFlightAsync(flight);
+    }
 };
 simConnect.OnDataReceived += async (data) =>
 {

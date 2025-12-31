@@ -304,6 +304,36 @@ body {
   background: rgba(239, 83, 80, 0.15);
 }
 
+.menu-item-highlight {
+  background: rgba(79, 195, 247, 0.1);
+  border-left: 3px solid #4fc3f7;
+}
+
+.menu-item-highlight:hover {
+  background: rgba(79, 195, 247, 0.2);
+}
+
+.menu-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(79, 195, 247, 0.08);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.menu-user-icon {
+  font-size: 20px;
+}
+
+.menu-user-name {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  color: #4fc3f7;
+  font-weight: 500;
+}
+
 /* Language Toggle */
 .language-toggle-container {
   display: flex;

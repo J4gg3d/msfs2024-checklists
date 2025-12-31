@@ -5,6 +5,9 @@ import SimStatus from './components/SimStatus'
 import DetailPanel from './components/DetailPanel'
 import FlightInfo from './components/FlightInfo'
 import { LandingModal, LandingPanel } from './components/LandingRating'
+import AuthModal from './components/AuthModal'
+import FlightLog from './components/FlightLog'
+import { useAuth } from './context/AuthContext'
 import useSimConnect from './hooks/useSimConnect'
 import { useChecklist, availableAircraft } from './hooks/useChecklist'
 import { calculateFlownDistance, isAirportKnown, getAirportCoordinatesAsync, calculateRouteDistanceAsync } from './utils/geoUtils'
@@ -45,6 +48,11 @@ const saveToStorage = (key, set) => {
 
 function App() {
   const { t, i18n } = useTranslation()
+  const { user, profile, isAuthenticated, signOut, loading: authLoading } = useAuth()
+
+  // Auth & FlightLog Modals
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showFlightLog, setShowFlightLog] = useState(false)
 
   // Lade ausgewähltes Flugzeug aus Storage
   const [selectedAircraft, setSelectedAircraft] = useState(() => {
@@ -466,6 +474,33 @@ function App() {
               <button className="menu-close" onClick={() => setShowMenu(false)}>✕</button>
             </div>
             <div className="menu-items">
+              {/* Pilot Login/Logout */}
+              {isAuthenticated ? (
+                <>
+                  <div className="menu-user-info">
+                    <span className="menu-user-icon">👨‍✈️</span>
+                    <span className="menu-user-name">{profile?.display_name || profile?.username || user?.email}</span>
+                  </div>
+                  <button className="menu-item" onClick={() => { setShowFlightLog(true); setShowMenu(false); }}>
+                    <span className="menu-item-icon">📖</span>
+                    <span className="menu-item-text">{t('menu.flightLog', 'Flugbuch')}</span>
+                  </button>
+                  <button className="menu-item" onClick={() => { signOut(); setShowMenu(false); }}>
+                    <span className="menu-item-icon">🚪</span>
+                    <span className="menu-item-text">{t('menu.logout', 'Abmelden')}</span>
+                  </button>
+                  <div className="menu-divider"></div>
+                </>
+              ) : (
+                <>
+                  <button className="menu-item menu-item-highlight" onClick={() => { setShowAuthModal(true); setShowMenu(false); }}>
+                    <span className="menu-item-icon">👨‍✈️</span>
+                    <span className="menu-item-text">{t('menu.login', 'Pilot Login')}</span>
+                  </button>
+                  <div className="menu-divider"></div>
+                </>
+              )}
+
               <button className="menu-item" onClick={() => handleMenuItemClick('workflow')}>
                 <span className="menu-item-icon">🛫</span>
                 <span className="menu-item-text">{t('menu.flightPrep')}</span>
@@ -1119,6 +1154,12 @@ function App() {
 
       {/* Landing Rating Modal */}
       <LandingModal landing={lastLanding} onClose={clearLastLanding} />
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+
+      {/* Flight Log Modal */}
+      <FlightLog isOpen={showFlightLog} onClose={() => setShowFlightLog(false)} />
     </>
   )
 }

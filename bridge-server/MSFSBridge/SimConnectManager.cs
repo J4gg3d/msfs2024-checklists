@@ -23,6 +23,10 @@ public class SimConnectManager : IDisposable
     private double _lastGForce = 1.0;
     private double _lastGroundSpeed = 0;
     private DateTime _lastLandingTime = DateTime.MinValue;
+    private SimData? _lastSimData;  // Letzte SimData für FlightTracker
+
+    // Flight Tracker (sammelt Flugdaten für Logbuch)
+    private readonly FlightTracker _flightTracker = new();
 
     // Flight Validation (verhindert falsche Landungen beim Mission-Start)
     private DateTime _takeoffTime = DateTime.MinValue;  // Wann abgehoben
@@ -166,8 +170,25 @@ public class SimConnectManager : IDisposable
     // Events
     public event Action<SimData>? OnDataReceived;
     public event Action<LandingInfo>? OnLandingDetected;
+    public event Action<FlightLog>? OnFlightCompleted;  // Neues Event für Logbuch
     public event Action<string>? OnStatusChanged;
     public event Action<string>? OnError;
+
+    /// <summary>
+    /// Setzt die Session-ID für Flight-Logging (anonyme Flüge)
+    /// </summary>
+    public void SetSessionCode(string? sessionCode)
+    {
+        _flightTracker.SetSessionCode(sessionCode);
+    }
+
+    /// <summary>
+    /// Setzt die User-ID für Flight-Logging (eingeloggte User)
+    /// </summary>
+    public void SetUserId(string? userId)
+    {
+        _flightTracker.SetUserId(userId);
+    }
 
     public bool IsConnected => _isConnected;
 
@@ -473,6 +494,12 @@ public class SimConnectManager : IDisposable
                     if (_validTakeoff)
                     {
                         Console.WriteLine($"[FLIGHT] Takeoff detected - GS: {currentGroundSpeed:F0} kts");
+                        // FlightTracker starten wenn wir lastSimData haben
+                        if (_lastSimData != null)
+                        {
+                            var originAirport = IsValidIcao(simData.GpsWpPrevId) ? simData.GpsWpPrevId?.Trim() : null;
+                            _flightTracker.StartTracking(_lastSimData, originAirport);
+                        }
                     }
                     else
                     {
@@ -496,6 +523,18 @@ public class SimConnectManager : IDisposable
                     {
                         _validTakeoff = true;
                         Console.WriteLine($"[FLIGHT] Valid flight confirmed - GS: {currentGroundSpeed:F0} kts");
+                        // Jetzt FlightTracker starten (nachträglich validierter Takeoff)
+                        if (!_flightTracker.IsTracking && _lastSimData != null)
+                        {
+                            var originAirport = IsValidIcao(simData.GpsWpPrevId) ? simData.GpsWpPrevId?.Trim() : null;
+                            _flightTracker.StartTracking(_lastSimData, originAirport);
+                        }
+                    }
+
+                    // FlightTracker mit aktuellen Daten updaten
+                    if (_flightTracker.IsTracking && _lastSimData != null)
+                    {
+                        _flightTracker.Update(_lastSimData);
                     }
                 }
 
@@ -532,6 +571,17 @@ public class SimConnectManager : IDisposable
                         Console.WriteLine($"[LANDING] {rating} ({score}/5) - VS: {_lastVerticalSpeed:F0} ft/min, G: {_lastGForce:F2}, Flight: {flightSeconds:F0}s, MaxAlt: {_maxAltitudeAGL:F0}ft");
                         OnLandingDetected?.Invoke(landingInfo);
                         _lastLandingTime = DateTime.Now;
+
+                        // FlightTracker beenden und Flug speichern
+                        if (_flightTracker.IsTracking)
+                        {
+                            var destinationAirport = IsValidIcao(simData.GpsApproachAirportId) ? simData.GpsApproachAirportId?.Trim() : null;
+                            var flightLog = _flightTracker.StopTracking(landingInfo, destinationAirport);
+                            if (flightLog != null)
+                            {
+                                OnFlightCompleted?.Invoke(flightLog);
+                            }
+                        }
                     }
                     else if (!validFlight)
                     {
@@ -543,6 +593,12 @@ public class SimConnectManager : IDisposable
                         if (_maxGForce < MIN_GFORCE) reasons.Add($"G-force unrealistic ({_maxGForce:F2} < {MIN_GFORCE})");
 
                         Console.WriteLine($"[FLIGHT] Ignored - {string.Join(", ", reasons)}");
+
+                        // FlightTracker abbrechen
+                        if (_flightTracker.IsTracking)
+                        {
+                            _flightTracker.CancelTracking();
+                        }
                     }
 
                     // Reset flight tracking
@@ -655,6 +711,9 @@ public class SimConnectManager : IDisposable
                     GpsWpPrevId = IsValidString(simData.GpsWpPrevId) ? simData.GpsWpPrevId?.Trim() : null,
                     GpsApproachAirportId = IsValidIcao(simData.GpsApproachAirportId) ? simData.GpsApproachAirportId?.Trim().ToUpper() : null
                 };
+
+                // SimData für FlightTracker speichern
+                _lastSimData = result;
 
                 OnDataReceived?.Invoke(result);
             }

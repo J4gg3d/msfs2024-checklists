@@ -177,6 +177,13 @@ if (!string.IsNullOrEmpty(activeSessionCode))
     simConnect.SetSessionCode(activeSessionCode);
 }
 
+// User-Authentifizierung vom Frontend empfangen
+webSocketServer.OnUserAuthenticated += (userId) =>
+{
+    simConnect.SetUserId(userId);
+    Console.WriteLine($"[AUTH] User-ID gesetzt: {(string.IsNullOrEmpty(userId) ? "(keiner)" : userId)}");
+};
+
 simConnect.OnStatusChanged += (status) => Console.WriteLine($"[SIM] {status}");
 simConnect.OnError += (error) => Console.WriteLine($"[SIM FEHLER] {error}");
 simConnect.OnLandingDetected += (landing) =>

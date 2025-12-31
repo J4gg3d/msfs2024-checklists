@@ -511,6 +511,23 @@ function useSimConnect() {
   }, []);
 
   /**
+   * Sendet User-Authentifizierung an die Bridge (für Flight-Logging)
+   * @param {string|null} userId - User-ID oder null für Logout
+   */
+  const sendAuth = useCallback((userId) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const message = JSON.stringify({
+        type: 'auth',
+        data: userId || null
+      });
+      console.log('SimConnect: Sending auth:', userId || '(logout)');
+      wsRef.current.send(message);
+    } else {
+      console.log('SimConnect: Cannot send auth - not connected');
+    }
+  }, []);
+
+  /**
    * Holt Flughafen-Koordinaten über die Bridge (umgeht CORS)
    * @param {string} icao - ICAO-Code des Flughafens
    * @returns {Promise<{lat: number, lon: number} | null>}
@@ -590,6 +607,8 @@ function useSimConnect() {
     // Route-Synchronisation
     sharedRoute,
     sendRoute,
+    // User-Authentifizierung (für Flight-Logging)
+    sendAuth,
     // Airport-Lookup über Bridge
     getAirportFromBridge,
     // Landing-Rating

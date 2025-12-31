@@ -169,6 +169,8 @@ function App() {
     // Route-Synchronisation
     sharedRoute,
     sendRoute,
+    // User-Authentifizierung (für Flight-Logging)
+    sendAuth,
     // Airport-Lookup über Bridge (umgeht CORS)
     getAirportFromBridge,
     // Landing-Rating
@@ -198,6 +200,13 @@ function App() {
       connect()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // User-Authentifizierung an Bridge senden (für Flight-Logging)
+  useEffect(() => {
+    if (!isConnected || isDemoMode) return
+    // Sende User-ID an Bridge wenn verbunden
+    sendAuth(user?.id || null)
+  }, [isConnected, isDemoMode, user?.id, sendAuth])
 
   // Route-Synchronisation: Empfange Route von anderen Clients
   useEffect(() => {

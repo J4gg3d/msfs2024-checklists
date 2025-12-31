@@ -31,6 +31,7 @@ public class BridgeWebSocketServer : IDisposable
 
     public event Action<string>? OnLog;
     public event Action<IWebSocketConnection>? OnClientConnected;
+    public event Action<string?>? OnUserAuthenticated;
 
     public int ClientCount
     {
@@ -228,12 +229,33 @@ public class BridgeWebSocketServer : IDisposable
                     case "getAirport":
                         _ = HandleAirportRequest(socket, command);
                         break;
+
+                    case "auth":
+                        HandleAuthMessage(command);
+                        break;
                 }
             }
         }
         catch
         {
             // Ungültige Nachricht ignorieren
+        }
+    }
+
+    /// <summary>
+    /// Verarbeitet Auth-Nachrichten vom Frontend (User-ID für Flight-Logging)
+    /// </summary>
+    private void HandleAuthMessage(ClientCommand command)
+    {
+        try
+        {
+            var userId = command.Data?.ToString();
+            OnLog?.Invoke($"Auth empfangen: User-ID = {(string.IsNullOrEmpty(userId) ? "(abgemeldet)" : userId)}");
+            OnUserAuthenticated?.Invoke(string.IsNullOrEmpty(userId) ? null : userId);
+        }
+        catch (Exception ex)
+        {
+            OnLog?.Invoke($"Auth-Fehler: {ex.Message}");
         }
     }
 

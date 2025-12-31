@@ -1,0 +1,65 @@
+name: Build and Release Bridge
+
+on:
+  push:
+    paths:
+      - 'bridge-server/**'
+    branches:
+      - master
+      - simflycorp
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore bridge-server/MSFSBridge/MSFSBridge.csproj
+
+    - name: Build Release
+      run: dotnet publish bridge-server/MSFSBridge/MSFSBridge.csproj -c Release -o ./publish --self-contained false
+
+    - name: Create ZIP
+      run: Compress-Archive -Path ./publish/* -DestinationPath ./MSFSBridge.zip
+      shell: pwsh
+
+    - name: Get version date
+      id: date
+      run: echo "date=$(Get-Date -Format 'yyyy.MM.dd-HHmm')" >> $env:GITHUB_OUTPUT
+      shell: pwsh
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: bridge-${{ steps.date.outputs.date }}
+        name: SimConnect Bridge ${{ steps.date.outputs.date }}
+        body: |
+          ## SimConnect Bridge
+
+          Automatischer Build vom ${{ steps.date.outputs.date }}
+
+          ### Installation
+          1. ZIP herunterladen und entpacken
+          2. MSFS 2024 SDK installieren (Developer Mode → Help → SDK Installer)
+          3. .NET 7 Runtime installieren (falls nicht vorhanden)
+          4. `MSFSBridge.exe` starten
+
+          ### Voraussetzungen
+          - Windows 10/11
+          - MSFS 2024 mit installiertem SDK
+          - .NET 7 Runtime
+
+          Vollständige Anleitung: [README](https://github.com/${{ github.repository }}#bridge-installation-step-by-step)
+        files: ./MSFSBridge.zip
+        draft: false
+        prerelease: ${{ github.ref != 'refs/heads/master' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

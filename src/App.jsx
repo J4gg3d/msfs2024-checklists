@@ -474,16 +474,18 @@ function App() {
               <button className="menu-close" onClick={() => setShowMenu(false)}>✕</button>
             </div>
             <div className="menu-items">
-              {/* Pilot Login/Logout */}
+              {/* Pilot Login/Logout - BETA */}
               {isAuthenticated ? (
                 <>
                   <div className="menu-user-info">
                     <span className="menu-user-icon">👨‍✈️</span>
                     <span className="menu-user-name">{profile?.display_name || profile?.username || user?.email}</span>
+                    <span className="menu-badge-wip">BETA</span>
                   </div>
                   <button className="menu-item" onClick={() => { setShowFlightLog(true); setShowMenu(false); }}>
                     <span className="menu-item-icon">📖</span>
                     <span className="menu-item-text">{t('menu.flightLog', 'Flugbuch')}</span>
+                    <span className="menu-badge-wip">BETA</span>
                   </button>
                   <button className="menu-item" onClick={() => { signOut(); setShowMenu(false); }}>
                     <span className="menu-item-icon">🚪</span>
@@ -496,6 +498,7 @@ function App() {
                   <button className="menu-item menu-item-highlight" onClick={() => { setShowAuthModal(true); setShowMenu(false); }}>
                     <span className="menu-item-icon">👨‍✈️</span>
                     <span className="menu-item-text">{t('menu.login', 'Pilot Login')}</span>
+                    <span className="menu-badge-wip">BETA</span>
                   </button>
                   <div className="menu-divider"></div>
                 </>

@@ -1,0 +1,556 @@
+.simflycorp-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0d0d1a 100%);
+  color: #fff;
+  z-index: 2000;
+  overflow-y: auto;
+}
+
+/* Header */
+.simflycorp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.back-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-color: #666;
+}
+
+.simflycorp-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-spacer {
+  width: 100px;
+}
+
+/* Demo Banner */
+.demo-banner {
+  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  border-bottom: 1px solid #1565c0;
+  padding: 0.75rem 2rem;
+}
+
+.demo-banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.demo-badge {
+  background: #ffd700;
+  color: #1a1a2e;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.demo-text {
+  color: #b3e5fc;
+  font-size: 0.9rem;
+}
+
+.demo-login-btn {
+  background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+  color: #0a0a14;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.demo-login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+}
+
+.demo-tag {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  font-size: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  vertical-align: middle;
+}
+
+.avatar-placeholder.demo {
+  background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%);
+  opacity: 0.8;
+}
+
+/* Content */
+.simflycorp-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.simflycorp-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: #888;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid #333;
+  border-top-color: #4fc3f7;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Pilot Profile */
+.pilot-profile {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.profile-card {
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+.profile-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar-placeholder {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #4fc3f7 0%, #1976d2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(79, 195, 247, 0.3);
+}
+
+/* Pilot Rank with Stripes */
+.rank-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.pilot-stripes {
+  display: flex;
+  gap: 4px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #0d0d1a 100%);
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+
+.pilot-stripes .stripe {
+  width: 22px;
+  height: 7px;
+  background: linear-gradient(180deg, #ffd700 0%, #daa520 50%, #ffd700 100%);
+  border-radius: 2px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.rank-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.profile-info {
+  min-width: 0;
+}
+
+.pilot-name {
+  margin: 0 0 1rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pilot-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detail-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #666;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: #ccc;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.detail-value.placeholder {
+  color: #4fc3f7;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.profile-stat {
+  background: #0d0d1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  min-width: 100px;
+}
+
+.stat-number {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #4fc3f7;
+  font-family: 'Consolas', 'Monaco', monospace;
+  margin-bottom: 0.25rem;
+}
+
+.stat-text {
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+}
+
+/* Achievements */
+.achievements-card {
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.achievements-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.achievement {
+  background: #0d0d1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.achievement.unlocked {
+  border-color: #4fc3f7;
+  background: rgba(79, 195, 247, 0.1);
+}
+
+.achievement.locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.achievement-icon {
+  font-size: 1.5rem;
+}
+
+.achievement-name {
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.achievement.unlocked .achievement-name {
+  color: #4fc3f7;
+}
+
+/* Flight Log Section */
+.flightlog-section {
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.flightlog-section h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+.flightlog-empty {
+  text-align: center;
+  padding: 3rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.flightlog-empty h3 {
+  margin: 0 0 0.5rem 0;
+  color: #888;
+}
+
+.flightlog-empty p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.flightlog-table-container {
+  overflow-x: auto;
+}
+
+.flightlog-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.flightlog-table th {
+  text-align: left;
+  padding: 0.75rem;
+  background: #0d0d1a;
+  color: #888;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+}
+
+.flightlog-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #222;
+  color: #ddd;
+}
+
+.flightlog-table tr:hover td {
+  background: rgba(79, 195, 247, 0.05);
+}
+
+.col-date {
+  color: #888;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.col-route {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-weight: 600;
+}
+
+.col-route .airport {
+  color: #4fc3f7;
+}
+
+.col-route .arrow {
+  color: #555;
+  margin: 0 0.5rem;
+}
+
+.col-aircraft {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #aaa;
+}
+
+.col-distance,
+.col-time {
+  font-family: 'Consolas', 'Monaco', monospace;
+  text-align: right;
+}
+
+.col-rating {
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+.rating-good { color: #4caf50; }
+.rating-ok { color: #ffa726; }
+.rating-bad { color: #ef5350; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .profile-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .pilot-details {
+    justify-items: center;
+  }
+
+  .profile-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .simflycorp-header {
+    padding: 1rem;
+  }
+
+  .simflycorp-content {
+    padding: 1rem;
+  }
+
+  .profile-card {
+    padding: 1.5rem;
+  }
+
+  .avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .pilot-name {
+    font-size: 1.4rem;
+  }
+
+  .profile-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .achievements-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .flightlog-table {
+    font-size: 0.8rem;
+  }
+
+  .col-aircraft {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .simflycorp-logo .logo-text {
+    display: none;
+  }
+
+  .header-spacer {
+    display: none;
+  }
+
+  .pilot-details {
+    grid-template-columns: 1fr;
+  }
+
+  .achievements-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -206,7 +206,7 @@ dotnet run
 ### Nach Frontend-Build: Dist-Dateien kopieren
 ```bash
 # Windows PowerShell
-cp -r dist/* bridge-server/MSFSBridge/bin/Debug/net7.0/www/
+cp -r dist/* bridge-server/MSFSBridge/bin/Debug/net8.0/www/
 
 # Oder manuell: dist/ Inhalt nach www/ kopieren
 ```

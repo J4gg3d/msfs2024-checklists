@@ -6,7 +6,7 @@ import DetailPanel from './components/DetailPanel'
 import FlightInfo from './components/FlightInfo'
 import { LandingModal, LandingPanel } from './components/LandingRating'
 import AuthModal from './components/AuthModal'
-import FlightLog from './components/FlightLog'
+import SimFlyCorp from './components/SimFlyCorp'
 import { useAuth } from './context/AuthContext'
 import useSimConnect from './hooks/useSimConnect'
 import { useChecklist, availableAircraft } from './hooks/useChecklist'
@@ -50,9 +50,9 @@ function App() {
   const { t, i18n } = useTranslation()
   const { user, profile, isAuthenticated, signOut, loading: authLoading } = useAuth()
 
-  // Auth & FlightLog Modals
+  // Auth & SimFlyCorp
   const [showAuthModal, setShowAuthModal] = useState(false)
-  const [showFlightLog, setShowFlightLog] = useState(false)
+  const [showSimFlyCorp, setShowSimFlyCorp] = useState(false)
 
   // Lade ausgewähltes Flugzeug aus Storage
   const [selectedAircraft, setSelectedAircraft] = useState(() => {
@@ -491,12 +491,12 @@ function App() {
                     <span className="menu-user-name">{profile?.display_name || profile?.username || user?.email}</span>
                     <span className="menu-badge-wip">BETA</span>
                   </div>
-                  <button className="menu-item" onClick={() => { setShowFlightLog(true); setShowMenu(false); }}>
-                    <span className="menu-item-icon">📖</span>
-                    <span className="menu-item-text">{t('menu.flightLog', 'Flugbuch')}</span>
+                  <button className="menu-item" onClick={() => { setShowSimFlyCorp(true); setShowMenu(false); }}>
+                    <span className="menu-item-icon">✈</span>
+                    <span className="menu-item-text">SimFlyCorp</span>
                     <span className="menu-badge-wip">BETA</span>
                   </button>
-                  <button className="menu-item" onClick={() => { signOut(); setShowMenu(false); }}>
+                  <button className="menu-item" onClick={async () => { await signOut(); setShowMenu(false); }}>
                     <span className="menu-item-icon">🚪</span>
                     <span className="menu-item-text">{t('menu.logout', 'Abmelden')}</span>
                   </button>
@@ -504,6 +504,11 @@ function App() {
                 </>
               ) : (
                 <>
+                  <button className="menu-item" onClick={() => { setShowSimFlyCorp(true); setShowMenu(false); }}>
+                    <span className="menu-item-icon">✈</span>
+                    <span className="menu-item-text">SimFlyCorp</span>
+                    <span className="menu-badge-new">Demo</span>
+                  </button>
                   <button className="menu-item menu-item-highlight" onClick={() => { setShowAuthModal(true); setShowMenu(false); }}>
                     <span className="menu-item-icon">👨‍✈️</span>
                     <span className="menu-item-text">{t('menu.login', 'Pilot Login')}</span>
@@ -1174,8 +1179,13 @@ function App() {
       {/* Auth Modal */}
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
-      {/* Flight Log Modal */}
-      <FlightLog isOpen={showFlightLog} onClose={() => setShowFlightLog(false)} />
+      {/* SimFlyCorp Page */}
+      {showSimFlyCorp && (
+        <SimFlyCorp
+          onBack={() => setShowSimFlyCorp(false)}
+          onLogin={() => { setShowSimFlyCorp(false); setShowAuthModal(true); }}
+        />
+      )}
     </>
   )
 }

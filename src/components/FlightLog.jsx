@@ -10,6 +10,7 @@ const FlightLog = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log('FlightLog useEffect:', { isOpen, userId: user?.id })
     if (isOpen && user) {
       loadData()
     }
@@ -17,16 +18,28 @@ const FlightLog = ({ isOpen, onClose }) => {
 
   const loadData = async () => {
     setLoading(true)
-    const [flightsResult, statsResult] = await Promise.all([
-      getFlights(user.id),
-      getFlightStats(user.id)
-    ])
+    console.log('FlightLog: Loading data for user:', user.id)
+    try {
+      console.log('FlightLog: Calling getFlights...')
+      const flightsResult = await getFlights(user.id)
+      console.log('FlightLog: Flights result:', flightsResult)
 
-    if (!flightsResult.error) {
-      setFlights(flightsResult.data || [])
-    }
-    if (!statsResult.error) {
-      setStats(statsResult.stats)
+      console.log('FlightLog: Calling getFlightStats...')
+      const statsResult = await getFlightStats(user.id)
+      console.log('FlightLog: Stats result:', statsResult)
+
+      if (flightsResult.error) {
+        console.error('Error loading flights:', flightsResult.error)
+      } else {
+        setFlights(flightsResult.data || [])
+      }
+      if (statsResult.error) {
+        console.error('Error loading stats:', statsResult.error)
+      } else {
+        setStats(statsResult.stats)
+      }
+    } catch (err) {
+      console.error('FlightLog error:', err)
     }
     setLoading(false)
   }

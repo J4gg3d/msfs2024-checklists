@@ -52,31 +52,81 @@ export const AuthProvider = ({ children }) => {
   }
 
   const signUp = async (email, password, username) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { username }
-      }
-    })
-    return { data, error }
+    try {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), 5000)
+      )
+
+      const result = await Promise.race([
+        supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { username } }
+        }),
+        timeoutPromise
+      ])
+
+      return result
+    } catch (err) {
+      console.log('SignUp: Timeout')
+      return { data: null, error: { message: 'Registrierung fehlgeschlagen - bitte erneut versuchen' } }
+    }
   }
 
   const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    return { data, error }
+    try {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), 5000)
+      )
+
+      const result = await Promise.race([
+        supabase.auth.signInWithPassword({ email, password }),
+        timeoutPromise
+      ])
+
+      return result
+    } catch (err) {
+      // Timeout - check if session was created anyway
+      console.log('SignIn: Timeout, checking session...')
+      await new Promise(resolve => setTimeout(resolve, 500))
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        setUser(session.user)
+        await loadProfile(session.user.id)
+        return { data: { user: session.user }, error: null }
+      }
+
+      return { data: null, error: { message: 'Anmeldung fehlgeschlagen - bitte erneut versuchen' } }
+    }
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (!error) {
-      setUser(null)
-      setProfile(null)
+    console.log('SignOut: Clearing session...')
+
+    // Clear local state immediately
+    setUser(null)
+    setProfile(null)
+
+    // Clear Supabase session from localStorage
+    const storageKey = `sb-azihmdeajubwutgdlayu-auth-token`
+    localStorage.removeItem(storageKey)
+
+    // Try to call supabase signOut with timeout (don't wait for it)
+    try {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), 2000)
+      )
+      await Promise.race([
+        supabase.auth.signOut(),
+        timeoutPromise
+      ])
+    } catch (err) {
+      console.log('SignOut: Supabase call skipped (timeout or error)')
     }
-    return { error }
+
+    console.log('SignOut: Complete')
+    return { error: null }
   }
 
   const value = {

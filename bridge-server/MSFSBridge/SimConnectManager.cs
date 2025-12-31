@@ -499,6 +499,11 @@ public class SimConnectManager : IDisposable
                         {
                             var originAirport = IsValidIcao(simData.GpsWpPrevId) ? simData.GpsWpPrevId?.Trim() : null;
                             _flightTracker.StartTracking(_lastSimData, originAirport);
+                            Console.WriteLine($"[FLIGHT-LOG] Tracking started from {originAirport ?? "unknown"}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("[FLIGHT-LOG] Cannot start tracking - no previous sim data");
                         }
                     }
                     else
@@ -579,8 +584,17 @@ public class SimConnectManager : IDisposable
                             var flightLog = _flightTracker.StopTracking(landingInfo, destinationAirport);
                             if (flightLog != null)
                             {
+                                Console.WriteLine($"[FLIGHT-LOG] Flight completed: {flightLog.Origin ?? "?"} -> {flightLog.Destination ?? "?"}, {flightLog.DistanceNm:F1} NM");
                                 OnFlightCompleted?.Invoke(flightLog);
                             }
+                            else
+                            {
+                                Console.WriteLine("[FLIGHT-LOG] FlightTracker returned null");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("[FLIGHT-LOG] FlightTracker was not tracking - flight not logged");
                         }
                     }
                     else if (!validFlight)

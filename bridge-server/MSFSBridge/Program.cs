@@ -22,21 +22,24 @@ static List<string> GetLocalIPAddresses()
     return ips;
 }
 
-// .env Datei laden (aus dem Hauptverzeichnis des Projekts)
+// .env Dateien laden (Bridge .env hat Priorität für Service Keys)
 var envPaths = new[] {
-    Path.Combine(AppContext.BaseDirectory, ".env"),
-    Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", ".env"),
+    // Bridge-spezifische .env (mit Service Key)
+    Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".env"),  // Bei dotnet run
+    Path.Combine(AppContext.BaseDirectory, ".env"),  // Bei Release-Build
+    // Root .env als Fallback
     Path.Combine(Directory.GetCurrentDirectory(), ".env"),
-    Path.Combine(Directory.GetCurrentDirectory(), "..", "..", ".env")
+    Path.Combine(Directory.GetCurrentDirectory(), "..", "..", ".env"),
+    Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", ".env"),
 };
 
+// Alle gefundenen .env Dateien laden (spätere überschreiben frühere)
 foreach (var envPath in envPaths)
 {
     if (File.Exists(envPath))
     {
         Env.Load(envPath);
         Console.WriteLine($"[CONFIG] .env geladen: {Path.GetFullPath(envPath)}");
-        break;
     }
 }
 
@@ -178,8 +181,10 @@ if (!string.IsNullOrEmpty(activeSessionCode))
 }
 
 // User-Authentifizierung vom Frontend empfangen
+string? currentUserId = null;
 webSocketServer.OnUserAuthenticated += (userId) =>
 {
+    currentUserId = userId;
     simConnect.SetUserId(userId);
     Console.WriteLine($"[AUTH] User-ID gesetzt: {(string.IsNullOrEmpty(userId) ? "(keiner)" : userId)}");
 };
@@ -226,6 +231,7 @@ Console.WriteLine("  [C] Verbinden mit MSFS (manuell)");
 Console.WriteLine("  [D] Trennen von MSFS");
 Console.WriteLine("  [R] Auto-Retry aktivieren");
 Console.WriteLine("  [S] Status anzeigen");
+Console.WriteLine("  [T] Test-Flug erstellen (für Entwicklung)");
 Console.WriteLine("  [Q] Beenden");
 Console.WriteLine();
 
@@ -331,6 +337,50 @@ while (running)
                 Console.WriteLine($"  HTTP-Server: Port {HTTP_PORT}");
                 Console.WriteLine($"  Remote Session: {(supabaseSession.IsConnected ? $"Aktiv ({supabaseSession.SessionCode})" : "Nicht aktiv")}");
                 Console.WriteLine("==============");
+                break;
+
+            case ConsoleKey.T:
+                if (string.IsNullOrEmpty(currentUserId))
+                {
+                    Console.WriteLine("\n[TEST] Kein User eingeloggt! Bitte zuerst auf der Website einloggen.");
+                }
+                else if (!supabaseClient.IsConfigured)
+                {
+                    Console.WriteLine("\n[TEST] Supabase nicht konfiguriert!");
+                }
+                else
+                {
+                    Console.WriteLine("\n[TEST] Erstelle Test-Flug...");
+                    var random = new Random();
+                    var airports = new[] { "EDDF", "KJFK", "EGLL", "LFPG", "KLAX", "KEWR", "KORD", "LEMD", "LIRF", "EHAM" };
+                    var aircraft = new[] { "Airbus A330-200", "Boeing 737 MAX 8", "Pilatus PC-12 NGX" };
+
+                    var testFlight = new MSFSBridge.Models.FlightLog
+                    {
+                        UserId = currentUserId,
+                        Origin = airports[random.Next(airports.Length)],
+                        Destination = airports[random.Next(airports.Length)],
+                        AircraftType = aircraft[random.Next(aircraft.Length)],
+                        DepartureTime = DateTime.UtcNow.AddMinutes(-random.Next(30, 180)),
+                        ArrivalTime = DateTime.UtcNow,
+                        FlightDurationSeconds = random.Next(1800, 10800), // 30 min bis 3 Stunden
+                        DistanceNm = random.Next(100, 3000),
+                        MaxAltitudeFt = random.Next(10000, 41000),
+                        LandingRating = random.Next(1, 6),
+                        LandingVs = -random.Next(50, 500),
+                        LandingGforce = 1.0 + random.NextDouble() * 0.5
+                    };
+
+                    Console.WriteLine($"[TEST] {testFlight.Origin} -> {testFlight.Destination}, {testFlight.DistanceNm} NM, {testFlight.AircraftType}");
+                    _ = Task.Run(async () =>
+                    {
+                        var success = await supabaseClient.SaveFlightAsync(testFlight);
+                        if (success)
+                        {
+                            Console.WriteLine("[TEST] Test-Flug erfolgreich gespeichert!");
+                        }
+                    });
+                }
                 break;
 
             case ConsoleKey.Q:

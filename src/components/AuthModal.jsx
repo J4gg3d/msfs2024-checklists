@@ -55,9 +55,16 @@ const AuthModal = ({ isOpen, onClose }) => {
     setSuccess('')
   }
 
+  const handleOverlayClick = (e) => {
+    // Only close if clicking directly on overlay, not on modal content
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
+
   return (
-    <div className="auth-modal-overlay" onClick={onClose}>
-      <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="auth-modal-overlay" onMouseDown={handleOverlayClick}>
+      <div className="auth-modal" onMouseDown={(e) => e.stopPropagation()}>
         <button className="auth-modal-close" onClick={onClose}>×</button>
 
         <h2>{mode === 'login' ? 'Anmelden' : 'Registrieren'}</h2>

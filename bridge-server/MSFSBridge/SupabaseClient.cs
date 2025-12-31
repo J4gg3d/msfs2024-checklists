@@ -34,7 +34,10 @@ public class SupabaseClient : IDisposable
         // Credentials aus Environment laden
         _supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL")
                       ?? Environment.GetEnvironmentVariable("VITE_SUPABASE_URL");
-        _supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_ANON_KEY")
+
+        // Service Role Key bevorzugen (umgeht RLS), sonst Anon Key
+        _supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_SERVICE_KEY")
+                      ?? Environment.GetEnvironmentVariable("SUPABASE_ANON_KEY")
                       ?? Environment.GetEnvironmentVariable("VITE_SUPABASE_ANON_KEY");
 
         _isConfigured = !string.IsNullOrEmpty(_supabaseUrl) && !string.IsNullOrEmpty(_supabaseKey);

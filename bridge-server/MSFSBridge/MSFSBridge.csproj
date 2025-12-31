@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PlatformTarget>x64</PlatformTarget>
@@ -15,25 +15,33 @@
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
   </ItemGroup>
 
-  <!--
-    SimConnect Reference - Uncomment after installing MSFS SDK
-    Update the path to match your SDK installation location
-  -->
+  <!-- SimConnect Reference - Try libs/ folder first (for CI), then local SDK -->
+  <ItemGroup Condition="Exists('libs\Microsoft.FlightSimulator.SimConnect.dll')">
+    <Reference Include="Microsoft.FlightSimulator.SimConnect">
+      <HintPath>libs\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="!Exists('libs\Microsoft.FlightSimulator.SimConnect.dll')">
     <Reference Include="Microsoft.FlightSimulator.SimConnect">
       <HintPath>D:\MSFS 2024 SDK\SimConnect SDK\lib\managed\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
       <Private>true</Private>
     </Reference>
   </ItemGroup>
 
-  <!-- Native SimConnect.dll muss auch kopiert werden -->
-  <ItemGroup>
+  <!-- Native SimConnect.dll - from libs/ or local SDK -->
+  <ItemGroup Condition="Exists('libs\SimConnect.dll')">
+    <None Include="libs\SimConnect.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup Condition="!Exists('libs\SimConnect.dll')">
     <None Include="D:\MSFS 2024 SDK\SimConnect SDK\lib\SimConnect.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>SimConnect.dll</Link>
     </None>
   </ItemGroup>
-
 
 </Project>

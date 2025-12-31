@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (email, password) => {
     try {
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Timeout')), 5000)
+        setTimeout(() => reject(new Error('Timeout')), 3000)
       )
 
       const result = await Promise.race([
@@ -84,17 +84,32 @@ export const AuthProvider = ({ children }) => {
         timeoutPromise
       ])
 
+      // Success - update state
+      if (result?.data?.user) {
+        setUser(result.data.user)
+        await loadProfile(result.data.user.id)
+      }
+
       return result
     } catch (err) {
-      // Timeout - check if session was created anyway
-      console.log('SignIn: Timeout, checking session...')
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // Timeout - check localStorage directly for session
+      console.log('SignIn: Timeout, checking localStorage...')
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        setUser(session.user)
-        await loadProfile(session.user.id)
-        return { data: { user: session.user }, error: null }
+      // Check localStorage for session token
+      const storageKey = 'sb-azihmdeajubwutgdlayu-auth-token'
+      const stored = localStorage.getItem(storageKey)
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          if (parsed?.user) {
+            setUser(parsed.user)
+            await loadProfile(parsed.user.id)
+            return { data: { user: parsed.user }, error: null }
+          }
+        } catch (e) {
+          console.log('SignIn: Could not parse stored session')
+        }
       }
 
       return { data: null, error: { message: 'Anmeldung fehlgeschlagen - bitte erneut versuchen' } }

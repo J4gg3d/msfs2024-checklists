@@ -12,7 +12,7 @@ body {
 
 #root {
   min-height: 100vh;
-  padding: 20px;
+  padding: 90px 20px 20px 20px; /* top padding for header + status bar */
 }
 
 /* App Layout */
@@ -180,31 +180,313 @@ body {
 }
 
 /* Hamburger Menu Button */
-.hamburger-menu {
+/* Top Header Bar */
+.top-header {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 48px;
-  height: 48px;
-  background: rgba(30, 35, 45, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: rgba(20, 25, 35, 0.98);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
   z-index: 100;
-  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-menu-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #4fc3f7;
+  font-size: 1.25rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s;
 }
 
-.hamburger-menu:hover {
-  background: rgba(40, 45, 55, 0.95);
-  border-color: rgba(255, 255, 255, 0.25);
+.header-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-.hamburger-icon {
-  font-size: 24px;
+.header-logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #ccc;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.header-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.header-btn-icon {
+  font-size: 1rem;
+}
+
+.header-btn-arrow {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.header-btn-simflycorp {
+  background: linear-gradient(135deg, rgba(79, 195, 247, 0.15) 0%, rgba(41, 182, 246, 0.1) 100%);
+  border-color: rgba(79, 195, 247, 0.3);
   color: #4fc3f7;
+}
+
+.header-btn-simflycorp:hover {
+  background: linear-gradient(135deg, rgba(79, 195, 247, 0.25) 0%, rgba(41, 182, 246, 0.2) 100%);
+  border-color: rgba(79, 195, 247, 0.5);
+}
+
+.header-btn-user {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+}
+
+.header-btn-user:hover {
+  background: rgba(255, 215, 0, 0.15);
+}
+
+.header-btn-login {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(67, 160, 71, 0.1) 100%);
+  border-color: rgba(76, 175, 80, 0.3);
+  color: #81c784;
+}
+
+.header-btn-login:hover {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.25) 0%, rgba(67, 160, 71, 0.2) 100%);
+}
+
+/* User Dropdown */
+.header-user-dropdown {
+  position: relative;
+}
+
+.header-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: rgba(30, 35, 45, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  min-width: 160px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  z-index: 200;
+}
+
+.header-dropdown-menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.header-dropdown-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Language Toggle in Header */
+.header-lang-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.header-lang-btn {
+  padding: 0.5rem 0.6rem;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.header-lang-btn:hover {
+  color: #aaa;
+}
+
+.header-lang-btn.active {
+  background: rgba(79, 195, 247, 0.2);
+  color: #4fc3f7;
+}
+
+/* Responsive Header */
+@media (max-width: 600px) {
+  .header-btn-text {
+    display: none;
+  }
+
+  .header-btn {
+    padding: 0.5rem;
+  }
+
+  .header-logo {
+    font-size: 0.95rem;
+  }
+}
+
+/* Status Bar */
+.status-bar {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: rgba(13, 17, 23, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 99;
+  backdrop-filter: blur(10px);
+}
+
+.status-bar-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: 100%;
+  padding: 0 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-size: 0.75rem;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #888;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Always visible connection status - no animation */
+.status-item.status-connection {
+  animation: none;
+}
+
+.status-label {
+  color: #666;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-value {
+  color: #4fc3f7;
+  font-weight: 500;
+}
+
+.status-icon {
+  font-size: 0.85rem;
+}
+
+/* Connection Status */
+.status-connection {
+  gap: 0.5rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef5350;
+  box-shadow: 0 0 6px rgba(239, 83, 80, 0.5);
+}
+
+.status-connection.connected .status-dot {
+  background: #4caf50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.5);
+}
+
+.status-connection.connected .status-label {
+  color: #81c784;
+}
+
+/* Route Status */
+.status-route .status-value {
+  color: #ffa726;
+  font-weight: 600;
+}
+
+/* Responsive Status Bar */
+@media (max-width: 768px) {
+  .status-bar-content {
+    gap: 1rem;
+    font-size: 0.7rem;
+  }
+
+  .status-item:nth-child(n+4) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-connection .status-label {
+    display: none;
+  }
 }
 
 /* Menu Overlay & Panel */
@@ -221,13 +503,13 @@ body {
 
 .menu-panel {
   position: fixed;
-  top: 0;
-  right: 0;
+  top: 82px; /* Below header + status bar */
+  left: 0;
   width: 280px;
-  height: 100vh;
+  height: calc(100vh - 82px);
   background: linear-gradient(180deg, #1e2330 0%, #252b3b 100%);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 10px 0 40px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import Checklist from './components/Checklist'
 import SimStatus from './components/SimStatus'
@@ -53,6 +53,11 @@ function App() {
   // Auth & SimFlyCorp
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showSimFlyCorp, setShowSimFlyCorp] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+
+  // FlightInfo visibility tracking for status bar
+  const flightInfoRef = useRef(null)
+  const [isFlightInfoVisible, setIsFlightInfoVisible] = useState(true)
 
   // Lade ausgewähltes Flugzeug aus Storage
   const [selectedAircraft, setSelectedAircraft] = useState(() => {
@@ -148,6 +153,22 @@ function App() {
       console.warn('Fehler beim Speichern der Flugdaten:', e)
     }
   }, [flightRoute])
+
+  // Track FlightInfo visibility for status bar
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFlightInfoVisible(entry.isIntersecting)
+      },
+      { threshold: 0.1, rootMargin: '-82px 0px 0px 0px' } // Account for header + status bar height
+    )
+
+    if (flightInfoRef.current) {
+      observer.observe(flightInfoRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   // Sprachwechsel-Funktion
   const toggleLanguage = () => {
@@ -469,10 +490,109 @@ function App() {
 
   return (
     <>
-      {/* Hamburger Menu Button */}
-      <button className="hamburger-menu" onClick={() => setShowMenu(!showMenu)}>
-        <span className="hamburger-icon">☰</span>
-      </button>
+      {/* Top Header Bar */}
+      <header className="top-header">
+        <div className="header-left">
+          <button className="header-menu-btn" onClick={() => setShowMenu(!showMenu)}>
+            <span>☰</span>
+          </button>
+          <span className="header-logo">SimChecklist</span>
+        </div>
+
+        <div className="header-right">
+          {/* SimFlyCorp Button */}
+          <button className="header-btn header-btn-simflycorp" onClick={() => setShowSimFlyCorp(true)}>
+            <span className="header-btn-icon">✈</span>
+            <span className="header-btn-text">SimFlyCorp</span>
+          </button>
+
+          {/* User Button */}
+          {isAuthenticated ? (
+            <div className="header-user-dropdown">
+              <button className="header-btn header-btn-user" onClick={() => setShowUserMenu(!showUserMenu)}>
+                <span className="header-btn-icon">👨‍✈️</span>
+                <span className="header-btn-text">{profile?.display_name || profile?.username || 'Pilot'}</span>
+                <span className="header-btn-arrow">▾</span>
+              </button>
+              {showUserMenu && (
+                <div className="header-dropdown-menu" onMouseLeave={() => setShowUserMenu(false)}>
+                  <button onClick={() => { setShowSimFlyCorp(true); setShowUserMenu(false); }}>
+                    <span>📊</span> Mein Profil
+                  </button>
+                  <button onClick={async () => { await signOut(); setShowUserMenu(false); }}>
+                    <span>🚪</span> Abmelden
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button className="header-btn header-btn-login" onClick={() => setShowAuthModal(true)}>
+              <span className="header-btn-icon">👤</span>
+              <span className="header-btn-text">Login</span>
+            </button>
+          )}
+
+          {/* Language Toggle */}
+          <div className="header-lang-toggle">
+            <button
+              className={`header-lang-btn ${i18n.language === 'de' ? 'active' : ''}`}
+              onClick={() => i18n.changeLanguage('de')}
+            >
+              DE
+            </button>
+            <button
+              className={`header-lang-btn ${i18n.language === 'en' ? 'active' : ''}`}
+              onClick={() => i18n.changeLanguage('en')}
+            >
+              EN
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Sticky Status Bar */}
+      <div className={`status-bar ${!isFlightInfoVisible ? 'expanded' : ''}`}>
+        <div className="status-bar-content">
+          {/* Connection Status - always visible */}
+          <div className={`status-item status-connection ${isConnected ? 'connected' : ''}`}>
+            <span className="status-dot"></span>
+            <span className="status-label">
+              {isConnected ? 'Bridge verbunden' : 'Bridge offline'}
+            </span>
+          </div>
+
+          {/* Flight Route and Data - only when FlightInfo is scrolled out of view */}
+          {!isFlightInfoVisible && (
+            <>
+              {(flightRoute.origin || flightRoute.destination) && (
+                <div className="status-item status-route">
+                  <span className="status-icon">✈</span>
+                  <span className="status-value">
+                    {flightRoute.origin || '????'} → {flightRoute.destination || '????'}
+                  </span>
+                </div>
+              )}
+
+              {isConnected && simData && (
+                <>
+                  <div className="status-item">
+                    <span className="status-label">ALT</span>
+                    <span className="status-value">{Math.round(simData.altitude || 0).toLocaleString()} ft</span>
+                  </div>
+                  <div className="status-item">
+                    <span className="status-label">GS</span>
+                    <span className="status-value">{Math.round(simData.groundSpeed || 0)} kts</span>
+                  </div>
+                  <div className="status-item">
+                    <span className="status-label">HDG</span>
+                    <span className="status-value">{Math.round(simData.heading || 0)}°</span>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </div>
 
       {/* Menu Overlay */}
       {showMenu && (
@@ -483,41 +603,6 @@ function App() {
               <button className="menu-close" onClick={() => setShowMenu(false)}>✕</button>
             </div>
             <div className="menu-items">
-              {/* Pilot Login/Logout - BETA */}
-              {isAuthenticated ? (
-                <>
-                  <div className="menu-user-info">
-                    <span className="menu-user-icon">👨‍✈️</span>
-                    <span className="menu-user-name">{profile?.display_name || profile?.username || user?.email}</span>
-                    <span className="menu-badge-wip">BETA</span>
-                  </div>
-                  <button className="menu-item" onClick={() => { setShowSimFlyCorp(true); setShowMenu(false); }}>
-                    <span className="menu-item-icon">✈</span>
-                    <span className="menu-item-text">SimFlyCorp</span>
-                    <span className="menu-badge-wip">BETA</span>
-                  </button>
-                  <button className="menu-item" onClick={async () => { await signOut(); setShowMenu(false); }}>
-                    <span className="menu-item-icon">🚪</span>
-                    <span className="menu-item-text">{t('menu.logout', 'Abmelden')}</span>
-                  </button>
-                  <div className="menu-divider"></div>
-                </>
-              ) : (
-                <>
-                  <button className="menu-item" onClick={() => { setShowSimFlyCorp(true); setShowMenu(false); }}>
-                    <span className="menu-item-icon">✈</span>
-                    <span className="menu-item-text">SimFlyCorp</span>
-                    <span className="menu-badge-new">Demo</span>
-                  </button>
-                  <button className="menu-item menu-item-highlight" onClick={() => { setShowAuthModal(true); setShowMenu(false); }}>
-                    <span className="menu-item-icon">👨‍✈️</span>
-                    <span className="menu-item-text">{t('menu.login', 'Pilot Login')}</span>
-                    <span className="menu-badge-wip">BETA</span>
-                  </button>
-                  <div className="menu-divider"></div>
-                </>
-              )}
-
               <button className="menu-item" onClick={() => handleMenuItemClick('workflow')}>
                 <span className="menu-item-icon">🛫</span>
                 <span className="menu-item-text">{t('menu.flightPrep')}</span>
@@ -530,6 +615,7 @@ function App() {
                 <span className="menu-item-icon">📋</span>
                 <span className="menu-item-text">{t('menu.changelog')}</span>
               </button>
+              <div className="menu-divider"></div>
               <button className="menu-item" onClick={() => handleMenuItemClick('bridge')}>
                 <span className="menu-item-icon">🔗</span>
                 <span className="menu-item-text">{t('menu.bridge')}</span>
@@ -538,6 +624,7 @@ function App() {
                 <span className="menu-item-icon">📱</span>
                 <span className="menu-item-text">{t('menu.tablet')}</span>
               </button>
+              <div className="menu-divider"></div>
               <button className="menu-item" onClick={() => handleMenuItemClick('github')}>
                 <span className="menu-item-icon">⌨</span>
                 <span className="menu-item-text">{t('menu.github')}</span>
@@ -546,23 +633,6 @@ function App() {
                 <span className="menu-item-icon">💬</span>
                 <span className="menu-item-text">{t('menu.feedback')}</span>
               </button>
-              <div className="menu-divider"></div>
-              <div className="language-toggle-container">
-                <button
-                  className={`language-btn ${i18n.language === 'de' ? 'active' : ''}`}
-                  onClick={() => i18n.changeLanguage('de')}
-                >
-                  <span className="lang-flag">🇩🇪</span>
-                  <span className="lang-code">DE</span>
-                </button>
-                <button
-                  className={`language-btn ${i18n.language === 'en' ? 'active' : ''}`}
-                  onClick={() => i18n.changeLanguage('en')}
-                >
-                  <span className="lang-flag">🇬🇧</span>
-                  <span className="lang-code">EN</span>
-                </button>
-              </div>
               <div className="menu-divider"></div>
               <button className="menu-item" onClick={() => { setShowMenu(false); handleResetFlight(); }}>
                 <span className="menu-item-icon">🛫</span>
@@ -1122,12 +1192,14 @@ function App() {
             }
           }}
         >
-          <FlightInfo
-            simData={simData}
-            isConnected={isConnected}
-            flightRoute={flightRoute}
-            onFlightRouteChange={handleFlightRouteChange}
-          />
+          <div ref={flightInfoRef}>
+            <FlightInfo
+              simData={simData}
+              isConnected={isConnected}
+              flightRoute={flightRoute}
+              onFlightRouteChange={handleFlightRouteChange}
+            />
+          </div>
           <LandingPanel
             history={landingHistory}
             isExpanded={isLandingPanelExpanded}

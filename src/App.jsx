@@ -863,19 +863,29 @@ function App() {
                 <p className="hint-text">💡 {t('modals.bridge.sdkNote')}</p>
               </div>
 
+              {/* .NET Runtime */}
+              <div className="info-section bridge-steps">
+                <h3>⚙️ {t('modals.bridge.dotnetTitle')}</h3>
+                <ol>
+                  <li>{t('modals.bridge.dotnetStep1')}</li>
+                  <li>{t('modals.bridge.dotnetStep2')}</li>
+                  <li>{t('modals.bridge.dotnetStep3')}</li>
+                </ol>
+              </div>
+
               {/* Bridge herunterladen */}
               <div className="info-section bridge-steps">
                 <h3>📥 {t('modals.bridge.downloadTitle')}</h3>
                 <p>{t('modals.bridge.downloadText')}</p>
                 <ol>
                   <li>{t('modals.bridge.downloadStep1')}</li>
-                  <li>{t('modals.bridge.downloadStep2')}<br/>
-                    <code className="code-box-inline">git clone https://github.com/J4gg3d/msfs2024-checklists.git</code>
+                  <li>{t('modals.bridge.downloadStep2')}</li>
+                  <li>{t('modals.bridge.downloadStep3')}<br/>
+                    <code className="code-box-inline">C:\MSFSBridge</code>
                   </li>
-                  <li>{t('modals.bridge.downloadStep3')}</li>
                 </ol>
                 <a
-                  href="https://github.com/J4gg3d/msfs2024-checklists"
+                  href="https://github.com/J4gg3d/msfs2024-checklists/releases"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="github-link-btn"
@@ -890,15 +900,9 @@ function App() {
                 <h3>🔧 {t('modals.bridge.installation')}</h3>
                 <ol>
                   <li>{t('modals.bridge.installStep1')}</li>
-                  <li>{t('modals.bridge.installStep2')}<br/>
-                    <code className="code-box-inline">cd bridge-server/MSFSBridge</code>
-                  </li>
-                  <li>{t('modals.bridge.installStep3')}<br/>
-                    <code className="code-box-inline">dotnet build</code>
-                  </li>
-                  <li>{t('modals.bridge.installStep4')}<br/>
-                    <code className="code-box-inline">dotnet run</code>
-                  </li>
+                  <li>{t('modals.bridge.installStep2')}</li>
+                  <li>{t('modals.bridge.installStep3')}</li>
+                  <li>{t('modals.bridge.installStep4')}</li>
                 </ol>
                 <p className="hint-text">💡 {t('modals.bridge.installNote')}</p>
               </div>

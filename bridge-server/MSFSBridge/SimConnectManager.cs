@@ -27,8 +27,13 @@ public class SimConnectManager : IDisposable
     // Flight Validation (verhindert falsche Landungen beim Mission-Start)
     private DateTime _takeoffTime = DateTime.MinValue;  // Wann abgehoben
     private double _maxAltitudeAGL = 0;  // Maximale erreichte Höhe
+    private double _maxGForce = 0;  // Maximale G-Force während des Flugs
+    private double _takeoffGroundSpeed = 0;  // Ground Speed beim Abheben
+    private bool _validTakeoff = false;  // War es ein echter Takeoff?
     private const double MIN_FLIGHT_SECONDS = 10;  // Mindestens 10 Sekunden in der Luft
-    private const double MIN_ALTITUDE_AGL = 50;  // Mindestens 50 ft AGL erreicht
+    private const double MIN_ALTITUDE_AGL = 100;  // Mindestens 100 ft AGL erreicht (erhöht von 50)
+    private const double MIN_TAKEOFF_SPEED = 40;  // Mindestens 40 kts beim Abheben
+    private const double MIN_GFORCE = 0.5;  // Mindestens 0.5 G während des Flugs (Plausibilität)
 
     // Windows Message für SimConnect
     private const int WM_USER_SIMCONNECT = 0x0402;
@@ -459,13 +464,39 @@ public class SimConnectManager : IDisposable
                 {
                     _takeoffTime = DateTime.Now;
                     _maxAltitudeAGL = 0;
-                    Console.WriteLine("[FLIGHT] Takeoff detected - starting flight tracking");
+                    _maxGForce = currentGForce;
+                    _takeoffGroundSpeed = currentGroundSpeed;
+
+                    // Prüfe ob es ein plausibler Takeoff ist (nicht Mission-Start)
+                    _validTakeoff = currentGroundSpeed >= MIN_TAKEOFF_SPEED;
+
+                    if (_validTakeoff)
+                    {
+                        Console.WriteLine($"[FLIGHT] Takeoff detected - GS: {currentGroundSpeed:F0} kts");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[FLIGHT] Possible mission start detected - GS: {currentGroundSpeed:F0} kts (< {MIN_TAKEOFF_SPEED} kts) - monitoring...");
+                    }
                 }
 
-                // Track max altitude while airborne
-                if (!currentOnGround && currentAltitude > _maxAltitudeAGL)
+                // Track max values while airborne
+                if (!currentOnGround)
                 {
-                    _maxAltitudeAGL = currentAltitude;
+                    if (currentAltitude > _maxAltitudeAGL)
+                    {
+                        _maxAltitudeAGL = currentAltitude;
+                    }
+                    if (currentGForce > _maxGForce)
+                    {
+                        _maxGForce = currentGForce;
+                    }
+                    // Ein echter Flug entwickelt irgendwann ausreichend Geschwindigkeit
+                    if (!_validTakeoff && currentGroundSpeed >= MIN_TAKEOFF_SPEED)
+                    {
+                        _validTakeoff = true;
+                        Console.WriteLine($"[FLIGHT] Valid flight confirmed - GS: {currentGroundSpeed:F0} kts");
+                    }
                 }
 
                 // Landing Detection: War in der Luft, jetzt am Boden
@@ -475,7 +506,10 @@ public class SimConnectManager : IDisposable
                     double flightSeconds = (DateTime.Now - _takeoffTime).TotalSeconds;
 
                     // Validiere: War es ein echter Flug?
-                    bool validFlight = flightSeconds >= MIN_FLIGHT_SECONDS && _maxAltitudeAGL >= MIN_ALTITUDE_AGL;
+                    bool validFlight = _validTakeoff &&
+                                       flightSeconds >= MIN_FLIGHT_SECONDS &&
+                                       _maxAltitudeAGL >= MIN_ALTITUDE_AGL &&
+                                       _maxGForce >= MIN_GFORCE;
 
                     // Verhindere mehrfache Landungen in kurzer Zeit (z.B. Bouncing)
                     bool notBouncing = (DateTime.Now - _lastLandingTime).TotalSeconds > 5;
@@ -501,11 +535,20 @@ public class SimConnectManager : IDisposable
                     }
                     else if (!validFlight)
                     {
-                        Console.WriteLine($"[FLIGHT] Ignored landing - not a valid flight (Time: {flightSeconds:F0}s < {MIN_FLIGHT_SECONDS}s or Alt: {_maxAltitudeAGL:F0}ft < {MIN_ALTITUDE_AGL}ft)");
+                        // Detaillierte Fehlermeldung
+                        var reasons = new List<string>();
+                        if (!_validTakeoff) reasons.Add($"no valid takeoff (GS at liftoff: {_takeoffGroundSpeed:F0} kts)");
+                        if (flightSeconds < MIN_FLIGHT_SECONDS) reasons.Add($"too short ({flightSeconds:F0}s < {MIN_FLIGHT_SECONDS}s)");
+                        if (_maxAltitudeAGL < MIN_ALTITUDE_AGL) reasons.Add($"too low ({_maxAltitudeAGL:F0}ft < {MIN_ALTITUDE_AGL}ft)");
+                        if (_maxGForce < MIN_GFORCE) reasons.Add($"G-force unrealistic ({_maxGForce:F2} < {MIN_GFORCE})");
+
+                        Console.WriteLine($"[FLIGHT] Ignored - {string.Join(", ", reasons)}");
                     }
 
                     // Reset flight tracking
                     _maxAltitudeAGL = 0;
+                    _maxGForce = 0;
+                    _validTakeoff = false;
                 }
 
                 // State für nächsten Durchlauf speichern

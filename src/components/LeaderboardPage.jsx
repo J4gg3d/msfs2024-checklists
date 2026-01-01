@@ -269,10 +269,13 @@ const LeaderboardPage = ({ onBack }) => {
                             </span>
                             <span className="airline-code">[{airline.code}]</span>
                           </div>
+                          {airline.is_npc && <span className="npc-badge" title="NPC Airline - Basiert auf echten Flugdaten">🤖</span>}
                           {myAirline?.id === airline.id && <span className="me-badge">Deine</span>}
                         </div>
                       </td>
-                      <td className="col-members">{airline.member_count}</td>
+                      <td className="col-members">
+                        {airline.is_npc ? <span className="npc-indicator">NPC</span> : airline.member_count}
+                      </td>
                       <td className="col-value">{(airline.total_score || 0).toLocaleString()}</td>
                       <td className="col-distance">{Math.round(airline.total_distance || 0).toLocaleString()} NM</td>
                       <td className="col-flights">{airline.total_flights || 0}</td>

@@ -278,3 +278,23 @@ Die App berechnet automatisch die geflogene Distanz basierend auf GPS-Position.
 - Bilder in `public/images/` ablegen (Prefix: `flugzeug_`)
 - LocalStorage für Persistenz (kein Cookie-Banner nötig)
 - READMEs und CLAUDE.md bei größeren Änderungen aktualisieren
+
+## TODO - Geplante Features
+
+### NPC Airlines (Priorität 1)
+Virtuelle Airlines basierend auf echten Flugdaten:
+- **API**: OpenSky Network oder AviationStack für echte Flugdaten
+- **Skalierung**: NPC-Flüge werden auf Spieler-Aktivität skaliert (max. so viele wie Spieler geflogen haben)
+- **Update**: Einmal täglich per Supabase Edge Function oder Cron
+- **Anzeige**: 🤖 Badge in Rangliste, gleiche Kategorie wie Spieler-Airlines
+- **DB-Erweiterung**: `is_npc`, `real_airline_icao`, `raw_flight_count` Spalten
+
+### Fuel Tracking (Priorität 2)
+- Bridge: Fuel-Verbrauch aus SimConnect auslesen
+- Speichern: fuel_used_kg pro Flug in DB
+- Anzeige: Im Fluglog und Profil
+
+### Eco-Rangliste (Priorität 3)
+- Berechnung: Effizienz = Distanz / Fuel
+- Eigener Tab in Rangliste
+- Belohnt effizientes Fliegen

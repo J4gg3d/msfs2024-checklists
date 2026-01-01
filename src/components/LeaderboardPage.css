@@ -463,6 +463,27 @@
   color: #666;
 }
 
+/* NPC Badge */
+.npc-badge {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  cursor: help;
+  opacity: 0.8;
+}
+
+.npc-badge:hover {
+  opacity: 1;
+}
+
+.npc-indicator {
+  background: rgba(171, 71, 188, 0.2);
+  color: #ab47bc;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .leaderboard-tabs {

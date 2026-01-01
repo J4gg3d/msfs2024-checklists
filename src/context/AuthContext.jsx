@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
       const { data: { session } } = await supabase.auth.getSession()
       setUser(session?.user ?? null)
       if (session?.user) {
-        await loadProfile(session.user.id)
+        await loadProfile(session.user.id, session.user)
       }
       setLoading(false)
     }
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
       async (event, session) => {
         setUser(session?.user ?? null)
         if (session?.user) {
-          await loadProfile(session.user.id)
+          await loadProfile(session.user.id, session.user)
         } else {
           setProfile(null)
         }
@@ -40,47 +40,76 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const loadProfile = async (userId, userData = null) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
+    // Get token from localStorage (Supabase-JS has async issues)
+    const storageKey = 'sb-azihmdeajubwutgdlayu-auth-token'
+    const stored = localStorage.getItem(storageKey)
+    let token = null
 
-    if (!error && data) {
-      setProfile(data)
-      return
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        token = parsed?.access_token
+      } catch (e) {
+        // Ignore parse errors
+      }
     }
 
-    // Profile existiert nicht - erstelle eines
-    if (error?.code === 'PGRST116' || !data) {
-      // Hole User-Daten wenn nicht übergeben
+    if (!token) return
+
+    try {
+      // Load profile via REST API
+      const url = `https://azihmdeajubwutgdlayu.supabase.co/rest/v1/profiles?id=eq.${userId}&select=*`
+      const response = await fetch(url, {
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6aWhtZGVhanVid3V0Z2RsYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNTQ4MjEsImV4cCI6MjA4MjczMDgyMX0.K4wZF5J6q7dvHZMWihnFnVTpqeUI7IvWtxzfMoG_eJQ',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) return
+
+      const data = await response.json()
+
+      if (data && data.length > 0) {
+        setProfile(data[0])
+        return
+      }
+
+      // Profile existiert nicht - erstelle eines
       let userInfo = userData
-      if (!userInfo) {
-        const { data: { user } } = await supabase.auth.getUser()
-        userInfo = user
+      if (!userInfo && stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          userInfo = parsed?.user
+        } catch (e) {}
       }
 
-      if (userInfo) {
-        const username = userInfo.user_metadata?.username || userInfo.email?.split('@')[0] || 'Pilot'
-        const newProfile = {
-          id: userId,
-          username: username,
-          display_name: username
-        }
+      const username = userInfo?.user_metadata?.username || userInfo?.email?.split('@')[0] || 'Pilot'
+      const newProfile = {
+        id: userId,
+        username: username,
+        display_name: username
+      }
 
-        const { data: createdProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert(newProfile)
-          .select()
-          .single()
+      const createResponse = await fetch('https://azihmdeajubwutgdlayu.supabase.co/rest/v1/profiles', {
+        method: 'POST',
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6aWhtZGVhanVid3V0Z2RsYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNTQ4MjEsImV4cCI6MjA4MjczMDgyMX0.K4wZF5J6q7dvHZMWihnFnVTpqeUI7IvWtxzfMoG_eJQ',
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(newProfile)
+      })
 
-        if (!createError && createdProfile) {
-          console.log('Profile erstellt:', createdProfile)
-          setProfile(createdProfile)
-        } else {
-          console.warn('Fehler beim Erstellen des Profiles:', createError)
+      if (createResponse.ok) {
+        const created = await createResponse.json()
+        if (created && created.length > 0) {
+          setProfile(created[0])
         }
       }
+    } catch (err) {
+      console.error('loadProfile error:', err)
     }
   }
 

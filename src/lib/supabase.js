@@ -105,17 +105,33 @@ export const updateProfile = async (userId, updates) => {
 // Flight Delete Helper
 export const deleteFlight = async (flightId, userId) => {
   try {
+    // Get token from localStorage directly
+    const storageKey = 'sb-azihmdeajubwutgdlayu-auth-token'
+    const stored = localStorage.getItem(storageKey)
+    let token = supabaseAnonKey
+
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        token = parsed?.access_token || supabaseAnonKey
+      } catch (e) {
+        // Use anon key as fallback
+      }
+    }
+
     const url = `${supabaseUrl}/rest/v1/flights?id=eq.${flightId}&user_id=eq.${userId}`
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {
         'apikey': supabaseAnonKey,
-        'Authorization': `Bearer ${supabaseAnonKey}`
+        'Authorization': `Bearer ${token}`
       }
     })
+
     if (!response.ok) {
       return { error: { message: `HTTP ${response.status}` } }
     }
+
     return { error: null }
   } catch (err) {
     console.error('deleteFlight error:', err)

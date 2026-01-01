@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { getFlights, getFlightStats } from '../lib/supabase'
+import { getFlights, getFlightStats, deleteFlight } from '../lib/supabase'
 import './SimFlyCorp.css'
 
 // Demo data for non-logged-in users
@@ -29,6 +29,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
   const [flights, setFlights] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState(null)
 
   const isDemo = !user
 
@@ -90,6 +91,24 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
     if (rating >= 4) return 'rating-good'
     if (rating >= 3) return 'rating-ok'
     return 'rating-bad'
+  }
+
+  const handleDeleteFlight = async (flightId) => {
+    if (isDemo) return
+    if (!window.confirm('Flug wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+      return
+    }
+
+    setDeletingId(flightId)
+    const { error } = await deleteFlight(flightId, user.id)
+
+    if (error) {
+      console.error('Fehler beim Löschen:', error)
+      alert('Fehler beim Löschen des Fluges')
+    } else {
+      await loadData()
+    }
+    setDeletingId(null)
   }
 
   // Pilot rank based on flight hours (stripes like pilot uniforms)
@@ -270,6 +289,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                         <th>Distanz</th>
                         <th>Zeit</th>
                         <th>Landing</th>
+                        {!isDemo && <th></th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -289,6 +309,18 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                           <td className={`col-rating ${getRatingClass(flight.landing_rating)}`}>
                             {getRatingStars(flight.landing_rating)}
                           </td>
+                          {!isDemo && (
+                            <td className="col-actions">
+                              <button
+                                className="delete-btn"
+                                onClick={() => handleDeleteFlight(flight.id)}
+                                disabled={deletingId === flight.id}
+                                title="Flug löschen"
+                              >
+                                {deletingId === flight.id ? '...' : '🗑️'}
+                              </button>
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>

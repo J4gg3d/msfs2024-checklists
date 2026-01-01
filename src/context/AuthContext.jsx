@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
     return () => subscription.unsubscribe()
   }, [])
 
-  const loadProfile = async (userId) => {
+  const loadProfile = async (userId, userData = null) => {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -48,6 +48,39 @@ export const AuthProvider = ({ children }) => {
 
     if (!error && data) {
       setProfile(data)
+      return
+    }
+
+    // Profile existiert nicht - erstelle eines
+    if (error?.code === 'PGRST116' || !data) {
+      // Hole User-Daten wenn nicht übergeben
+      let userInfo = userData
+      if (!userInfo) {
+        const { data: { user } } = await supabase.auth.getUser()
+        userInfo = user
+      }
+
+      if (userInfo) {
+        const username = userInfo.user_metadata?.username || userInfo.email?.split('@')[0] || 'Pilot'
+        const newProfile = {
+          id: userId,
+          username: username,
+          display_name: username
+        }
+
+        const { data: createdProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert(newProfile)
+          .select()
+          .single()
+
+        if (!createError && createdProfile) {
+          console.log('Profile erstellt:', createdProfile)
+          setProfile(createdProfile)
+        } else {
+          console.warn('Fehler beim Erstellen des Profiles:', createError)
+        }
+      }
     }
   }
 
@@ -87,7 +120,7 @@ export const AuthProvider = ({ children }) => {
       // Success - update state
       if (result?.data?.user) {
         setUser(result.data.user)
-        await loadProfile(result.data.user.id)
+        await loadProfile(result.data.user.id, result.data.user)
       }
 
       return result

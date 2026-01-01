@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { getFlights, getFlightStats } from '../lib/supabase'
+import { getFlights, getFlightStats, deleteFlight } from '../lib/supabase'
 import './FlightLog.css'
 
 const FlightLog = ({ isOpen, onClose }) => {
@@ -8,6 +8,7 @@ const FlightLog = ({ isOpen, onClose }) => {
   const [flights, setFlights] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState(null)
 
   useEffect(() => {
     console.log('FlightLog useEffect:', { isOpen, userId: user?.id })
@@ -73,6 +74,24 @@ const FlightLog = ({ isOpen, onClose }) => {
     return 'rating-bad'
   }
 
+  const handleDeleteFlight = async (flightId) => {
+    if (!confirm('Flug wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+      return
+    }
+
+    setDeletingId(flightId)
+    const { error } = await deleteFlight(flightId, user.id)
+
+    if (error) {
+      console.error('Fehler beim Löschen:', error)
+      alert('Fehler beim Löschen des Fluges')
+    } else {
+      // Daten neu laden
+      await loadData()
+    }
+    setDeletingId(null)
+  }
+
   return (
     <div className="flightlog-overlay" onClick={onClose}>
       <div className="flightlog-modal" onClick={(e) => e.stopPropagation()}>
@@ -124,6 +143,7 @@ const FlightLog = ({ isOpen, onClose }) => {
                       <th>Distanz</th>
                       <th>Zeit</th>
                       <th>Landing</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -142,6 +162,16 @@ const FlightLog = ({ isOpen, onClose }) => {
                         <td className="col-time">{formatDuration(flight.flight_duration_seconds)}</td>
                         <td className={`col-rating ${getRatingClass(flight.landing_rating)}`}>
                           {getRatingStars(flight.landing_rating)}
+                        </td>
+                        <td className="col-actions">
+                          <button
+                            className="delete-btn"
+                            onClick={() => handleDeleteFlight(flight.id)}
+                            disabled={deletingId === flight.id}
+                            title="Flug löschen"
+                          >
+                            {deletingId === flight.id ? '...' : '🗑️'}
+                          </button>
                         </td>
                       </tr>
                     ))}

@@ -3,12 +3,6 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://azihmdeajubwutgdlayu.supabase.co'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6aWhtZGVhanVid3V0Z2RsYXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNTQ4MjEsImV4cCI6MjA4MjczMDgyMX0.K4wZF5J6q7dvHZMWihnFnVTpqeUI7IvWtxzfMoG_eJQ'
 
-console.log('Supabase config:', {
-  url: supabaseUrl,
-  keyLength: supabaseAnonKey?.length,
-  keyStart: supabaseAnonKey?.substring(0, 20)
-})
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Auth Helpers
@@ -106,4 +100,25 @@ export const updateProfile = async (userId, updates) => {
     .select()
     .single()
   return { data, error }
+}
+
+// Flight Delete Helper
+export const deleteFlight = async (flightId, userId) => {
+  try {
+    const url = `${supabaseUrl}/rest/v1/flights?id=eq.${flightId}&user_id=eq.${userId}`
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}`
+      }
+    })
+    if (!response.ok) {
+      return { error: { message: `HTTP ${response.status}` } }
+    }
+    return { error: null }
+  } catch (err) {
+    console.error('deleteFlight error:', err)
+    return { error: err }
+  }
 }

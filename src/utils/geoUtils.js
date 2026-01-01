@@ -77,6 +77,34 @@ const airportCoordinates = {
   'KMSP': { lat: 44.8848, lon: -93.2223 }, // Minneapolis
   'KDTW': { lat: 42.2162, lon: -83.3554 }, // Detroit
   'KIAH': { lat: 29.9902, lon: -95.3368 }, // Houston
+  'KPIT': { lat: 40.4915, lon: -80.2329 }, // Pittsburgh
+  'KCLT': { lat: 35.2140, lon: -80.9431 }, // Charlotte
+  'KMCO': { lat: 28.4312, lon: -81.3081 }, // Orlando
+  'KFLL': { lat: 26.0726, lon: -80.1527 }, // Fort Lauderdale
+  'KSAN': { lat: 32.7336, lon: -117.1897 },// San Diego
+  'KPDX': { lat: 45.5898, lon: -122.5951 },// Portland
+  'KSLC': { lat: 40.7884, lon: -111.9778 },// Salt Lake City
+  'KDCA': { lat: 38.8521, lon: -77.0377 }, // Washington Reagan
+  'KIAD': { lat: 38.9531, lon: -77.4565 }, // Washington Dulles
+  'KBWI': { lat: 39.1754, lon: -76.6683 }, // Baltimore
+  'KTPA': { lat: 27.9755, lon: -82.5332 }, // Tampa
+  'KCLE': { lat: 41.4117, lon: -81.8498 }, // Cleveland
+  'KCMH': { lat: 39.9980, lon: -82.8919 }, // Columbus
+  'KIND': { lat: 39.7173, lon: -86.2944 }, // Indianapolis
+  'KMKE': { lat: 42.9472, lon: -87.8966 }, // Milwaukee
+  'KSTL': { lat: 38.7487, lon: -90.3700 }, // St. Louis
+  'KMCI': { lat: 39.2976, lon: -94.7139 }, // Kansas City
+  'KAUS': { lat: 30.1945, lon: -97.6699 }, // Austin
+  'KSAT': { lat: 29.5337, lon: -98.4698 }, // San Antonio
+  'KRDU': { lat: 35.8776, lon: -78.7875 }, // Raleigh-Durham
+  'KBNA': { lat: 36.1263, lon: -86.6774 }, // Nashville
+  'KPHL': { lat: 39.8744, lon: -75.2424 }, // Philadelphia
+
+  // Kanada
+  'CYYZ': { lat: 43.6777, lon: -79.6248 }, // Toronto Pearson
+  'CYVR': { lat: 49.1947, lon: -123.1840 },// Vancouver
+  'CYUL': { lat: 45.4706, lon: -73.7408 }, // Montreal
+  'CYQB': { lat: 46.7911, lon: -71.3933 }, // Quebec City
 
   // Asien
   'RJTT': { lat: 35.5494, lon: 139.7798 }, // Tokyo Haneda

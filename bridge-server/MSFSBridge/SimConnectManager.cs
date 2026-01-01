@@ -569,7 +569,9 @@ public class SimConnectManager : IDisposable
                             Rating = rating,
                             RatingScore = score,
                             AircraftTitle = simData.AircraftTitle,
-                            Airport = IsValidIcao(simData.GpsApproachAirportId) ? simData.GpsApproachAirportId?.Trim().ToUpper() : null
+                            Airport = IsValidIcao(simData.GpsApproachAirportId)
+                                ? simData.GpsApproachAirportId?.Trim().ToUpper()
+                                : AirportDatabase.FindNearestAirport(simData.Latitude, simData.Longitude)
                         };
 
                         Console.WriteLine($"[LANDING] {rating} ({score}/5) - VS: {_lastVerticalSpeed:F0} ft/min, G: {_lastGForce:F2}, Flight: {flightSeconds:F0}s, MaxAlt: {_maxAltitudeAGL:F0}ft");
@@ -579,7 +581,9 @@ public class SimConnectManager : IDisposable
                         // FlightTracker beenden und Flug speichern
                         if (_flightTracker.IsTracking)
                         {
-                            var destinationAirport = IsValidIcao(simData.GpsApproachAirportId) ? simData.GpsApproachAirportId?.Trim() : null;
+                            var destinationAirport = IsValidIcao(simData.GpsApproachAirportId)
+                                ? simData.GpsApproachAirportId?.Trim()
+                                : AirportDatabase.FindNearestAirport(simData.Latitude, simData.Longitude);
                             var flightLog = _flightTracker.StopTracking(landingInfo, destinationAirport);
                             if (flightLog != null)
                             {

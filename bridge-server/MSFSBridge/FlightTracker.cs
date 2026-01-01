@@ -28,6 +28,7 @@ public class FlightTracker
     public event Action<string>? OnLog;
 
     public bool IsTracking => _isTracking;
+    public double TotalDistanceNm => _totalDistanceNm;
 
     /// <summary>
     /// Setzt User-ID für eingeloggte Benutzer
@@ -123,7 +124,10 @@ public class FlightTracker
             SessionCode = _sessionCode
         };
 
-        OnLog?.Invoke($"Flight completed: {flightLog.Origin ?? "?"} → {flightLog.Destination ?? "?"}, {flightLog.DistanceNm:F1} NM, {flightLog.FlightDurationSeconds / 60} min");
+        // Score berechnen
+        flightLog.CalculateScore();
+
+        OnLog?.Invoke($"Flight completed: {flightLog.Origin ?? "?"} → {flightLog.Destination ?? "?"}, {flightLog.DistanceNm:F1} NM, {flightLog.FlightDurationSeconds / 60} min, Score: {flightLog.Score}");
 
         return flightLog;
     }

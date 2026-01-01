@@ -281,6 +281,17 @@
   color: #4fc3f7;
 }
 
+.detail-value.airline-value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.airline-icon-small {
+  font-size: 1rem;
+}
+
 .profile-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -513,6 +524,176 @@
 
 .flightlog-table tr:hover .delete-btn:hover {
   opacity: 1;
+}
+
+/* Leaderboard Section */
+.leaderboard-section {
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.leaderboard-section h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+.leaderboard-card {
+  background: #0d0d1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.leaderboard-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.25rem;
+  border-bottom: 1px solid #333;
+}
+
+.leaderboard-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.leaderboard-tab:hover {
+  background: rgba(79, 195, 247, 0.1);
+  color: #fff;
+}
+
+.leaderboard-tab.active {
+  background: #4fc3f7;
+  color: #0d0d1a;
+  font-weight: 600;
+}
+
+.leaderboard-tab .tab-icon {
+  font-size: 1rem;
+}
+
+.leaderboard-tab .tab-label {
+  font-size: 0.85rem;
+}
+
+.leaderboard-loading,
+.leaderboard-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  color: #888;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  border-bottom: 1px solid #333;
+}
+
+.leaderboard-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #222;
+  color: #ddd;
+}
+
+.leaderboard-table tr:hover td {
+  background: rgba(79, 195, 247, 0.05);
+}
+
+/* Rank Column */
+.leaderboard-table .col-rank {
+  width: 60px;
+  text-align: center;
+}
+
+.leaderboard-table .rank-icon {
+  font-size: 1.25rem;
+}
+
+/* Pilot Column */
+.leaderboard-table .col-pilot {
+  font-weight: 500;
+}
+
+.me-badge {
+  background: #4fc3f7;
+  color: #0d0d1a;
+  font-size: 0.6rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Value Column */
+.leaderboard-table .col-value {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-weight: 600;
+  color: #4fc3f7;
+  text-align: right;
+}
+
+/* Extra Column */
+.leaderboard-table .col-extra {
+  font-family: 'Consolas', 'Monaco', monospace;
+  color: #888;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+/* Rank Highlights */
+.leaderboard-table tr.rank-gold td {
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.leaderboard-table tr.rank-gold .col-pilot {
+  color: #ffd700;
+}
+
+.leaderboard-table tr.rank-silver td {
+  background: rgba(192, 192, 192, 0.08);
+}
+
+.leaderboard-table tr.rank-silver .col-pilot {
+  color: #c0c0c0;
+}
+
+.leaderboard-table tr.rank-bronze td {
+  background: rgba(205, 127, 50, 0.08);
+}
+
+.leaderboard-table tr.rank-bronze .col-pilot {
+  color: #cd7f32;
+}
+
+/* Current User Highlight */
+.leaderboard-table tr.is-me td {
+  background: rgba(79, 195, 247, 0.15) !important;
+  border-color: rgba(79, 195, 247, 0.3);
 }
 
 /* Responsive */

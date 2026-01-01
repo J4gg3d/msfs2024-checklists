@@ -222,16 +222,27 @@ simConnect.OnDataReceived += async (data) =>
     }
 };
 
+// Admin User-ID für Test-Funktionen (aus .env)
+var adminUserId = Environment.GetEnvironmentVariable("ADMIN_USER_ID");
+bool isAdminConfigured = !string.IsNullOrEmpty(adminUserId);
+
 Console.WriteLine();
 Console.WriteLine($"WebSocket-Server: ws://localhost:{WEBSOCKET_PORT}");
 Console.WriteLine($"HTTP-Server:      http://localhost:{HTTP_PORT}");
+if (isAdminConfigured)
+{
+    Console.WriteLine($"Admin-ID:         {adminUserId?.Substring(0, 8)}... (konfiguriert)");
+}
 Console.WriteLine();
 Console.WriteLine("Befehle:");
 Console.WriteLine("  [C] Verbinden mit MSFS (manuell)");
 Console.WriteLine("  [D] Trennen von MSFS");
 Console.WriteLine("  [R] Auto-Retry aktivieren");
 Console.WriteLine("  [S] Status anzeigen");
-Console.WriteLine("  [T] Test-Flug erstellen (für Entwicklung)");
+if (isAdminConfigured)
+{
+    Console.WriteLine("  [T] Test-Flug erstellen (nur Admin)");
+}
 Console.WriteLine("  [Q] Beenden");
 Console.WriteLine();
 
@@ -340,9 +351,20 @@ while (running)
                 break;
 
             case ConsoleKey.T:
-                if (string.IsNullOrEmpty(currentUserId))
+                // Admin-only Test-Funktion
+                if (!isAdminConfigured)
+                {
+                    Console.WriteLine("\n[TEST] Admin-ID nicht konfiguriert! Setze ADMIN_USER_ID in .env");
+                }
+                else if (string.IsNullOrEmpty(currentUserId))
                 {
                     Console.WriteLine("\n[TEST] Kein User eingeloggt! Bitte zuerst auf der Website einloggen.");
+                }
+                else if (currentUserId != adminUserId)
+                {
+                    Console.WriteLine("\n[TEST] Zugriff verweigert! Nur der Admin kann Test-Flüge erstellen.");
+                    Console.WriteLine($"       Eingeloggt: {currentUserId.Substring(0, 8)}...");
+                    Console.WriteLine($"       Admin:      {adminUserId?.Substring(0, 8)}...");
                 }
                 else if (!supabaseClient.IsConfigured)
                 {
@@ -350,7 +372,7 @@ while (running)
                 }
                 else
                 {
-                    Console.WriteLine("\n[TEST] Erstelle Test-Flug...");
+                    Console.WriteLine("\n[TEST] Admin verifiziert - erstelle Test-Flug...");
                     var random = new Random();
                     var airports = new[] { "EDDF", "KJFK", "EGLL", "LFPG", "KLAX", "KEWR", "KORD", "LEMD", "LIRF", "EHAM" };
                     var aircraft = new[] { "Airbus A330-200", "Boeing 737 MAX 8", "Pilatus PC-12 NGX" };
@@ -371,7 +393,10 @@ while (running)
                         LandingGforce = 1.0 + random.NextDouble() * 0.5
                     };
 
-                    Console.WriteLine($"[TEST] {testFlight.Origin} -> {testFlight.Destination}, {testFlight.DistanceNm} NM, {testFlight.AircraftType}");
+                    // Score berechnen
+                    testFlight.CalculateScore();
+
+                    Console.WriteLine($"[TEST] {testFlight.Origin} -> {testFlight.Destination}, {testFlight.DistanceNm} NM, Score: {testFlight.Score}");
                     _ = Task.Run(async () =>
                     {
                         var success = await supabaseClient.SaveFlightAsync(testFlight);

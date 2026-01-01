@@ -7,6 +7,9 @@ namespace MSFSBridge.Models;
 /// </summary>
 public class FlightLog
 {
+    // Durchschnittliche Reisegeschwindigkeit für Score-Berechnung (kts)
+    private const double AVERAGE_CRUISE_SPEED = 400.0;
+
     [JsonProperty("user_id")]
     public string? UserId { get; set; }
 
@@ -45,4 +48,36 @@ public class FlightLog
 
     [JsonProperty("session_code")]
     public string? SessionCode { get; set; }
+
+    [JsonProperty("score")]
+    public int Score { get; set; }
+
+    /// <summary>
+    /// Berechnet den Flight Score basierend auf Distanz, Dauer und Landing Rating.
+    /// - Distanz dominiert, aber in Relation zur erwarteten Flugzeit
+    /// - SimRate/Überspringen wird bestraft (zu schnelle Flüge = weniger Punkte)
+    /// - Landing Rating als Prestige-Bonus (10-50 Punkte)
+    /// </summary>
+    public void CalculateScore()
+    {
+        // Erwartete Flugzeit in Sekunden: Distanz / Durchschnittsgeschwindigkeit * 3600
+        double expectedDurationSeconds = (DistanceNm / AVERAGE_CRUISE_SPEED) * 3600.0;
+
+        // Zeit-Faktor: Verhältnis von tatsächlicher zu erwarteter Zeit (max 1.0)
+        // Wer schneller fliegt als realistisch möglich, bekommt weniger Punkte
+        double timeFactor = 1.0;
+        if (expectedDurationSeconds > 0)
+        {
+            timeFactor = Math.Min(1.0, FlightDurationSeconds / expectedDurationSeconds);
+        }
+
+        // Basis-Score: Distanz × Zeit-Faktor
+        double baseScore = DistanceNm * timeFactor;
+
+        // Landing Bonus: 10-50 Punkte (Rating 1-5 × 10)
+        int landingBonus = LandingRating * 10;
+
+        // Gesamt-Score (gerundet)
+        Score = (int)Math.Round(baseScore + landingBonus);
+    }
 }

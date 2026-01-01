@@ -7,6 +7,8 @@ import FlightInfo from './components/FlightInfo'
 import { LandingModal, LandingPanel } from './components/LandingRating'
 import AuthModal from './components/AuthModal'
 import SimFlyCorp from './components/SimFlyCorp'
+import LeaderboardPage from './components/LeaderboardPage'
+import AirlinePage from './components/AirlinePage'
 import { useAuth } from './context/AuthContext'
 import useSimConnect from './hooks/useSimConnect'
 import { useChecklist, availableAircraft } from './hooks/useChecklist'
@@ -53,6 +55,8 @@ function App() {
   // Auth & SimFlyCorp
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showSimFlyCorp, setShowSimFlyCorp] = useState(false)
+  const [showLeaderboard, setShowLeaderboard] = useState(false)
+  const [showAirline, setShowAirline] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
 
   // FlightInfo visibility tracking for status bar
@@ -518,6 +522,12 @@ function App() {
                 <div className="header-dropdown-menu" onMouseLeave={() => setShowUserMenu(false)}>
                   <button onClick={() => { setShowSimFlyCorp(true); setShowUserMenu(false); }}>
                     <span>📊</span> Mein Profil
+                  </button>
+                  <button onClick={() => { setShowAirline(true); setShowUserMenu(false); }}>
+                    <span>🏢</span> Airline
+                  </button>
+                  <button onClick={() => { setShowLeaderboard(true); setShowUserMenu(false); }}>
+                    <span>🏆</span> Rangliste
                   </button>
                   <button onClick={async () => { await signOut(); setShowUserMenu(false); }}>
                     <span>🚪</span> Abmelden
@@ -1278,6 +1288,19 @@ function App() {
         <SimFlyCorp
           onBack={() => setShowSimFlyCorp(false)}
           onLogin={() => { setShowSimFlyCorp(false); setShowAuthModal(true); }}
+        />
+      )}
+
+      {/* Leaderboard Page */}
+      {showLeaderboard && (
+        <LeaderboardPage onBack={() => setShowLeaderboard(false)} />
+      )}
+
+      {/* Airline Page */}
+      {showAirline && (
+        <AirlinePage
+          onBack={() => setShowAirline(false)}
+          onLogin={() => { setShowAirline(false); setShowAuthModal(true); }}
         />
       )}
     </>

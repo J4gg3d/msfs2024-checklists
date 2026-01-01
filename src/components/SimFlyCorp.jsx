@@ -1,7 +1,28 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { getFlights, getFlightStats, deleteFlight } from '../lib/supabase'
+import { getFlights, getFlightStats, deleteFlight, getUserAirline } from '../lib/supabase'
 import './SimFlyCorp.css'
+
+// Icon mapping for airlines
+const AIRLINE_ICONS = {
+  plane: '✈️',
+  turbine: '🌀',
+  jet: '🛩️',
+  takeoff: '🛫',
+  landing: '🛬',
+  rocket: '🚀',
+  globe: '🌍',
+  star: '⭐',
+  crown: '👑',
+  eagle: '🦅',
+  lightning: '⚡',
+  shield: '🛡️',
+  diamond: '💎',
+  fire: '🔥',
+  wing: '🪽'
+}
+
+const getIconEmoji = (iconId) => AIRLINE_ICONS[iconId] || '✈️'
 
 // Demo data for non-logged-in users
 const DEMO_PROFILE = {
@@ -28,6 +49,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
   const { user, profile } = useAuth()
   const [flights, setFlights] = useState([])
   const [stats, setStats] = useState(null)
+  const [myAirline, setMyAirline] = useState(null)
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
 
@@ -47,9 +69,10 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const [flightsResult, statsResult] = await Promise.all([
+      const [flightsResult, statsResult, airlineResult] = await Promise.all([
         getFlights(user.id),
-        getFlightStats(user.id)
+        getFlightStats(user.id),
+        getUserAirline(user.id)
       ])
 
       if (!flightsResult.error) {
@@ -57,6 +80,9 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
       }
       if (!statsResult.error) {
         setStats(statsResult.stats)
+      }
+      if (!airlineResult.error && airlineResult.data) {
+        setMyAirline(airlineResult.data)
       }
     } catch (err) {
       console.error('SimFlyCorp error:', err)
@@ -195,7 +221,16 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                     </div>
                     <div className="detail-row">
                       <span className="detail-label">Airline</span>
-                      <span className="detail-value placeholder">SimFlyCorp Virtual</span>
+                      {isDemo ? (
+                        <span className="detail-value placeholder">SimFlyCorp Virtual</span>
+                      ) : myAirline ? (
+                        <span className="detail-value airline-value" style={{ color: myAirline.color }}>
+                          <span className="airline-icon-small">{getIconEmoji(myAirline.icon)}</span>
+                          {myAirline.name}
+                        </span>
+                      ) : (
+                        <span className="detail-value placeholder">Keine Airline</span>
+                      )}
                     </div>
                     <div className="detail-row">
                       <span className="detail-label">Homebase</span>

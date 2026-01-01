@@ -33,10 +33,13 @@ public class SimConnectManager : IDisposable
     private double _maxGForce = 0;  // Maximale G-Force während des Flugs
     private double _takeoffGroundSpeed = 0;  // Ground Speed beim Abheben
     private bool _validTakeoff = false;  // War es ein echter Takeoff?
-    private const double MIN_FLIGHT_SECONDS = 10;  // Mindestens 10 Sekunden in der Luft
-    private const double MIN_ALTITUDE_AGL = 100;  // Mindestens 100 ft AGL erreicht (erhöht von 50)
+    private bool _firstDataReceived = false;  // Verhindert falschen Takeoff bei Sim-Start
+    private const double MIN_FLIGHT_SECONDS = 180;  // Mindestens 3 Minuten in der Luft
+    private const double MIN_ALTITUDE_AGL = 100;  // Mindestens 100 ft AGL erreicht
     private const double MIN_TAKEOFF_SPEED = 40;  // Mindestens 40 kts beim Abheben
+    private const double MAX_TAKEOFF_SPEED = 250;  // Maximal 250 kts beim Abheben (darüber = in-air spawn)
     private const double MIN_GFORCE = 0.5;  // Mindestens 0.5 G während des Flugs (Plausibilität)
+    private const double MIN_DISTANCE_NM = 5;  // Mindestens 5 NM geflogen
 
     // Windows Message für SimConnect
     private const int WM_USER_SIMCONNECT = 0x0402;
@@ -387,6 +390,9 @@ public class SimConnectManager : IDisposable
     {
         _running = false;
         _isConnected = false;
+        _firstDataReceived = false;  // Reset für nächsten Connect
+        _validTakeoff = false;
+        _wasOnGround = true;
 
         if (_simConnect != null)
         {
@@ -479,16 +485,32 @@ public class SimConnectManager : IDisposable
                 double currentGroundSpeed = Math.Round(simData.GroundSpeed, 0);
                 double currentAltitude = simData.Altitude;
 
+                // Erstes Datenpaket: Nur Status setzen, keine Transition auslösen
+                if (!_firstDataReceived)
+                {
+                    _firstDataReceived = true;
+                    _wasOnGround = currentOnGround;
+                    if (!currentOnGround)
+                    {
+                        Console.WriteLine($"[FLIGHT] Started in-air (GS: {currentGroundSpeed:F0} kts, Alt: {currentAltitude:F0} ft) - ignoring until next ground contact");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[FLIGHT] Started on ground - ready for takeoff detection");
+                    }
+                }
+
                 // Takeoff Detection: War am Boden, jetzt in der Luft
-                if (_wasOnGround && !currentOnGround)
+                if (_wasOnGround && !currentOnGround && _firstDataReceived)
                 {
                     _takeoffTime = DateTime.Now;
                     _maxAltitudeAGL = 0;
                     _maxGForce = currentGForce;
                     _takeoffGroundSpeed = currentGroundSpeed;
 
-                    // Prüfe ob es ein plausibler Takeoff ist (nicht Mission-Start)
-                    _validTakeoff = currentGroundSpeed >= MIN_TAKEOFF_SPEED;
+                    // Prüfe ob es ein plausibler Takeoff ist (nicht Mission-Start oder in-air spawn)
+                    bool speedValid = currentGroundSpeed >= MIN_TAKEOFF_SPEED && currentGroundSpeed <= MAX_TAKEOFF_SPEED;
+                    _validTakeoff = speedValid;
 
                     if (_validTakeoff)
                     {
@@ -504,6 +526,10 @@ public class SimConnectManager : IDisposable
                         {
                             Console.WriteLine("[FLIGHT-LOG] Cannot start tracking - no previous sim data");
                         }
+                    }
+                    else if (currentGroundSpeed > MAX_TAKEOFF_SPEED)
+                    {
+                        Console.WriteLine($"[FLIGHT] In-air spawn detected - GS: {currentGroundSpeed:F0} kts (> {MAX_TAKEOFF_SPEED} kts) - ignoring");
                     }
                     else
                     {
@@ -547,12 +573,14 @@ public class SimConnectManager : IDisposable
                 {
                     // Berechne Flugzeit
                     double flightSeconds = (DateTime.Now - _takeoffTime).TotalSeconds;
+                    double flightDistance = _flightTracker.TotalDistanceNm;
 
                     // Validiere: War es ein echter Flug?
                     bool validFlight = _validTakeoff &&
                                        flightSeconds >= MIN_FLIGHT_SECONDS &&
                                        _maxAltitudeAGL >= MIN_ALTITUDE_AGL &&
-                                       _maxGForce >= MIN_GFORCE;
+                                       _maxGForce >= MIN_GFORCE &&
+                                       flightDistance >= MIN_DISTANCE_NM;
 
                     // Verhindere mehrfache Landungen in kurzer Zeit (z.B. Bouncing)
                     bool notBouncing = (DateTime.Now - _lastLandingTime).TotalSeconds > 5;
@@ -608,6 +636,7 @@ public class SimConnectManager : IDisposable
                         if (flightSeconds < MIN_FLIGHT_SECONDS) reasons.Add($"too short ({flightSeconds:F0}s < {MIN_FLIGHT_SECONDS}s)");
                         if (_maxAltitudeAGL < MIN_ALTITUDE_AGL) reasons.Add($"too low ({_maxAltitudeAGL:F0}ft < {MIN_ALTITUDE_AGL}ft)");
                         if (_maxGForce < MIN_GFORCE) reasons.Add($"G-force unrealistic ({_maxGForce:F2} < {MIN_GFORCE})");
+                        if (flightDistance < MIN_DISTANCE_NM) reasons.Add($"too short distance ({flightDistance:F1}NM < {MIN_DISTANCE_NM}NM)");
 
                         Console.WriteLine($"[FLIGHT] Ignored - {string.Join(", ", reasons)}");
 

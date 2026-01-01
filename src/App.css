@@ -1570,3 +1570,15 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(74, 144, 217, 0.3);
 }
+
+.feedback-button.discord {
+  background: linear-gradient(135deg, #5865F2 0%, #4752c4 100%);
+  border: 1px solid rgba(88, 101, 242, 0.5);
+  color: #fff;
+}
+
+.feedback-button.discord:hover {
+  background: linear-gradient(135deg, #6975f5 0%, #5865F2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+}

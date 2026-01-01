@@ -211,7 +211,14 @@
       "emailBenefit1": "Ideen und Anregungen",
       "emailBenefit2": "Lob und Kritik",
       "emailBenefit3": "Fragen zur App",
-      "emailButton": "E-Mail schreiben"
+      "emailButton": "E-Mail schreiben",
+      "discordTitle": "Discord Community",
+      "discordDesc": "Tritt unserem Discord bei! Tausche dich mit anderen Piloten aus, teste neue Features und hilf bei der Weiterentwicklung.",
+      "discordBenefits": "Vorteile:",
+      "discordBenefit1": "Direkter Austausch mit der Community",
+      "discordBenefit2": "Fruehe Infos zu neuen Features",
+      "discordBenefit3": "Beta-Tests und Feedback",
+      "discordButton": "Discord beitreten"
     }
   },
   "confirm": {

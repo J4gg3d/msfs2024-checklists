@@ -189,6 +189,12 @@ webSocketServer.OnUserAuthenticated += (userId) =>
     Console.WriteLine($"[AUTH] User-ID gesetzt: {(string.IsNullOrEmpty(userId) ? "(keiner)" : userId)}");
 };
 
+// Route vom Frontend empfangen (für FlightTracker)
+webSocketServer.OnRouteReceived += (origin, destination) =>
+{
+    simConnect.SetRoute(origin, destination);
+};
+
 simConnect.OnStatusChanged += (status) => Console.WriteLine($"[SIM] {status}");
 simConnect.OnError += (error) => Console.WriteLine($"[SIM FEHLER] {error}");
 simConnect.OnLandingDetected += (landing) =>

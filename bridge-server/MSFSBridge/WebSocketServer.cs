@@ -32,6 +32,13 @@ public class BridgeWebSocketServer : IDisposable
     public event Action<string>? OnLog;
     public event Action<IWebSocketConnection>? OnClientConnected;
     public event Action<string?>? OnUserAuthenticated;
+    public event Action<string?, string?>? OnRouteReceived;
+
+    /// <summary>
+    /// Aktuelle Route (Origin, Destination) - für FlightTracker
+    /// </summary>
+    public (string? Origin, string? Destination) CurrentRoute =>
+        (_currentRoute?.Origin, _currentRoute?.Destination);
 
     public int ClientCount
     {
@@ -274,6 +281,9 @@ public class BridgeWebSocketServer : IDisposable
             {
                 _currentRoute = route;
                 OnLog?.Invoke($"Route empfangen: {route.Origin} → {route.Destination}");
+
+                // Event für FlightTracker auslösen
+                OnRouteReceived?.Invoke(route.Origin, route.Destination);
 
                 // Route an alle Clients broadcasten (inkl. Sender für Bestätigung)
                 var routeMessage = JsonConvert.SerializeObject(new { type = "route", route = route }, _jsonSettings);

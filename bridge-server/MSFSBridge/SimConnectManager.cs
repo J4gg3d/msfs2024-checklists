@@ -27,6 +27,10 @@ public class SimConnectManager : IDisposable
     // Flight Tracker (sammelt Flugdaten für Logbuch)
     private readonly FlightTracker _flightTracker = new();
 
+    // Route vom Frontend (Fallback wenn GPS-Daten leer sind)
+    private string? _frontendOrigin;
+    private string? _frontendDestination;
+
     // Flight Validation (verhindert falsche Landungen beim Mission-Start)
     private DateTime _takeoffTime = DateTime.MinValue;  // Wann abgehoben
     private double _maxAltitudeAGL = 0;  // Maximale erreichte Höhe
@@ -190,6 +194,16 @@ public class SimConnectManager : IDisposable
     public void SetUserId(string? userId)
     {
         _flightTracker.SetUserId(userId);
+    }
+
+    /// <summary>
+    /// Setzt die Route vom Frontend (Fallback wenn GPS-Daten leer sind)
+    /// </summary>
+    public void SetRoute(string? origin, string? destination)
+    {
+        _frontendOrigin = origin?.ToUpperInvariant();
+        _frontendDestination = destination?.ToUpperInvariant();
+        Console.WriteLine($"[FLIGHT] Route gesetzt: {_frontendOrigin ?? "?"} → {_frontendDestination ?? "?"}");
     }
 
     public bool IsConnected => _isConnected;
@@ -518,7 +532,10 @@ public class SimConnectManager : IDisposable
                         // FlightTracker starten wenn wir lastSimData haben
                         if (_lastSimData != null)
                         {
-                            var originAirport = IsValidIcao(simData.GpsWpPrevId) ? simData.GpsWpPrevId?.Trim() : null;
+                            // Origin: GPS-Daten bevorzugen, sonst Frontend-Route
+                            var originAirport = IsValidIcao(simData.GpsWpPrevId)
+                                ? simData.GpsWpPrevId?.Trim()
+                                : _frontendOrigin;
                             _flightTracker.StartTracking(_lastSimData, originAirport);
                             Console.WriteLine($"[FLIGHT-LOG] Tracking started from {originAirport ?? "unknown"}");
                         }
@@ -556,7 +573,10 @@ public class SimConnectManager : IDisposable
                         // Jetzt FlightTracker starten (nachträglich validierter Takeoff)
                         if (!_flightTracker.IsTracking && _lastSimData != null)
                         {
-                            var originAirport = IsValidIcao(simData.GpsWpPrevId) ? simData.GpsWpPrevId?.Trim() : null;
+                            // Origin: GPS-Daten bevorzugen, sonst Frontend-Route
+                            var originAirport = IsValidIcao(simData.GpsWpPrevId)
+                                ? simData.GpsWpPrevId?.Trim()
+                                : _frontendOrigin;
                             _flightTracker.StartTracking(_lastSimData, originAirport);
                         }
                     }
@@ -588,6 +608,22 @@ public class SimConnectManager : IDisposable
                     if (validFlight && notBouncing)
                     {
                         var (rating, score) = LandingInfo.CalculateRating(_lastVerticalSpeed);
+
+                        // Destination: GPS-Daten > Frontend-Route > Nearest Airport
+                        string? landingAirport = null;
+                        if (IsValidIcao(simData.GpsApproachAirportId))
+                        {
+                            landingAirport = simData.GpsApproachAirportId?.Trim().ToUpper();
+                        }
+                        else if (!string.IsNullOrEmpty(_frontendDestination))
+                        {
+                            landingAirport = _frontendDestination;
+                        }
+                        else
+                        {
+                            landingAirport = AirportDatabase.FindNearestAirport(simData.Latitude, simData.Longitude);
+                        }
+
                         var landingInfo = new LandingInfo
                         {
                             Timestamp = DateTime.Now,
@@ -597,9 +633,7 @@ public class SimConnectManager : IDisposable
                             Rating = rating,
                             RatingScore = score,
                             AircraftTitle = simData.AircraftTitle,
-                            Airport = IsValidIcao(simData.GpsApproachAirportId)
-                                ? simData.GpsApproachAirportId?.Trim().ToUpper()
-                                : AirportDatabase.FindNearestAirport(simData.Latitude, simData.Longitude)
+                            Airport = landingAirport
                         };
 
                         Console.WriteLine($"[LANDING] {rating} ({score}/5) - VS: {_lastVerticalSpeed:F0} ft/min, G: {_lastGForce:F2}, Flight: {flightSeconds:F0}s, MaxAlt: {_maxAltitudeAGL:F0}ft");
@@ -609,10 +643,8 @@ public class SimConnectManager : IDisposable
                         // FlightTracker beenden und Flug speichern
                         if (_flightTracker.IsTracking)
                         {
-                            var destinationAirport = IsValidIcao(simData.GpsApproachAirportId)
-                                ? simData.GpsApproachAirportId?.Trim()
-                                : AirportDatabase.FindNearestAirport(simData.Latitude, simData.Longitude);
-                            var flightLog = _flightTracker.StopTracking(landingInfo, destinationAirport);
+                            // landingAirport wurde oben bereits mit Fallback-Logik bestimmt
+                            var flightLog = _flightTracker.StopTracking(landingInfo, landingAirport);
                             if (flightLog != null)
                             {
                                 Console.WriteLine($"[FLIGHT-LOG] Flight completed: {flightLog.Origin ?? "?"} -> {flightLog.Destination ?? "?"}, {flightLog.DistanceNm:F1} NM");

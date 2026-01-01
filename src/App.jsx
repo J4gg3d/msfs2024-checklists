@@ -1106,6 +1106,28 @@ function App() {
 
               <div className="feedback-options">
                 <div className="feedback-option">
+                  <div className="feedback-option-icon">💬</div>
+                  <h3>{t('modals.feedback.discordTitle')}</h3>
+                  <p>{t('modals.feedback.discordDesc')}</p>
+                  <div className="feedback-benefits">
+                    <strong>{t('modals.feedback.discordBenefits')}</strong>
+                    <ul>
+                      <li>{t('modals.feedback.discordBenefit1')}</li>
+                      <li>{t('modals.feedback.discordBenefit2')}</li>
+                      <li>{t('modals.feedback.discordBenefit3')}</li>
+                    </ul>
+                  </div>
+                  <a
+                    href="https://discord.gg/7hGSncpP"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="feedback-button discord"
+                  >
+                    {t('modals.feedback.discordButton')}
+                  </a>
+                </div>
+
+                <div className="feedback-option">
                   <div className="feedback-option-icon">🐛</div>
                   <h3>{t('modals.feedback.githubTitle')}</h3>
                   <p>{t('modals.feedback.githubDesc')}</p>
@@ -1144,28 +1166,6 @@ function App() {
                     className="feedback-button email"
                   >
                     {t('modals.feedback.emailButton')}
-                  </a>
-                </div>
-
-                <div className="feedback-option">
-                  <div className="feedback-option-icon">💬</div>
-                  <h3>{t('modals.feedback.discordTitle')}</h3>
-                  <p>{t('modals.feedback.discordDesc')}</p>
-                  <div className="feedback-benefits">
-                    <strong>{t('modals.feedback.discordBenefits')}</strong>
-                    <ul>
-                      <li>{t('modals.feedback.discordBenefit1')}</li>
-                      <li>{t('modals.feedback.discordBenefit2')}</li>
-                      <li>{t('modals.feedback.discordBenefit3')}</li>
-                    </ul>
-                  </div>
-                  <a
-                    href="https://discord.gg/7hGSncpP"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="feedback-button discord"
-                  >
-                    {t('modals.feedback.discordButton')}
                   </a>
                 </div>
               </div>

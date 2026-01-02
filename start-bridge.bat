@@ -14,18 +14,18 @@ where dotnet >nul 2>nul
 if %errorlevel% neq 0 (
     echo [FEHLER] .NET SDK nicht gefunden!
     echo.
-    echo Bitte installiere das .NET 7 SDK von:
-    echo https://dotnet.microsoft.com/download/dotnet/7.0
+    echo Bitte installiere das .NET 8 SDK von:
+    echo https://dotnet.microsoft.com/download/dotnet/8.0
     echo.
     pause
     exit /b 1
 )
 
 :: Pruefen ob bereits kompiliert
-if exist "bin\Debug\net7.0\MSFSBridge.exe" (
+if exist "bin\Debug\net8.0\MSFSBridge.exe" (
     echo [INFO] Starte Bridge...
     echo.
-    bin\Debug\net7.0\MSFSBridge.exe
+    bin\Debug\net8.0\MSFSBridge.exe
 ) else (
     echo [INFO] Kompiliere Bridge...
     dotnet build
@@ -37,7 +37,7 @@ if exist "bin\Debug\net7.0\MSFSBridge.exe" (
     echo.
     echo [INFO] Starte Bridge...
     echo.
-    bin\Debug\net7.0\MSFSBridge.exe
+    bin\Debug\net8.0\MSFSBridge.exe
 )
 
 pause

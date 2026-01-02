@@ -59,6 +59,17 @@ const airportCoordinates = {
   'LIMC': { lat: 45.6306, lon: 8.7231 },   // Mailand Malpensa
   'LGAV': { lat: 37.9364, lon: 23.9445 },  // Athen
   'LTFM': { lat: 41.2608, lon: 28.7419 },  // Istanbul
+  'LFSB': { lat: 47.5896, lon: 7.5299 },   // Basel-Mulhouse EuroAirport
+  'LSZB': { lat: 46.9141, lon: 7.4971 },   // Bern
+  'LSGG': { lat: 46.2381, lon: 6.1089 },   // Genf
+  'LFST': { lat: 48.5383, lon: 7.6281 },   // Straßburg
+  'LFML': { lat: 43.4393, lon: 5.2214 },   // Marseille
+  'LFLL': { lat: 45.7256, lon: 5.0811 },   // Lyon
+  'LFMN': { lat: 43.6584, lon: 7.2159 },   // Nizza
+  'LFBD': { lat: 44.8283, lon: -0.7156 },  // Bordeaux
+  'LFRS': { lat: 47.1532, lon: -1.6107 },  // Nantes
+  'EDNY': { lat: 47.6713, lon: 9.5115 },   // Friedrichshafen
+  'EDSB': { lat: 48.7794, lon: 8.0805 },   // Karlsruhe/Baden-Baden
 
   // USA
   'KJFK': { lat: 40.6413, lon: -73.7781 }, // New York JFK

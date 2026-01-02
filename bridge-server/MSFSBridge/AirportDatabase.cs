@@ -47,6 +47,17 @@ public static class AirportDatabase
         ["LIMC"] = (45.6306, 8.7231),    // Mailand Malpensa
         ["LGAV"] = (37.9364, 23.9445),   // Athen
         ["LTFM"] = (41.2608, 28.7419),   // Istanbul
+        ["LFSB"] = (47.5896, 7.5299),    // Basel-Mulhouse EuroAirport
+        ["LSZB"] = (46.9141, 7.4971),    // Bern
+        ["LSGG"] = (46.2381, 6.1089),    // Genf
+        ["LFST"] = (48.5383, 7.6281),    // Straßburg
+        ["LFML"] = (43.4393, 5.2214),    // Marseille
+        ["LFLL"] = (45.7256, 5.0811),    // Lyon
+        ["LFMN"] = (43.6584, 7.2159),    // Nizza
+        ["LFBD"] = (44.8283, -0.7156),   // Bordeaux
+        ["LFRS"] = (47.1532, -1.6107),   // Nantes
+        ["EDNY"] = (47.6713, 9.5115),    // Friedrichshafen
+        ["EDSB"] = (48.7794, 8.0805),    // Karlsruhe/Baden-Baden
 
         // USA
         ["KJFK"] = (40.6413, -73.7781),  // New York JFK

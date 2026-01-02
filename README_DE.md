@@ -49,26 +49,15 @@ Die Bridge läuft lokal auf deinem PC, liest Daten aus MSFS und sendet sie an de
 
 ## Bridge-Installation (Schritt für Schritt)
 
-### Schritt 1: Voraussetzungen installieren
+### Schritt 1: .NET 8.0 Runtime installieren
 
-Du brauchst zwei Dinge auf deinem PC:
-
-#### 1.1 MSFS 2024 SDK
-Das SDK wird benötigt, damit die Bridge mit dem Simulator kommunizieren kann.
-
-1. Starte **MSFS 2024**
-2. Gehe zu **Optionen** → **Allgemein** → **Entwickler**
-3. Aktiviere den **Entwicklermodus**
-4. Im Entwickler-Menü oben klicke auf **Hilfe** → **SDK-Installer**
-5. Führe den Installer aus und installiere das SDK
-6. **Wichtig**: Merke dir den Installationspfad (Standard: `C:\MSFS SDK`)
-
-#### 1.2 .NET 8.0 Runtime
-Die Bridge ist in C# geschrieben und braucht die .NET Runtime. Diese wird auch vom MSFS 2024 SDK benötigt.
+Die Bridge ist in C# geschrieben und braucht die .NET Runtime.
 
 1. Download von [dotnet.microsoft.com/download/dotnet/8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
 2. Wähle **.NET Desktop Runtime 8.0** (nicht SDK, außer du willst selbst kompilieren)
 3. Lade die **Windows x64** Version herunter und installiere sie
+
+> **Hinweis**: Das MSFS 2024 SDK wird **nicht benötigt** - alle nötigen SimConnect-Dateien sind im Bridge-Download enthalten.
 
 ### Schritt 2: Bridge herunterladen
 

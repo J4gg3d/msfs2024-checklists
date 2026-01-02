@@ -945,23 +945,9 @@ function App() {
               </div>
 
               {/* Voraussetzungen */}
-              <div className="info-section info-warning">
-                <h3>⚠️ {t('modals.bridge.requirements')}</h3>
+              <div className="info-section info-success">
+                <h3>✅ {t('modals.bridge.requirements')}</h3>
                 <p>{t('modals.bridge.requirementsText')}</p>
-              </div>
-
-              {/* SDK Installation */}
-              <div className="info-section bridge-steps">
-                <h3>📦 {t('modals.bridge.sdkTitle')}</h3>
-                <ol>
-                  <li>{t('modals.bridge.sdkStep1')}</li>
-                  <li>{t('modals.bridge.sdkStep2')}</li>
-                  <li>{t('modals.bridge.sdkStep3')}</li>
-                  <li>{t('modals.bridge.sdkStep4')}<br/>
-                    <code className="code-box-inline">{t('modals.bridge.sdkPath')}</code>
-                  </li>
-                </ol>
-                <p className="hint-text">💡 {t('modals.bridge.sdkNote')}</p>
               </div>
 
               {/* .NET Runtime */}
@@ -1036,14 +1022,6 @@ function App() {
                     <li>{t('modals.bridge.troubleConnectionTip1')}</li>
                     <li>{t('modals.bridge.troubleConnectionTip2')}</li>
                     <li>{t('modals.bridge.troubleConnectionTip3')}</li>
-                  </ul>
-                </div>
-
-                <div className="trouble-item">
-                  <strong>{t('modals.bridge.troubleSdk')}</strong>
-                  <ul>
-                    <li>{t('modals.bridge.troubleSdkTip1')}</li>
-                    <li>{t('modals.bridge.troubleSdkTip2')}</li>
                   </ul>
                 </div>
 

@@ -55,7 +55,7 @@ export const getFlights = async (userId, limit = 50) => {
 
 export const getFlightStats = async (userId) => {
   try {
-    const url = `${supabaseUrl}/rest/v1/flights?user_id=eq.${userId}&select=distance_nm,flight_duration_seconds,landing_rating`
+    const url = `${supabaseUrl}/rest/v1/flights?user_id=eq.${userId}&select=distance_nm,flight_duration_seconds,landing_rating,score`
     const response = await fetch(url, {
       headers: {
         'apikey': supabaseAnonKey,
@@ -71,6 +71,7 @@ export const getFlightStats = async (userId) => {
       totalFlights: data.length,
       totalDistance: data.reduce((sum, f) => sum + (f.distance_nm || 0), 0),
       totalFlightTime: data.reduce((sum, f) => sum + (f.flight_duration_seconds || 0), 0),
+      totalScore: data.reduce((sum, f) => sum + (f.score || 0), 0),
       avgLandingRating: data.length > 0
         ? data.reduce((sum, f) => sum + (f.landing_rating || 0), 0) / data.length
         : 0,

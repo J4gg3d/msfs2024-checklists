@@ -34,15 +34,16 @@ const DEMO_STATS = {
   totalFlights: 47,
   totalDistance: 28450,
   totalFlightTime: 156 * 3600, // 156 hours
+  totalScore: 32850,
   avgLandingRating: 4.2
 }
 
 const DEMO_FLIGHTS = [
-  { id: 1, created_at: '2024-12-28T14:30:00Z', origin: 'EDDF', destination: 'KJFK', aircraft_type: 'Airbus A330-200', distance_nm: 3450, flight_duration_seconds: 28800, landing_rating: 5 },
-  { id: 2, created_at: '2024-12-25T09:15:00Z', origin: 'KJFK', destination: 'EGLL', aircraft_type: 'Airbus A330-200', distance_nm: 3020, flight_duration_seconds: 25200, landing_rating: 4 },
-  { id: 3, created_at: '2024-12-22T18:45:00Z', origin: 'EGLL', destination: 'LEMD', aircraft_type: 'Airbus A330-200', distance_nm: 780, flight_duration_seconds: 7200, landing_rating: 4 },
-  { id: 4, created_at: '2024-12-20T11:00:00Z', origin: 'LEMD', destination: 'LFPG', aircraft_type: 'Pilatus PC-12 NGX', distance_nm: 650, flight_duration_seconds: 5400, landing_rating: 5 },
-  { id: 5, created_at: '2024-12-18T16:20:00Z', origin: 'LFPG', destination: 'EDDF', aircraft_type: 'Pilatus PC-12 NGX', distance_nm: 280, flight_duration_seconds: 3600, landing_rating: 3 },
+  { id: 1, created_at: '2024-12-28T14:30:00Z', origin: 'EDDF', destination: 'KJFK', aircraft_type: 'Airbus A330-200', distance_nm: 3450, flight_duration_seconds: 28800, landing_rating: 5, score: 3500 },
+  { id: 2, created_at: '2024-12-25T09:15:00Z', origin: 'KJFK', destination: 'EGLL', aircraft_type: 'Airbus A330-200', distance_nm: 3020, flight_duration_seconds: 25200, landing_rating: 4, score: 3060 },
+  { id: 3, created_at: '2024-12-22T18:45:00Z', origin: 'EGLL', destination: 'LEMD', aircraft_type: 'Airbus A330-200', distance_nm: 780, flight_duration_seconds: 7200, landing_rating: 4, score: 820 },
+  { id: 4, created_at: '2024-12-20T11:00:00Z', origin: 'LEMD', destination: 'LFPG', aircraft_type: 'Pilatus PC-12 NGX', distance_nm: 650, flight_duration_seconds: 5400, landing_rating: 5, score: 700 },
+  { id: 5, created_at: '2024-12-18T16:20:00Z', origin: 'LFPG', destination: 'EDDF', aircraft_type: 'Pilatus PC-12 NGX', distance_nm: 280, flight_duration_seconds: 3600, landing_rating: 3, score: 310 },
 ]
 
 const SimFlyCorp = ({ onBack, onLogin }) => {
@@ -252,6 +253,10 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                 </div>
 
                 <div className="profile-stats">
+                  <div className="profile-stat highlight">
+                    <div className="stat-number">{(stats?.totalScore || 0).toLocaleString()}</div>
+                    <div className="stat-text">Punkte</div>
+                  </div>
                   <div className="profile-stat">
                     <div className="stat-number">{stats?.totalFlights || 0}</div>
                     <div className="stat-text">Flüge</div>
@@ -324,6 +329,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                         <th>Distanz</th>
                         <th>Zeit</th>
                         <th>Landing</th>
+                        <th>Score</th>
                         {!isDemo && <th></th>}
                       </tr>
                     </thead>
@@ -344,6 +350,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                           <td className={`col-rating ${getRatingClass(flight.landing_rating)}`}>
                             {getRatingStars(flight.landing_rating)}
                           </td>
+                          <td className="col-score">{(flight.score || 0).toLocaleString()}</td>
                           {!isDemo && (
                             <td className="col-actions">
                               <button

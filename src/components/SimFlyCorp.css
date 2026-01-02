@@ -321,6 +321,21 @@
   text-transform: uppercase;
 }
 
+.profile-stat.highlight {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 193, 7, 0.1) 100%);
+  border-color: #ffd700;
+  grid-column: span 2;
+}
+
+.profile-stat.highlight .stat-number {
+  font-size: 1.75rem;
+  color: #ffd700;
+}
+
+.profile-stat.highlight .stat-text {
+  color: #ffc107;
+}
+
 /* Achievements */
 .achievements-card {
   background: rgba(26, 26, 46, 0.8);
@@ -491,6 +506,12 @@
 .rating-good { color: #4caf50; }
 .rating-ok { color: #ffa726; }
 .rating-bad { color: #ef5350; }
+
+.col-score {
+  color: #ffd700;
+  font-weight: 600;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
 
 .col-actions {
   width: 40px;

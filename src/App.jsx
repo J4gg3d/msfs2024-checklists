@@ -980,7 +980,7 @@ function App() {
                   </li>
                 </ol>
                 <a
-                  href="https://github.com/J4gg3d/msfs2024-checklists/releases"
+                  href="https://github.com/J4gg3d/msfs2024-checklists"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="github-link-btn"

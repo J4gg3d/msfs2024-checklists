@@ -70,27 +70,26 @@ Die Bridge ist in C# geschrieben und braucht die .NET Runtime. Diese wird auch v
 2. Wähle **.NET Desktop Runtime 8.0** (nicht SDK, außer du willst selbst kompilieren)
 3. Lade die **Windows x64** Version herunter und installiere sie
 
-### Schritt 2: Bridge herunterladen
+### Schritt 2: Bridge herunterladen und kompilieren
 
-Du hast zwei Optionen:
-
-#### Option A: ZIP herunterladen (Am einfachsten)
-1. Gehe zu [github.com/J4gg3d/msfs2024-checklists/releases](https://github.com/J4gg3d/msfs2024-checklists/releases)
-2. Lade das neueste `MSFSBridge.zip` herunter
-3. Entpacke in einen beliebigen Ordner (z.B. `C:\MSFSBridge`)
-
-#### Option B: Repository klonen (Für Entwickler)
-```bash
-git clone https://github.com/J4gg3d/msfs2024-checklists.git
-cd msfs2024-checklists/bridge-server/MSFSBridge
-dotnet build
-```
+1. Repository klonen:
+   ```bash
+   git clone https://github.com/J4gg3d/msfs2024-checklists.git
+   ```
+2. Zum Bridge-Ordner navigieren:
+   ```bash
+   cd msfs2024-checklists/bridge-server/MSFSBridge
+   ```
+3. Bridge kompilieren:
+   ```bash
+   dotnet build
+   ```
 
 ### Schritt 3: Bridge starten
 
 1. **Starte MSFS 2024** zuerst (oder starte es später - die Bridge wartet)
-2. Navigiere zum Bridge-Ordner
-3. Doppelklicke auf `MSFSBridge.exe` (oder `dotnet run` wenn du das Repo geklont hast)
+2. Navigiere zum Bridge-Ordner (`bridge-server/MSFSBridge`)
+3. Doppelklicke auf `start-bridge.bat` oder führe `dotnet run` im Terminal aus
 
 Du solltest sehen:
 ```

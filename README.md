@@ -70,27 +70,26 @@ The Bridge is written in C# and needs the .NET runtime. This is also required by
 2. Choose **.NET Desktop Runtime 8.0** (not SDK, unless you want to compile yourself)
 3. Download and install the **Windows x64** version
 
-### Step 2: Download the Bridge
+### Step 2: Download and Build the Bridge
 
-You have two options:
-
-#### Option A: Download ZIP (Easiest)
-1. Go to [github.com/J4gg3d/msfs2024-checklists/releases](https://github.com/J4gg3d/msfs2024-checklists/releases)
-2. Download the latest `MSFSBridge.zip`
-3. Extract to any folder (e.g., `C:\MSFSBridge`)
-
-#### Option B: Clone Repository (For Developers)
-```bash
-git clone https://github.com/J4gg3d/msfs2024-checklists.git
-cd msfs2024-checklists/bridge-server/MSFSBridge
-dotnet build
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/J4gg3d/msfs2024-checklists.git
+   ```
+2. Navigate to the Bridge folder:
+   ```bash
+   cd msfs2024-checklists/bridge-server/MSFSBridge
+   ```
+3. Build the Bridge:
+   ```bash
+   dotnet build
+   ```
 
 ### Step 3: Start the Bridge
 
 1. **Start MSFS 2024** first (or start it later - the Bridge will wait)
-2. Navigate to the Bridge folder
-3. Double-click `MSFSBridge.exe` (or run `dotnet run` if you cloned the repo)
+2. Navigate to the Bridge folder (`bridge-server/MSFSBridge`)
+3. Double-click `start-bridge.bat` or run `dotnet run` in the terminal
 
 You should see:
 ```

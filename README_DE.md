@@ -63,11 +63,11 @@ Das SDK wird benötigt, damit die Bridge mit dem Simulator kommunizieren kann.
 5. Führe den Installer aus und installiere das SDK
 6. **Wichtig**: Merke dir den Installationspfad (Standard: `C:\MSFS SDK`)
 
-#### 1.2 .NET 7.0 Runtime
-Die Bridge ist in C# geschrieben und braucht die .NET Runtime.
+#### 1.2 .NET 8.0 Runtime
+Die Bridge ist in C# geschrieben und braucht die .NET Runtime. Diese wird auch vom MSFS 2024 SDK benötigt.
 
-1. Download von [dotnet.microsoft.com/download/dotnet/7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
-2. Wähle **.NET Runtime 7.0** (nicht SDK, außer du willst selbst kompilieren)
+1. Download von [dotnet.microsoft.com/download/dotnet/8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
+2. Wähle **.NET Desktop Runtime 8.0** (nicht SDK, außer du willst selbst kompilieren)
 3. Lade die **Windows x64** Version herunter und installiere sie
 
 ### Schritt 2: Bridge herunterladen

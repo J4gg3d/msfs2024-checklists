@@ -10,6 +10,7 @@ import SimFlyCorp from './components/SimFlyCorp'
 import LeaderboardPage from './components/LeaderboardPage'
 import AirlinePage from './components/AirlinePage'
 import Announcements from './components/Announcements'
+import SimFlyCorpLanding from './components/SimFlyCorpLanding'
 import { useAuth } from './context/AuthContext'
 import useSimConnect from './hooks/useSimConnect'
 import { useChecklist, availableAircraft } from './hooks/useChecklist'
@@ -55,6 +56,7 @@ function App() {
 
   // Auth & SimFlyCorp
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showSimFlyCorpLanding, setShowSimFlyCorpLanding] = useState(false)
   const [showSimFlyCorp, setShowSimFlyCorp] = useState(false)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [showAirline, setShowAirline] = useState(false)
@@ -507,7 +509,7 @@ function App() {
 
         <div className="header-right">
           {/* SimFlyCorp Button */}
-          <button className="header-btn header-btn-simflycorp" onClick={() => setShowSimFlyCorp(true)}>
+          <button className="header-btn header-btn-simflycorp" onClick={() => setShowSimFlyCorpLanding(true)}>
             <span className="header-btn-icon">✈</span>
             <span className="header-btn-text">SimFlyCorp</span>
           </button>
@@ -1289,6 +1291,18 @@ function App() {
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
       {/* SimFlyCorp Page */}
+      {/* SimFlyCorp Landing Page */}
+      {showSimFlyCorpLanding && (
+        <SimFlyCorpLanding
+          onBack={() => setShowSimFlyCorpLanding(false)}
+          onLogin={() => { setShowSimFlyCorpLanding(false); setShowAuthModal(true); }}
+          onProfile={() => { setShowSimFlyCorpLanding(false); setShowSimFlyCorp(true); }}
+          onLeaderboard={() => { setShowSimFlyCorpLanding(false); setShowLeaderboard(true); }}
+          onAirline={() => { setShowSimFlyCorpLanding(false); setShowAirline(true); }}
+        />
+      )}
+
+      {/* SimFlyCorp Profile Page */}
       {(showSimFlyCorp || viewProfileUserId) && (
         <SimFlyCorp
           onBack={() => { setShowSimFlyCorp(false); setViewProfileUserId(null); }}

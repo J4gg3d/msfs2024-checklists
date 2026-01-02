@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { getFlights, getFlightStats, deleteFlight, getUserAirline } from '../lib/supabase'
+import { getFlights, getFlightStats, deleteFlight, getUserAirline, updateProfile } from '../lib/supabase'
 import './SimFlyCorp.css'
 
 // Icon mapping for airlines
@@ -53,6 +53,9 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
   const [myAirline, setMyAirline] = useState(null)
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
+  const [editingHomebase, setEditingHomebase] = useState(false)
+  const [homebaseInput, setHomebaseInput] = useState('')
+  const [savingHomebase, setSavingHomebase] = useState(false)
 
   const isDemo = !user
 
@@ -136,6 +139,39 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
       await loadData()
     }
     setDeletingId(null)
+  }
+
+  const handleEditHomebase = () => {
+    setHomebaseInput(profile?.home_base || '')
+    setEditingHomebase(true)
+  }
+
+  const handleSaveHomebase = async () => {
+    if (isDemo || !user) return
+
+    const icao = homebaseInput.trim().toUpperCase()
+    if (icao.length < 3 || icao.length > 4) {
+      alert('Bitte gib einen gültigen ICAO-Code ein (3-4 Buchstaben)')
+      return
+    }
+
+    setSavingHomebase(true)
+    const { error } = await updateProfile(user.id, { home_base: icao })
+
+    if (error) {
+      console.error('Fehler beim Speichern:', error)
+      alert('Fehler beim Speichern der Homebase')
+    } else {
+      // Profil wird über AuthContext aktualisiert - hier nur UI schließen
+      profile.home_base = icao // Lokales Update für sofortige Anzeige
+    }
+    setSavingHomebase(false)
+    setEditingHomebase(false)
+  }
+
+  const handleCancelHomebase = () => {
+    setEditingHomebase(false)
+    setHomebaseInput('')
   }
 
   // Pilot rank based on flight hours (stripes like pilot uniforms)
@@ -235,7 +271,47 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                     </div>
                     <div className="detail-row">
                       <span className="detail-label">Homebase</span>
-                      <span className="detail-value placeholder">EDDF</span>
+                      {isDemo ? (
+                        <span className="detail-value">EDDF</span>
+                      ) : editingHomebase ? (
+                        <span className="detail-value homebase-edit">
+                          <input
+                            type="text"
+                            value={homebaseInput}
+                            onChange={(e) => setHomebaseInput(e.target.value.toUpperCase())}
+                            placeholder="ICAO"
+                            maxLength={4}
+                            className="homebase-input"
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleSaveHomebase()
+                              if (e.key === 'Escape') handleCancelHomebase()
+                            }}
+                          />
+                          <button
+                            className="homebase-btn save"
+                            onClick={handleSaveHomebase}
+                            disabled={savingHomebase}
+                          >
+                            {savingHomebase ? '...' : '✓'}
+                          </button>
+                          <button
+                            className="homebase-btn cancel"
+                            onClick={handleCancelHomebase}
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ) : (
+                        <span
+                          className="detail-value editable"
+                          onClick={handleEditHomebase}
+                          title="Klicken zum Bearbeiten"
+                        >
+                          {profile?.home_base || <span className="placeholder">Nicht gesetzt</span>}
+                          <span className="edit-icon">✎</span>
+                        </span>
+                      )}
                     </div>
                     <div className="detail-row">
                       <span className="detail-label">Mitglied seit</span>

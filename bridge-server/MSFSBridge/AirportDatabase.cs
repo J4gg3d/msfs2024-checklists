@@ -82,6 +82,7 @@ public static class AirportDatabase
         ["KMKE"] = (42.9472, -87.8966),  // Milwaukee
         ["KSTL"] = (38.7487, -90.3700),  // St. Louis
         ["KMCI"] = (39.2976, -94.7139),  // Kansas City
+        ["KOMA"] = (41.3032, -95.8941),  // Omaha Eppley Airfield
         ["KAUS"] = (30.1945, -97.6699),  // Austin
         ["KSAT"] = (29.5337, -98.4698),  // San Antonio
         ["KRDU"] = (35.8776, -78.7875),  // Raleigh-Durham

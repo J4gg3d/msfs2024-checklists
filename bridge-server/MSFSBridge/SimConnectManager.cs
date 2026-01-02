@@ -538,10 +538,20 @@ public class SimConnectManager : IDisposable
                         // FlightTracker starten wenn wir lastSimData haben
                         if (_lastSimData != null)
                         {
-                            // Origin: GPS-Daten bevorzugen, sonst Frontend-Route
-                            var originAirport = IsValidIcao(simData.GpsWpPrevId)
-                                ? simData.GpsWpPrevId?.Trim()
-                                : _frontendOrigin;
+                            // Origin: GPS-Daten > Frontend-Route > Nearest Airport
+                            string? originAirport = null;
+                            if (IsValidIcao(simData.GpsWpPrevId))
+                            {
+                                originAirport = simData.GpsWpPrevId?.Trim();
+                            }
+                            else if (!string.IsNullOrEmpty(_frontendOrigin))
+                            {
+                                originAirport = _frontendOrigin;
+                            }
+                            else
+                            {
+                                originAirport = AirportDatabase.FindNearestAirport(simData.Latitude, simData.Longitude);
+                            }
                             _flightTracker.StartTracking(_lastSimData, originAirport);
                             Console.WriteLine($"[FLIGHT-LOG] Tracking started from {originAirport ?? "unknown"}");
                         }
@@ -579,10 +589,20 @@ public class SimConnectManager : IDisposable
                         // Jetzt FlightTracker starten (nachträglich validierter Takeoff)
                         if (!_flightTracker.IsTracking && _lastSimData != null)
                         {
-                            // Origin: GPS-Daten bevorzugen, sonst Frontend-Route
-                            var originAirport = IsValidIcao(simData.GpsWpPrevId)
-                                ? simData.GpsWpPrevId?.Trim()
-                                : _frontendOrigin;
+                            // Origin: GPS-Daten > Frontend-Route > Nearest Airport
+                            string? originAirport = null;
+                            if (IsValidIcao(simData.GpsWpPrevId))
+                            {
+                                originAirport = simData.GpsWpPrevId?.Trim();
+                            }
+                            else if (!string.IsNullOrEmpty(_frontendOrigin))
+                            {
+                                originAirport = _frontendOrigin;
+                            }
+                            else
+                            {
+                                originAirport = AirportDatabase.FindNearestAirport(simData.Latitude, simData.Longitude);
+                            }
                             _flightTracker.StartTracking(_lastSimData, originAirport);
                         }
                     }

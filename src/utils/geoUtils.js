@@ -94,6 +94,7 @@ const airportCoordinates = {
   'KMKE': { lat: 42.9472, lon: -87.8966 }, // Milwaukee
   'KSTL': { lat: 38.7487, lon: -90.3700 }, // St. Louis
   'KMCI': { lat: 39.2976, lon: -94.7139 }, // Kansas City
+  'KOMA': { lat: 41.3032, lon: -95.8941 }, // Omaha Eppley Airfield
   'KAUS': { lat: 30.1945, lon: -97.6699 }, // Austin
   'KSAT': { lat: 29.5337, lon: -98.4698 }, // San Antonio
   'KRDU': { lat: 35.8776, lon: -78.7875 }, // Raleigh-Durham

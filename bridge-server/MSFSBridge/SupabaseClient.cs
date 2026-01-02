@@ -16,6 +16,9 @@ public class SupabaseClient : IDisposable
     private readonly bool _isConfigured;
     private bool _disposed;
 
+    // User Access Token (für authentifizierte API-Calls, um RLS zu erfüllen)
+    private string? _userAccessToken;
+
     private readonly JsonSerializerSettings _jsonSettings = new()
     {
         ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -26,6 +29,15 @@ public class SupabaseClient : IDisposable
     public event Action<string>? OnError;
 
     public bool IsConfigured => _isConfigured;
+
+    /// <summary>
+    /// Setzt das User Access Token für authentifizierte API-Calls
+    /// </summary>
+    public void SetUserToken(string? accessToken)
+    {
+        _userAccessToken = accessToken;
+        OnLog?.Invoke($"User-Token {(string.IsNullOrEmpty(accessToken) ? "entfernt" : "gesetzt")}");
+    }
 
     public SupabaseClient()
     {
@@ -67,7 +79,22 @@ public class SupabaseClient : IDisposable
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var url = $"{_supabaseUrl}/rest/v1/flights";
-            var response = await _httpClient.PostAsync(url, content);
+
+            // Request mit User-Token erstellen (für RLS)
+            var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = content
+            };
+
+            // Standard-Header setzen
+            request.Headers.Add("apikey", _supabaseKey);
+            request.Headers.Add("Prefer", "return=representation");
+
+            // Authorization: User-Token bevorzugen (für RLS), sonst API-Key
+            var authToken = !string.IsNullOrEmpty(_userAccessToken) ? _userAccessToken : _supabaseKey;
+            request.Headers.Add("Authorization", $"Bearer {authToken}");
+
+            var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {

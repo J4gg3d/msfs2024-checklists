@@ -182,10 +182,11 @@ if (!string.IsNullOrEmpty(activeSessionCode))
 
 // User-Authentifizierung vom Frontend empfangen
 string? currentUserId = null;
-webSocketServer.OnUserAuthenticated += (userId) =>
+webSocketServer.OnUserAuthenticated += (userId, accessToken) =>
 {
     currentUserId = userId;
     simConnect.SetUserId(userId);
+    supabaseClient.SetUserToken(accessToken);
     Console.WriteLine($"[AUTH] User-ID gesetzt: {(string.IsNullOrEmpty(userId) ? "(keiner)" : userId)}");
 };
 

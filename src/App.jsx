@@ -52,7 +52,7 @@ const saveToStorage = (key, set) => {
 
 function App() {
   const { t, i18n } = useTranslation()
-  const { user, profile, isAuthenticated, signOut, loading: authLoading } = useAuth()
+  const { user, profile, session, isAuthenticated, signOut, loading: authLoading } = useAuth()
 
   // Auth & SimFlyCorp
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -233,9 +233,9 @@ function App() {
   // User-Authentifizierung an Bridge senden (für Flight-Logging)
   useEffect(() => {
     if (!isConnected || isDemoMode) return
-    // Sende User-ID an Bridge wenn verbunden
-    sendAuth(user?.id || null)
-  }, [isConnected, isDemoMode, user?.id, sendAuth])
+    // Sende User-ID und Access Token an Bridge wenn verbunden
+    sendAuth(user?.id || null, session?.access_token || null)
+  }, [isConnected, isDemoMode, user?.id, session?.access_token, sendAuth])
 
   // Route-Synchronisation: Empfange Route von anderen Clients
   useEffect(() => {

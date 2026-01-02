@@ -513,14 +513,16 @@ function useSimConnect() {
   /**
    * Sendet User-Authentifizierung an die Bridge (für Flight-Logging)
    * @param {string|null} userId - User-ID oder null für Logout
+   * @param {string|null} accessToken - Access Token für API-Calls (optional)
    */
-  const sendAuth = useCallback((userId) => {
+  const sendAuth = useCallback((userId, accessToken = null) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       const message = JSON.stringify({
         type: 'auth',
-        data: userId || null
+        data: userId || null,
+        token: accessToken || null
       });
-      console.log('SimConnect: Sending auth:', userId || '(logout)');
+      console.log('SimConnect: Sending auth:', userId || '(logout)', accessToken ? '(with token)' : '(no token)');
       wsRef.current.send(message);
     } else {
       console.log('SimConnect: Cannot send auth - not connected');

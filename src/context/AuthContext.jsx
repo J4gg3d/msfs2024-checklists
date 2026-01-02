@@ -8,15 +8,17 @@ export const useAuth = () => useContext(AuthContext)
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
+  const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     // Aktuelle Session prüfen
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        await loadProfile(session.user.id, session.user)
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      setSession(currentSession)
+      setUser(currentSession?.user ?? null)
+      if (currentSession?.user) {
+        await loadProfile(currentSession.user.id, currentSession.user)
       }
       setLoading(false)
     }
@@ -25,10 +27,11 @@ export const AuthProvider = ({ children }) => {
 
     // Auth-Änderungen beobachten
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null)
-        if (session?.user) {
-          await loadProfile(session.user.id, session.user)
+      async (event, currentSession) => {
+        setSession(currentSession)
+        setUser(currentSession?.user ?? null)
+        if (currentSession?.user) {
+          await loadProfile(currentSession.user.id, currentSession.user)
         } else {
           setProfile(null)
         }
@@ -209,6 +212,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     profile,
+    session,
     loading,
     signUp,
     signIn,

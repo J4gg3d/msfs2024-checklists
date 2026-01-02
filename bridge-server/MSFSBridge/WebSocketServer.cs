@@ -31,7 +31,7 @@ public class BridgeWebSocketServer : IDisposable
 
     public event Action<string>? OnLog;
     public event Action<IWebSocketConnection>? OnClientConnected;
-    public event Action<string?>? OnUserAuthenticated;
+    public event Action<string?, string?>? OnUserAuthenticated;  // userId, accessToken
     public event Action<string?, string?>? OnRouteReceived;
 
     /// <summary>
@@ -250,15 +250,19 @@ public class BridgeWebSocketServer : IDisposable
     }
 
     /// <summary>
-    /// Verarbeitet Auth-Nachrichten vom Frontend (User-ID für Flight-Logging)
+    /// Verarbeitet Auth-Nachrichten vom Frontend (User-ID + Token für Flight-Logging)
     /// </summary>
     private void HandleAuthMessage(ClientCommand command)
     {
         try
         {
             var userId = command.Data?.ToString();
+            var token = command.Token;
             OnLog?.Invoke($"Auth empfangen: User-ID = {(string.IsNullOrEmpty(userId) ? "(abgemeldet)" : userId)}");
-            OnUserAuthenticated?.Invoke(string.IsNullOrEmpty(userId) ? null : userId);
+            OnUserAuthenticated?.Invoke(
+                string.IsNullOrEmpty(userId) ? null : userId,
+                string.IsNullOrEmpty(token) ? null : token
+            );
         }
         catch (Exception ex)
         {
@@ -405,6 +409,9 @@ public class ClientCommand
 
     [JsonProperty("data")]
     public object? Data { get; set; }
+
+    [JsonProperty("token")]
+    public string? Token { get; set; }
 }
 
 /// <summary>

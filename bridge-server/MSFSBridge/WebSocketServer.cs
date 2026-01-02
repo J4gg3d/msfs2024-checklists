@@ -105,7 +105,15 @@ public class BridgeWebSocketServer : IDisposable
                 socket.OnMessage = (message) =>
                 {
                     // Für zukünftige Befehle von der Webseite
-                    OnLog?.Invoke($"Nachricht empfangen: {message}");
+                    // Auth-Nachrichten nicht vollständig loggen (enthält Token)
+                    if (message.Contains("\"type\":\"auth\""))
+                    {
+                        OnLog?.Invoke("Nachricht empfangen: [auth - Token ausgeblendet]");
+                    }
+                    else
+                    {
+                        OnLog?.Invoke($"Nachricht empfangen: {message}");
+                    }
                     HandleClientMessage(socket, message);
                 };
             });

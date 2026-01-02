@@ -58,6 +58,7 @@ function App() {
   const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [showAirline, setShowAirline] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [viewProfileUserId, setViewProfileUserId] = useState(null) // For viewing other pilots' profiles
 
   // FlightInfo visibility tracking for status bar
   const flightInfoRef = useRef(null)
@@ -1284,16 +1285,20 @@ function App() {
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
       {/* SimFlyCorp Page */}
-      {showSimFlyCorp && (
+      {(showSimFlyCorp || viewProfileUserId) && (
         <SimFlyCorp
-          onBack={() => setShowSimFlyCorp(false)}
-          onLogin={() => { setShowSimFlyCorp(false); setShowAuthModal(true); }}
+          onBack={() => { setShowSimFlyCorp(false); setViewProfileUserId(null); }}
+          onLogin={() => { setShowSimFlyCorp(false); setViewProfileUserId(null); setShowAuthModal(true); }}
+          viewUserId={viewProfileUserId}
         />
       )}
 
       {/* Leaderboard Page */}
       {showLeaderboard && (
-        <LeaderboardPage onBack={() => setShowLeaderboard(false)} />
+        <LeaderboardPage
+          onBack={() => setShowLeaderboard(false)}
+          onViewProfile={(userId) => { setViewProfileUserId(userId); setShowLeaderboard(false); }}
+        />
       )}
 
       {/* Airline Page */}

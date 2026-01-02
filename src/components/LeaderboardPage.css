@@ -351,6 +351,30 @@
   color: #4fc3f7;
 }
 
+/* Clickable rows */
+.leaderboard-table tr.clickable {
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.leaderboard-table tr.clickable:hover td {
+  background: rgba(79, 195, 247, 0.1);
+}
+
+.leaderboard-table tr.clickable:active {
+  transform: scale(0.995);
+}
+
+.leaderboard-table tr.clickable .pilot-name {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.leaderboard-table tr.clickable:hover .pilot-name {
+  text-decoration-color: currentColor;
+}
+
 /* Score Info Card */
 .score-info-card {
   background: rgba(26, 26, 46, 0.8);

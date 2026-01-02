@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { getFlights, getFlightStats, deleteFlight, getUserAirline, updateProfile } from '../lib/supabase'
+import { getFlights, getFlightStats, deleteFlight, getUserAirline, updateProfile, getProfile } from '../lib/supabase'
 import './SimFlyCorp.css'
 
 // Icon mapping for airlines
@@ -46,8 +46,8 @@ const DEMO_FLIGHTS = [
   { id: 5, created_at: '2024-12-18T16:20:00Z', origin: 'LFPG', destination: 'EDDF', aircraft_type: 'Pilatus PC-12 NGX', distance_nm: 280, flight_duration_seconds: 3600, landing_rating: 3, score: 310 },
 ]
 
-const SimFlyCorp = ({ onBack, onLogin }) => {
-  const { user, profile } = useAuth()
+const SimFlyCorp = ({ onBack, onLogin, viewUserId }) => {
+  const { user, profile: ownProfile } = useAuth()
   const [flights, setFlights] = useState([])
   const [stats, setStats] = useState(null)
   const [myAirline, setMyAirline] = useState(null)
@@ -56,27 +56,67 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
   const [editingHomebase, setEditingHomebase] = useState(false)
   const [homebaseInput, setHomebaseInput] = useState('')
   const [savingHomebase, setSavingHomebase] = useState(false)
+  const [viewedProfile, setViewedProfile] = useState(null)
 
-  const isDemo = !user
+  // Determine if viewing own profile or someone else's
+  const isViewingOther = viewUserId && viewUserId !== user?.id
+  const isDemo = !user && !viewUserId
+  const isReadOnly = isDemo || isViewingOther
+
+  // The profile to display (own or viewed)
+  const profile = isViewingOther ? viewedProfile : ownProfile
+  const displayUserId = isViewingOther ? viewUserId : user?.id
 
   useEffect(() => {
-    if (user) {
-      loadData()
+    if (viewUserId) {
+      // Viewing another user's profile
+      loadOtherProfile(viewUserId)
+    } else if (user) {
+      // Viewing own profile
+      loadData(user.id)
     } else {
       // Demo mode - use demo data
       setStats(DEMO_STATS)
       setFlights(DEMO_FLIGHTS)
       setLoading(false)
     }
-  }, [user])
+  }, [user, viewUserId])
 
-  const loadData = async () => {
+  const loadOtherProfile = async (userId) => {
+    setLoading(true)
+    try {
+      const [profileResult, flightsResult, statsResult, airlineResult] = await Promise.all([
+        getProfile(userId),
+        getFlights(userId),
+        getFlightStats(userId),
+        getUserAirline(userId)
+      ])
+
+      if (!profileResult.error && profileResult.data) {
+        setViewedProfile(profileResult.data)
+      }
+      if (!flightsResult.error) {
+        setFlights(flightsResult.data || [])
+      }
+      if (!statsResult.error) {
+        setStats(statsResult.stats)
+      }
+      if (!airlineResult.error && airlineResult.data) {
+        setMyAirline(airlineResult.data)
+      }
+    } catch (err) {
+      console.error('SimFlyCorp error:', err)
+    }
+    setLoading(false)
+  }
+
+  const loadData = async (userId) => {
     setLoading(true)
     try {
       const [flightsResult, statsResult, airlineResult] = await Promise.all([
-        getFlights(user.id),
-        getFlightStats(user.id),
-        getUserAirline(user.id)
+        getFlights(userId),
+        getFlightStats(userId),
+        getUserAirline(userId)
       ])
 
       if (!flightsResult.error) {
@@ -124,7 +164,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
   }
 
   const handleDeleteFlight = async (flightId) => {
-    if (isDemo) return
+    if (isReadOnly) return
     if (!window.confirm('Flug wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
       return
     }
@@ -136,7 +176,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
       console.error('Fehler beim Löschen:', error)
       alert('Fehler beim Löschen des Fluges')
     } else {
-      await loadData()
+      await loadData(user.id)
     }
     setDeletingId(null)
   }
@@ -225,6 +265,16 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
         </div>
       )}
 
+      {/* Viewing Other Profile Banner */}
+      {isViewingOther && (
+        <div className="viewing-other-banner">
+          <div className="demo-banner-content">
+            <span className="viewing-badge">👤</span>
+            <span className="demo-text">Du siehst das Profil von <strong>{profile?.display_name || profile?.username || 'Pilot'}</strong></span>
+          </div>
+        </div>
+      )}
+
       <div className="simflycorp-content">
         {loading ? (
           <div className="simflycorp-loading">
@@ -254,7 +304,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                   <div className="pilot-details">
                     <div className="detail-row">
                       <span className="detail-label">Pilot ID</span>
-                      <span className="detail-value">{isDemo ? 'SFC-4821' : (user?.id?.substring(0, 8).toUpperCase() || '--------')}</span>
+                      <span className="detail-value">{isDemo ? 'SFC-4821' : (displayUserId?.substring(0, 8).toUpperCase() || '--------')}</span>
                     </div>
                     <div className="detail-row">
                       <span className="detail-label">Airline</span>
@@ -273,6 +323,10 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                       <span className="detail-label">Homebase</span>
                       {isDemo ? (
                         <span className="detail-value">EDDF</span>
+                      ) : isReadOnly ? (
+                        <span className="detail-value">
+                          {profile?.home_base || <span className="placeholder">Nicht gesetzt</span>}
+                        </span>
                       ) : editingHomebase ? (
                         <span className="detail-value homebase-edit">
                           <input
@@ -318,8 +372,8 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                       <span className="detail-value">
                         {isDemo
                           ? 'März 2024'
-                          : (user?.created_at
-                              ? new Date(user.created_at).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })
+                          : (profile?.created_at
+                              ? new Date(profile.created_at).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })
                               : '---'
                             )
                         }
@@ -406,7 +460,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                         <th>Zeit</th>
                         <th>Landing</th>
                         <th>Score</th>
-                        {!isDemo && <th></th>}
+                        {!isReadOnly && <th></th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -427,7 +481,7 @@ const SimFlyCorp = ({ onBack, onLogin }) => {
                             {getRatingStars(flight.landing_rating)}
                           </td>
                           <td className="col-score">{(flight.score || 0).toLocaleString()}</td>
-                          {!isDemo && (
+                          {!isReadOnly && (
                             <td className="col-actions">
                               <button
                                 className="delete-btn"

@@ -47,7 +47,7 @@ const DEMO_LEADERBOARD = [
   { user_id: 'demo-10', display_name: 'NovaPilot', total_score: 1800, total_flight_time: 32000, total_distance: 8500, flight_count: 14 },
 ]
 
-const LeaderboardPage = ({ onBack }) => {
+const LeaderboardPage = ({ onBack, onViewProfile }) => {
   const { user } = useAuth()
   const [leaderboard, setLeaderboard] = useState([])
   const [airlines, setAirlines] = useState([])
@@ -304,10 +304,14 @@ const LeaderboardPage = ({ onBack }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {leaderboard.map((entry, index) => (
+                  {leaderboard.map((entry, index) => {
+                    const isClickable = onViewProfile && !entry.user_id.startsWith('demo-')
+                    return (
                     <tr
                       key={entry.user_id}
-                      className={`${getRankClass(index)} ${entry.user_id === user?.id ? 'is-me' : ''}`}
+                      className={`${getRankClass(index)} ${entry.user_id === user?.id ? 'is-me' : ''} ${isClickable ? 'clickable' : ''}`}
+                      onClick={() => isClickable && onViewProfile(entry.user_id)}
+                      title={isClickable ? 'Profil anzeigen' : undefined}
                     >
                       <td className="col-rank">
                         <span className="rank-icon">{getRankIcon(index)}</span>
@@ -322,7 +326,7 @@ const LeaderboardPage = ({ onBack }) => {
                       <td className="col-distance">{Math.round(entry.total_distance).toLocaleString()} NM</td>
                       <td className="col-flights">{entry.flight_count}</td>
                     </tr>
-                  ))}
+                  )})}
                 </tbody>
               </table>
             )

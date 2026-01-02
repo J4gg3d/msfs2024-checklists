@@ -98,8 +98,13 @@ public class FlightTracker
         _lastLongitude = currentLongitude;
     }
 
+    // Mindestanforderungen für einen gültigen Flug
+    private const int MIN_FLIGHT_DURATION_SECONDS = 120;  // Mindestens 2 Minuten
+    private const double MIN_DISTANCE_NM = 5.0;           // Mindestens 5 NM
+
     /// <summary>
-    /// Beendet das Tracking bei Landung und gibt den FlightLog zurück
+    /// Beendet das Tracking bei Landung und gibt den FlightLog zurück.
+    /// Gibt null zurück wenn der Flug ungültig ist (zu kurz, keine Distanz, etc.)
     /// </summary>
     public FlightLog? StopTracking(LandingInfo landing, string? destinationAirport)
     {
@@ -107,16 +112,41 @@ public class FlightTracker
 
         _isTracking = false;
 
+        var flightDuration = (int)(DateTime.UtcNow - _takeoffTime).TotalSeconds;
+        var distance = Math.Round(_totalDistanceNm, 2);
+        var origin = _originAirport;
+        var destination = destinationAirport?.ToUpperInvariant();
+
+        // Validierung: Ungültige Flüge abfangen
+        if (flightDuration < MIN_FLIGHT_DURATION_SECONDS)
+        {
+            OnLog?.Invoke($"Flight rejected: Too short ({flightDuration}s < {MIN_FLIGHT_DURATION_SECONDS}s minimum)");
+            return null;
+        }
+
+        if (distance < MIN_DISTANCE_NM)
+        {
+            OnLog?.Invoke($"Flight rejected: Distance too small ({distance:F1} NM < {MIN_DISTANCE_NM} NM minimum)");
+            return null;
+        }
+
+        // Mindestens Origin oder Destination muss bekannt sein
+        if (string.IsNullOrEmpty(origin) && string.IsNullOrEmpty(destination))
+        {
+            OnLog?.Invoke($"Flight rejected: No origin or destination known");
+            return null;
+        }
+
         var flightLog = new FlightLog
         {
             UserId = _userId,
-            Origin = _originAirport,
-            Destination = destinationAirport?.ToUpperInvariant(),
+            Origin = origin,
+            Destination = destination,
             AircraftType = _aircraftType,
             DepartureTime = _takeoffTime,
             ArrivalTime = DateTime.UtcNow,
-            FlightDurationSeconds = (int)(DateTime.UtcNow - _takeoffTime).TotalSeconds,
-            DistanceNm = Math.Round(_totalDistanceNm, 2),
+            FlightDurationSeconds = flightDuration,
+            DistanceNm = distance,
             MaxAltitudeFt = (int)_maxAltitude,
             LandingRating = landing.RatingScore,
             LandingVs = landing.VerticalSpeed,

@@ -10,6 +10,7 @@ public class FlightTracker
     // Takeoff-Daten
     private DateTime _takeoffTime;
     private string? _originAirport;
+    private string? _destinationAirport;
     private double _takeoffLatitude;
     private double _takeoffLongitude;
     private string? _aircraftType;
@@ -47,12 +48,31 @@ public class FlightTracker
     }
 
     /// <summary>
+    /// Setzt oder aktualisiert die Route (kann auch während des Flugs aufgerufen werden)
+    /// </summary>
+    public void SetRoute(string? origin, string? destination)
+    {
+        // Nur setzen wenn noch nicht vorhanden oder leer
+        if (string.IsNullOrEmpty(_originAirport) && !string.IsNullOrEmpty(origin))
+        {
+            _originAirport = origin.ToUpperInvariant();
+            OnLog?.Invoke($"Origin updated: {_originAirport}");
+        }
+        if (string.IsNullOrEmpty(_destinationAirport) && !string.IsNullOrEmpty(destination))
+        {
+            _destinationAirport = destination.ToUpperInvariant();
+            OnLog?.Invoke($"Destination updated: {_destinationAirport}");
+        }
+    }
+
+    /// <summary>
     /// Startet das Tracking bei Takeoff
     /// </summary>
     public void StartTracking(SimData data, string? originAirport)
     {
         _takeoffTime = DateTime.UtcNow;
         _originAirport = originAirport?.ToUpperInvariant();
+        _destinationAirport = null; // Wird später vom Frontend gesetzt
         _takeoffLatitude = data.Latitude ?? 0;
         _takeoffLongitude = data.Longitude ?? 0;
         _aircraftType = data.AircraftTitle;
@@ -115,7 +135,10 @@ public class FlightTracker
         var flightDuration = (int)(DateTime.UtcNow - _takeoffTime).TotalSeconds;
         var distance = Math.Round(_totalDistanceNm, 2);
         var origin = _originAirport;
-        var destination = destinationAirport?.ToUpperInvariant();
+        // Destination: Parameter > gespeichertes Destination vom Frontend
+        var destination = !string.IsNullOrEmpty(destinationAirport)
+            ? destinationAirport.ToUpperInvariant()
+            : _destinationAirport;
 
         // Validierung: Ungültige Flüge abfangen
         if (flightDuration < MIN_FLIGHT_DURATION_SECONDS)

@@ -204,6 +204,12 @@ public class SimConnectManager : IDisposable
         _frontendOrigin = origin?.ToUpperInvariant();
         _frontendDestination = destination?.ToUpperInvariant();
         Console.WriteLine($"[FLIGHT] Route gesetzt: {_frontendOrigin ?? "?"} → {_frontendDestination ?? "?"}");
+
+        // Route auch an FlightTracker weitergeben (falls bereits tracking)
+        if (_flightTracker.IsTracking)
+        {
+            _flightTracker.SetRoute(_frontendOrigin, _frontendDestination);
+        }
     }
 
     public bool IsConnected => _isConnected;

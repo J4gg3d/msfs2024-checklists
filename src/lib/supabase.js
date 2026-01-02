@@ -625,3 +625,30 @@ export const searchAirlines = async (query) => {
     return { data: null, error: err }
   }
 }
+
+// ============================================
+// ANNOUNCEMENTS HELPERS
+// ============================================
+
+// Get active announcements (respects starts_at/ends_at via RLS)
+export const getAnnouncements = async () => {
+  try {
+    const url = `${supabaseUrl}/rest/v1/announcements?active=eq.true&order=created_at.desc`
+    const response = await fetch(url, {
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}`
+      }
+    })
+
+    if (!response.ok) {
+      return { data: null, error: { message: `HTTP ${response.status}` } }
+    }
+
+    const data = await response.json()
+    return { data, error: null }
+  } catch (err) {
+    console.error('getAnnouncements error:', err)
+    return { data: null, error: err }
+  }
+}

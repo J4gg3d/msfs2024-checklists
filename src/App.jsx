@@ -9,6 +9,7 @@ import AuthModal from './components/AuthModal'
 import SimFlyCorp from './components/SimFlyCorp'
 import LeaderboardPage from './components/LeaderboardPage'
 import AirlinePage from './components/AirlinePage'
+import Announcements from './components/Announcements'
 import { useAuth } from './context/AuthContext'
 import useSimConnect from './hooks/useSimConnect'
 import { useChecklist, availableAircraft } from './hooks/useChecklist'
@@ -560,6 +561,9 @@ function App() {
           </div>
         </div>
       </header>
+
+      {/* Announcements - Ticker & Banners */}
+      <Announcements />
 
       {/* Sticky Status Bar */}
       <div className={`status-bar ${!isFlightInfoVisible ? 'expanded' : ''}`}>

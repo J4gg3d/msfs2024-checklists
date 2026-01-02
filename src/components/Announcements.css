@@ -1,13 +1,17 @@
 /* Announcement Ticker - Scrolling text */
 .announcement-ticker {
-  background: linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
-  border-bottom: 1px solid #333;
+  background: linear-gradient(90deg, #0d0d1a 0%, #1a1a2e 50%, #0d0d1a 100%);
+  border: 1px solid #333;
+  border-left: none;
+  border-right: none;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.05);
   overflow: hidden;
   white-space: nowrap;
   position: relative;
-  height: 28px;
+  height: 32px;
   display: flex;
   align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 .ticker-content {
@@ -86,6 +90,10 @@
 .announcement-banner {
   padding: 0.6rem 1rem;
   border-bottom: 1px solid transparent;
+}
+
+.announcement-banner:last-child {
+  margin-bottom: 0.5rem;
 }
 
 .banner-info {
@@ -174,7 +182,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .announcement-ticker {
-    height: 24px;
+    height: 28px;
   }
 
   .ticker-item {

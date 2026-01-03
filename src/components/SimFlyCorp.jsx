@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { getFlights, getFlightStats, deleteFlight, getUserAirline, updateProfile, getProfile } from '../lib/supabase'
+import FlightMap from './FlightMap'
 import './SimFlyCorp.css'
 
 // Icon mapping for airlines
@@ -57,6 +58,7 @@ const SimFlyCorp = ({ onBack, onLogin, viewUserId }) => {
   const [homebaseInput, setHomebaseInput] = useState('')
   const [savingHomebase, setSavingHomebase] = useState(false)
   const [viewedProfile, setViewedProfile] = useState(null)
+  const [showMapModal, setShowMapModal] = useState(false)
 
   // Determine if viewing own profile or someone else's
   const isViewingOther = viewUserId && viewUserId !== user?.id
@@ -437,6 +439,30 @@ const SimFlyCorp = ({ onBack, onLogin, viewUserId }) => {
                 </div>
               </div>
             </section>
+
+            {/* Flight Map Section */}
+            <section className="flight-map-section">
+              <h3>Flugrouten-Karte</h3>
+              <div
+                className="flight-map-preview"
+                onClick={() => setShowMapModal(true)}
+                title="Klicken zum Vergrößern"
+              >
+                <FlightMap flights={flights} isModal={false} />
+                <div className="flight-map-preview-overlay">
+                  <span>Klicken zum Vergrößern</span>
+                </div>
+              </div>
+            </section>
+
+            {/* Flight Map Modal */}
+            {showMapModal && (
+              <FlightMap
+                flights={flights}
+                isModal={true}
+                onClose={() => setShowMapModal(false)}
+              />
+            )}
 
             {/* Flight Log Section */}
             <section className="flightlog-section">

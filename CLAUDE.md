@@ -16,6 +16,7 @@ Interaktive Checklisten-Webapp für Microsoft Flight Simulator 2024.
 ## Technologie-Stack
 - **Frontend**: React 18 + Vite
 - **Styling**: Plain CSS (kein Framework)
+- **Karten**: react-simple-maps (SVG-basiert)
 - **Daten**: JSON-Dateien für Checklisten
 - **Persistenz**: LocalStorage für Fortschritt
 - **Bridge** (optional): C# SimConnect Server für Live-Daten
@@ -37,6 +38,8 @@ src/
 │   ├── FlightInfo.css
 │   ├── DetailPanel.jsx     # Seitenpanel mit Item-Details
 │   ├── DetailPanel.css
+│   ├── FlightMap.jsx       # Weltkarte mit Flugrouten (Mini + Modal)
+│   ├── FlightMap.css
 │   ├── LandingRating.jsx   # Landing-Rating Modal + Panel
 │   ├── LandingRating.css
 │   ├── SimStatus.jsx       # SimConnect Verbindungsstatus

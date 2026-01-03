@@ -117,6 +117,12 @@ const airportCoordinates = {
   'CYVR': { lat: 49.1947, lon: -123.1840 },// Vancouver
   'CYUL': { lat: 45.4706, lon: -73.7408 }, // Montreal
   'CYQB': { lat: 46.7911, lon: -71.3933 }, // Quebec City
+  'CYWO': { lat: 45.4564, lon: -75.7242 }, // Gatineau-Ottawa Executive
+  'CYOW': { lat: 45.3225, lon: -75.6692 }, // Ottawa Macdonald-Cartier
+  'CYYC': { lat: 51.1215, lon: -114.0076 },// Calgary
+  'CYEG': { lat: 53.3097, lon: -113.5800 },// Edmonton
+  'CYWG': { lat: 49.9100, lon: -97.2399 }, // Winnipeg
+  'CYHZ': { lat: 44.8808, lon: -63.5086 }, // Halifax
 
   // Asien
   'RJTT': { lat: 35.5494, lon: 139.7798 }, // Tokyo Haneda
@@ -201,10 +207,15 @@ export function getAirportCoordinates(icao) {
     return airportCoordinates[code];
   }
 
-  // 2. Cache prüfen
+  // 2. Cache prüfen (mit Validierung)
   const cache = loadAirportCache();
   if (cache[code]) {
-    return cache[code];
+    const cached = cache[code];
+    // Validierung: 0,0 ist ungültig
+    if (cached.lat === 0 && cached.lon === 0) {
+      return null;
+    }
+    return cached;
   }
 
   return null;
@@ -224,10 +235,16 @@ export async function getAirportCoordinatesAsync(icao) {
     return airportCoordinates[code];
   }
 
-  // 2. Cache prüfen
+  // 2. Cache prüfen (mit Validierung)
   const cache = loadAirportCache();
   if (cache[code]) {
-    return cache[code];
+    const cached = cache[code];
+    // Validierung: 0,0 ist ungültig
+    if (cached.lat === 0 && cached.lon === 0) {
+      // Ungültigen Cache-Eintrag ignorieren, weiter zur API
+    } else {
+      return cached;
+    }
   }
 
   // 3. API abfragen
@@ -241,10 +258,22 @@ export async function getAirportCoordinatesAsync(icao) {
     const data = await response.json();
 
     if (data && data.latitude && data.longitude) {
-      const coords = {
-        lat: parseFloat(data.latitude),
-        lon: parseFloat(data.longitude)
-      };
+      const lat = parseFloat(data.latitude);
+      const lon = parseFloat(data.longitude);
+
+      // Validierung: 0,0 ist ungültig (API gibt das für unbekannte Flughäfen zurück)
+      // und Koordinaten müssen in gültigen Bereichen sein
+      if (lat === 0 && lon === 0) {
+        console.warn(`Airport ${code}: API returned invalid 0,0 coordinates`);
+        return null;
+      }
+
+      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+        console.warn(`Airport ${code}: API returned out-of-range coordinates`);
+        return null;
+      }
+
+      const coords = { lat, lon };
 
       // Im Cache speichern
       saveToAirportCache(code, coords);
